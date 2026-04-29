@@ -298,7 +298,7 @@ const ANTI_PHISHING_CONFIG = {
     BLOCK_MODE: true, // true = block, false = log only
     ALLOWED_DOMAINS: process.env.ALLOWED_DOMAINS ? 
         process.env.ALLOWED_DOMAINS.split(',') : 
-        ['localhost', '127.0.0.1', 'render.com'],
+        ['localhost', '127.0.0.1', 'render.com', 'secure-school-management-project-final.onrender.com'],
     ALLOWED_ORIGINS: process.env.CORS_ORIGINS ? 
         process.env.CORS_ORIGINS.split(',') : 
         ['http://localhost:3000', 'http://127.0.0.1:5500', 'https://secure-school-management-project-final.onrender.com'],
