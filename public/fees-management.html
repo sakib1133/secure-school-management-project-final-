@@ -1,0 +1,890 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fee Management - Admin Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #3b82f6;
+            --secondary-color: #2563eb;
+            --accent-color: #60a5fa;
+            --success-color: #22c55e;
+            --warning-color: #f59e0b;
+            --danger-color: #ef4444;
+            --dark-bg: #f1f5f9;
+            --card-bg: #ffffff;
+            --text-primary: #0f172a;
+            --text-secondary: #64748b;
+            --border-color: #e2e8f0;
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--dark-bg);
+            min-height: 100vh;
+            color: var(--text-primary);
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #1e3a5f 0%, #2d4a6f 100%);
+            color: white;
+            padding: 30px 40px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .header h1 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .header h1 i {
+            color: var(--accent-color);
+        }
+
+        .back-arrow {
+            color: white;
+            font-size: 1.2rem;
+            margin-right: 12px;
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        .back-arrow:hover {
+            color: var(--accent-color);
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 24px;
+        }
+
+        @media (max-width: 1024px) {
+            .grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: var(--shadow-md);
+            border: 1px solid var(--border-color);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 16px;
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        .card-header h2 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .card-header h2 i {
+            color: var(--primary-color);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--text-primary);
+            font-size: 0.9rem;
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 0.95rem;
+            font-family: inherit;
+            transition: all 0.2s;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--secondary-color);
+            transform: translateY(-1px);
+        }
+
+        .btn-danger {
+            background: var(--danger-color);
+            color: white;
+            padding: 8px 16px;
+            font-size: 0.85rem;
+        }
+
+        .btn-danger:hover {
+            background: #dc2626;
+        }
+
+        .table-container {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 14px 16px;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        th {
+            background: #f8fafc;
+            font-weight: 600;
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        td {
+            font-size: 0.9rem;
+        }
+
+        tr:hover {
+            background: #f8fafc;
+        }
+
+        .status-badge {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .status-pending {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .status-paid {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .status-verified {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .status-rejected {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .alert {
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin-bottom: 16px;
+            display: none;
+        }
+
+        .alert-success {
+            background: #dcfce7;
+            color: #166534;
+            border: 1px solid #86efac;
+        }
+
+        .alert-error {
+            background: #fee2e2;
+            color: #991b1b;
+            border: 1px solid #fca5a5;
+        }
+
+        .alert.show {
+            display: block;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--text-secondary);
+        }
+
+        .empty-state i {
+            font-size: 3rem;
+            margin-bottom: 16px;
+            color: var(--border-color);
+        }
+
+        .tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+
+        .tab {
+            padding: 10px 20px;
+            border: none;
+            background: transparent;
+            border-radius: 8px;
+            font-weight: 500;
+            cursor: pointer;
+            color: var(--text-secondary);
+            transition: all 0.2s;
+        }
+
+        .tab.active {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .tab:hover:not(.active) {
+            background: #e2e8f0;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: var(--text-secondary);
+        }
+
+        .loading i {
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>
+                <a href="dashboard.html" class="back-arrow"><i class="fas fa-arrow-left"></i></a>
+                <i class="fas fa-money-bill-wave"></i>
+                Fee Management System
+            </h1>
+        </div>
+
+        <div class="grid">
+            <!-- Create Fee Form -->
+            <div class="card">
+                <div class="card-header">
+                    <h2>
+                        <i class="fas fa-plus-circle"></i>
+                        Assign Fee
+                    </h2>
+                </div>
+
+                <div id="alert" class="alert"></div>
+
+                <form id="feeForm">
+                    <div class="form-group">
+                        <label for="username">Student Username *</label>
+                        <input type="text" id="username" name="username" required placeholder="Enter student username">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="amount">Amount (₹) *</label>
+                        <input type="number" id="amount" name="amount" required min="1" step="0.01" placeholder="Enter amount">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="description">Description</label>
+                        <textarea id="description" name="description" placeholder="Enter fee description (e.g., Tuition Fee, Library Fee)"></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="due_date">Due Date</label>
+                        <input type="date" id="due_date" name="due_date">
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-paper-plane"></i>
+                        Assign Fee
+                    </button>
+                </form>
+            </div>
+
+            <!-- Fees List -->
+            <div class="card">
+                <div class="card-header">
+                    <h2>
+                        <i class="fas fa-list"></i>
+                        All Fees
+                    </h2>
+                    <button class="btn btn-primary" onclick="loadFees()" style="padding: 8px 16px; font-size: 0.85rem;">
+                        <i class="fas fa-sync-alt"></i>
+                        Refresh
+                    </button>
+                </div>
+
+                <div class="tabs">
+                    <button class="tab active" onclick="filterFees('all')">All</button>
+                    <button class="tab" onclick="filterFees('pending')">Pending</button>
+                    <button class="tab" onclick="filterFees('paid')">Paid</button>
+                </div>
+
+                <div class="table-container">
+                    <table id="feesTable">
+                        <thead>
+                            <tr>
+                                <th>Username</th>
+                                <th>Amount</th>
+                                <th>Description</th>
+                                <th>Due Date</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="feesBody">
+                            <tr>
+                                <td colspan="6" class="empty-state">
+                                    <i class="fas fa-inbox"></i>
+                                    <p>No fees found</p>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Payment Verification -->
+        <div class="card" style="margin-top: 24px;">
+            <div class="card-header">
+                <h2>
+                    <i class="fas fa-check-circle"></i>
+                    Payment Verification
+                </h2>
+                <div>
+                    <button class="btn btn-primary" onclick="loadPendingPayments()" style="padding: 8px 16px; font-size: 0.85rem; margin-right: 8px;">
+                        <i class="fas fa-clock"></i>
+                        Pending
+                    </button>
+                    <button class="btn btn-primary" onclick="loadAllPayments()" style="padding: 8px 16px; font-size: 0.85rem;">
+                        <i class="fas fa-sync-alt"></i>
+                        All
+                    </button>
+                </div>
+            </div>
+
+            <div class="table-container">
+                <table id="verificationTable">
+                    <thead>
+                        <tr>
+                            <th>Payment ID</th>
+                            <th>Username</th>
+                            <th>Amount</th>
+                            <th>Method</th>
+                            <th>Transaction ID</th>
+                            <th>Status</th>
+                            <th>Paid At</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="verificationBody">
+                        <tr>
+                            <td colspan="8" class="empty-state">
+                                <i class="fas fa-inbox"></i>
+                                <p>No payments found</p>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Payment History -->
+        <div class="card" style="margin-top: 24px;">
+            <div class="card-header">
+                <h2>
+                    <i class="fas fa-history"></i>
+                    Payment History
+                </h2>
+                <button class="btn btn-primary" onclick="loadPaymentHistory()" style="padding: 8px 16px; font-size: 0.85rem;">
+                    <i class="fas fa-sync-alt"></i>
+                    Refresh
+                </button>
+            </div>
+
+            <div class="table-container">
+                <table id="paymentsTable">
+                    <thead>
+                        <tr>
+                            <th>Payment ID</th>
+                            <th>Username</th>
+                            <th>Amount</th>
+                            <th>Description</th>
+                            <th>Status</th>
+                            <th>Paid At</th>
+                        </tr>
+                    </thead>
+                    <tbody id="paymentsBody">
+                        <tr>
+                            <td colspan="6" class="empty-state">
+                                <i class="fas fa-inbox"></i>
+                                <p>No payments found</p>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = '/api/fees';
+        let currentFilter = 'all';
+
+        // Load fees on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            loadFees();
+            loadPaymentHistory();
+            loadPendingPayments();
+        });
+
+        // Show alert message
+        function showAlert(message, type) {
+            const alert = document.getElementById('alert');
+            alert.className = `alert alert-${type} show`;
+            alert.textContent = message;
+            setTimeout(() => {
+                alert.classList.remove('show');
+            }, 5000);
+        }
+
+        // Get auth token
+        function getAuthToken() {
+            return localStorage.getItem('token');
+        }
+
+        // Get user info from token
+        function getUserFromToken() {
+            const token = localStorage.getItem('token');
+            if (!token) return null;
+            try {
+                const payload = JSON.parse(atob(token.split('.')[1]));
+                return payload;
+            } catch (e) {
+                console.error('Error parsing token:', e);
+                return null;
+            }
+        }
+
+        // Create fee
+        document.getElementById('feeForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            // Check user role before submitting
+            const user = getUserFromToken();
+            console.log('Current user:', user);
+            if (!user || user.role !== 'admin') {
+                showAlert('You must be logged in as an admin to assign fees. Current role: ' + (user ? user.role : 'not logged in'), 'error');
+                return;
+            }
+            
+            const formData = {
+                username: document.getElementById('username').value,
+                amount: parseFloat(document.getElementById('amount').value),
+                description: document.getElementById('description').value,
+                due_date: document.getElementById('due_date').value
+            };
+
+            try {
+                const response = await fetch(`${API_BASE}/create`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${getAuthToken()}`
+                    },
+                    body: JSON.stringify(formData)
+                });
+
+                const data = await response.json();
+
+                if (data.status === 'success') {
+                    showAlert('Fee assigned successfully!', 'success');
+                    document.getElementById('feeForm').reset();
+                    loadFees();
+                } else {
+                    showAlert(data.message || 'Failed to assign fee', 'error');
+                }
+            } catch (error) {
+                showAlert('Error assigning fee. Please try again.', 'error');
+                console.error('Error:', error);
+            }
+        });
+
+        // Load fees
+        async function loadFees() {
+            try {
+                const response = await fetch(`${API_BASE}/all`, {
+                    headers: {
+                        'Authorization': `Bearer ${getAuthToken()}`
+                    }
+                });
+
+                const data = await response.json();
+
+                if (data.status === 'success') {
+                    renderFees(data.fees);
+                } else {
+                    showAlert('Failed to load fees', 'error');
+                }
+            } catch (error) {
+                console.error('Error loading fees:', error);
+            }
+        }
+
+        // Render fees table
+        function renderFees(fees) {
+            const tbody = document.getElementById('feesBody');
+            
+            let filteredFees = fees;
+            if (currentFilter !== 'all') {
+                // Handle both uppercase and lowercase status values
+                filteredFees = fees.filter(fee => {
+                    const status = fee.status.toLowerCase();
+                    return status === currentFilter || 
+                           (currentFilter === 'pending' && status === 'pending') ||
+                           (currentFilter === 'paid' && status === 'paid');
+                });
+            }
+
+            if (filteredFees.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="6" class="empty-state">
+                            <i class="fas fa-inbox"></i>
+                            <p>No fees found</p>
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+
+            tbody.innerHTML = filteredFees.map(fee => `
+                <tr>
+                    <td><strong>${fee.username}</strong></td>
+                    <td class="amount">₹${fee.amount.toFixed(2)}</td>
+                    <td>${fee.description || '-'}</td>
+                    <td>${fee.due_date || '-'}</td>
+                    <td>
+                        <span class="status-badge status-${fee.status.toLowerCase()}">${fee.status}</span>
+                    </td>
+                    <td>
+                        ${(fee.status === 'PENDING' || fee.status === 'pending') ? `
+                            <button class="btn btn-danger" onclick="deleteFee(${fee.id})">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        ` : '-'}
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        // Filter fees
+        function filterFees(filter) {
+            currentFilter = filter;
+            document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+            event.target.classList.add('active');
+            loadFees();
+        }
+
+        // Delete fee
+        async function deleteFee(feeId) {
+            if (!confirm('Are you sure you want to delete this fee?')) return;
+
+            try {
+                const response = await fetch(`${API_BASE}/${feeId}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Authorization': `Bearer ${getAuthToken()}`
+                    }
+                });
+
+                const data = await response.json();
+
+                if (data.status === 'success') {
+                    showAlert('Fee deleted successfully', 'success');
+                    loadFees();
+                } else {
+                    showAlert(data.message || 'Failed to delete fee', 'error');
+                }
+            } catch (error) {
+                showAlert('Error deleting fee. Please try again.', 'error');
+                console.error('Error:', error);
+            }
+        }
+
+        // Load payment history
+        async function loadPaymentHistory() {
+            try {
+                const response = await fetch(`${API_BASE}/payments/all`, {
+                    headers: {
+                        'Authorization': `Bearer ${getAuthToken()}`
+                    }
+                });
+
+                const data = await response.json();
+
+                if (data.status === 'success') {
+                    renderPayments(data.payments);
+                } else {
+                    showAlert('Failed to load payment history', 'error');
+                }
+            } catch (error) {
+                console.error('Error loading payments:', error);
+            }
+        }
+
+        // Render payments table
+        function renderPayments(payments) {
+            const tbody = document.getElementById('paymentsBody');
+
+            if (payments.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="6" class="empty-state">
+                            <i class="fas fa-inbox"></i>
+                            <p>No payments found</p>
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+
+            tbody.innerHTML = payments.map(payment => `
+                <tr>
+                    <td>#${payment.id}</td>
+                    <td><strong>${payment.username}</strong></td>
+                    <td class="amount">₹${payment.amount.toFixed(2)}</td>
+                    <td>${payment.description || '-'}</td>
+                    <td>
+                        <span class="status-badge status-${payment.status.toLowerCase()}">${payment.status}</span>
+                    </td>
+                    <td>${new Date(payment.paid_at).toLocaleString()}</td>
+                </tr>
+            `).join('');
+        }
+
+        // Load pending payments for verification
+        async function loadPendingPayments() {
+            try {
+                const response = await fetch('/api/admin/payment-requests', {
+                    headers: {
+                        'Authorization': `Bearer ${getAuthToken()}`
+                    }
+                });
+
+                const data = await response.json();
+
+                if (data.status === 'success') {
+                    renderVerificationTable(data.payments);
+                } else {
+                    showAlert('Failed to load pending payments', 'error');
+                }
+            } catch (error) {
+                console.error('Error loading pending payments:', error);
+            }
+        }
+
+        // Load all payments for verification
+        async function loadAllPayments() {
+            try {
+                const response = await fetch('/api/admin/payments', {
+                    headers: {
+                        'Authorization': `Bearer ${getAuthToken()}`
+                    }
+                });
+
+                const data = await response.json();
+
+                if (data.status === 'success') {
+                    renderVerificationTable(data.payments);
+                } else {
+                    showAlert('Failed to load payments', 'error');
+                }
+            } catch (error) {
+                console.error('Error loading payments:', error);
+            }
+        }
+
+        // Render verification table
+        function renderVerificationTable(payments) {
+            const tbody = document.getElementById('verificationBody');
+
+            if (payments.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="8" class="empty-state">
+                            <i class="fas fa-inbox"></i>
+                            <p>No payments found</p>
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+
+            tbody.innerHTML = payments.map(payment => `
+                <tr>
+                    <td>#${payment.id}</td>
+                    <td><strong>${payment.username}</strong></td>
+                    <td class="amount">₹${payment.amount.toFixed(2)}</td>
+                    <td>${payment.payment_method || '-'}</td>
+                    <td>${payment.transaction_id || '-'}</td>
+                    <td>
+                        <span class="status-badge status-${payment.status}">${payment.status}</span>
+                    </td>
+                    <td>${new Date(payment.paid_at).toLocaleString()}</td>
+                    <td>
+                        ${payment.status === 'pending' ? `
+                            <button class="btn btn-success" onclick="approvePayment(${payment.id})" style="padding: 6px 12px; font-size: 0.8rem; margin-right: 4px;">
+                                <i class="fas fa-check"></i> Approve
+                            </button>
+                            <button class="btn btn-danger" onclick="rejectPayment(${payment.id})" style="padding: 6px 12px; font-size: 0.8rem;">
+                                <i class="fas fa-times"></i> Reject
+                            </button>
+                        ` : '-'}
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        // Approve payment
+        async function approvePayment(paymentId) {
+            if (!confirm('Are you sure you want to approve this payment?')) return;
+
+            try {
+                const response = await fetch('/api/admin/approve-payment', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${getAuthToken()}`
+                    },
+                    body: JSON.stringify({
+                        payment_id: paymentId
+                    })
+                });
+
+                const data = await response.json();
+
+                if (data.status === 'success') {
+                    showAlert('Payment approved successfully!', 'success');
+                    loadPendingPayments();
+                    loadFees();
+                    loadPaymentHistory();
+                } else {
+                    showAlert(data.message || 'Failed to approve payment', 'error');
+                }
+            } catch (error) {
+                showAlert('Error approving payment. Please try again.', 'error');
+                console.error('Error:', error);
+            }
+        }
+
+        // Reject payment
+        async function rejectPayment(paymentId) {
+            if (!confirm('Are you sure you want to reject this payment?')) return;
+
+            try {
+                const response = await fetch('/api/admin/reject-payment', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${getAuthToken()}`
+                    },
+                    body: JSON.stringify({
+                        payment_id: paymentId
+                    })
+                });
+
+                const data = await response.json();
+
+                if (data.status === 'success') {
+                    showAlert('Payment rejected successfully!', 'success');
+                    loadPendingPayments();
+                    loadFees();
+                    loadPaymentHistory();
+                } else {
+                    showAlert(data.message || 'Failed to reject payment', 'error');
+                }
+            } catch (error) {
+                showAlert('Error rejecting payment. Please try again.', 'error');
+                console.error('Error:', error);
+            }
+        }
+    </script>
+</body>
+</html>

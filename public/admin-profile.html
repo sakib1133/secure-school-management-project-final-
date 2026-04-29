@@ -1,0 +1,1736 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Profile - School Management System</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #4a5568;
+            --primary-hover: #2d3748;
+            --secondary: #718096;
+            --dark: #1a202c;
+            --darker: #171923;
+            --card: #2d3748;
+            --card-hover: #353f50;
+            --text: #e2e8f0;
+            --text-secondary: #a0aec0;
+            --text-muted: #718096;
+            --border: #4a5568;
+            --border-subtle: #2d3748;
+            --success: #48bb78;
+            --warning: #d69e2e;
+            --danger: #fc8181;
+            --info: #63b3ed;
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+            --shadow-md: 0 4px 6px rgba(0,0,0,0.15), 0 2px 4px rgba(0,0,0,0.12);
+            --shadow-lg: 0 10px 15px rgba(0,0,0,0.2), 0 4px 6px rgba(0,0,0,0.15);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #f8fafc;
+            color: #1e293b;
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+
+        .container-fluid {
+            padding: 0;
+        }
+
+        /* Header */
+        .header {
+            background: #1e293b;
+            border-bottom: 1px solid #334155;
+            padding: 18px 0;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.15);
+        }
+
+        .header-content {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 0 32px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            letter-spacing: -0.02em;
+        }
+
+        .logo i {
+            color: #94a3b8;
+            font-size: 1.3rem;
+        }
+
+        .back-btn {
+            background: transparent;
+            color: #cbd5e1;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.25s ease;
+            font-size: 0.875rem;
+            font-weight: 500;
+            border: 1px solid #475569;
+        }
+
+        .back-btn:hover {
+            background: #334155;
+            color: #ffffff;
+            border-color: #64748b;
+            transform: translateY(-1px);
+        }
+
+        /* Main Layout */
+        .main-content {
+            max-width: 1280px;
+            margin: 40px auto;
+            padding: 0 32px;
+        }
+
+        /* Profile Header */
+        .profile-header {
+            background: #f8fafc;
+            border-radius: 16px;
+            padding: 40px;
+            margin-bottom: 32px;
+            border: 1px solid #e2e8f0;
+            border-left: 4px solid #3b82f6;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        }
+
+        .profile-info {
+            display: flex;
+            align-items: center;
+            gap: 40px;
+        }
+
+        /* Avatar Section */
+        .avatar-section {
+            text-align: center;
+            flex-shrink: 0;
+        }
+
+        .avatar {
+            width: 128px;
+            height: 128px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--card), var(--border));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            color: var(--text-secondary);
+            margin: 0 auto 20px;
+            border: 3px solid var(--border);
+            position: relative;
+            overflow: hidden;
+            box-shadow: var(--shadow-md);
+        }
+
+        .avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 50%;
+        }
+
+        .upload-btn {
+            background: var(--card);
+            color: var(--text-secondary);
+            border: 1px solid var(--border);
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.875rem;
+            transition: all 0.25s ease;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .upload-btn:hover {
+            background: var(--card-hover);
+            color: var(--text);
+            border-color: var(--secondary);
+        }
+
+        /* User Details */
+        .user-details {
+            flex: 1;
+        }
+
+        .user-details h1 {
+            font-size: 2rem;
+            margin-bottom: 12px;
+            color: #1e293b;
+            font-weight: 600;
+            letter-spacing: -0.02em;
+        }
+
+        .role-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: #f1f5f9;
+            color: #64748b;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: 500;
+            margin-bottom: 28px;
+            font-size: 0.875rem;
+            border: 1px solid #e2e8f0;
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+
+        .stat-card {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-left: 4px solid #3b82f6;
+            border-radius: 12px;
+            padding: 24px 20px;
+            text-align: center;
+            transition: all 0.25s ease;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #1e293b;
+            margin-bottom: 6px;
+            letter-spacing: -0.02em;
+        }
+
+        .stat-label {
+            color: #64748b;
+            font-size: 0.875rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        /* Content Grid */
+        .content-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 28px;
+        }
+
+        .content-card {
+            background: #ffffff;
+            border-radius: 16px;
+            padding: 28px;
+            border: 1px solid #e2e8f0;
+            border-left: 4px solid #3b82f6;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+            transition: all 0.25s ease;
+        }
+
+        .content-card:hover {
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .card-title {
+            font-size: 1.125rem;
+            margin-bottom: 24px;
+            color: #1e293b;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 600;
+            padding-bottom: 16px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .card-title i {
+            color: #64748b;
+            font-size: 1.1rem;
+        }
+
+        /* Forms */
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #475569;
+            font-weight: 500;
+            font-size: 0.875rem;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px 16px;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            color: #1e293b;
+            font-size: 0.9375rem;
+            transition: all 0.2s ease;
+        }
+
+        .form-control::placeholder {
+            color: #94a3b8;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: #94a3b8;
+            box-shadow: 0 0 0 3px rgba(148, 163, 184, 0.15);
+            background: #ffffff;
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.9375rem;
+        }
+
+        .btn-primary {
+            background: #1e293b;
+            color: #ffffff;
+            border: 1px solid #1e293b;
+        }
+
+        .btn-primary:hover {
+            background: #334155;
+            border-color: #334155;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: #64748b;
+            border: 1px solid #e2e8f0;
+        }
+
+        .btn-secondary:hover {
+            background: #f1f5f9;
+            color: #1e293b;
+            border-color: #cbd5e1;
+        }
+
+        /* Activity List */
+        .activity-list {
+            max-height: 320px;
+            overflow-y: auto;
+            padding-right: 4px;
+        }
+
+        .activity-list::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .activity-list::-webkit-scrollbar-track {
+            background: #f1f5f9;
+            border-radius: 3px;
+        }
+
+        .activity-list::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 3px;
+        }
+
+        .activity-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 14px;
+            padding: 16px;
+            background: #ffffff;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #e2e8f0;
+            border-left: 3px solid #3b82f6;
+            transition: all 0.2s ease;
+        }
+
+        .activity-item:hover {
+            background: #f8fafc;
+            border-color: #cbd5e1;
+        }
+
+        .activity-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .activity-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9rem;
+            flex-shrink: 0;
+        }
+
+        .activity-icon.login { background: rgba(72, 187, 120, 0.15); color: #48bb78; }
+        .activity-icon.update { background: rgba(99, 179, 237, 0.15); color: #63b3ed; }
+        .activity-icon.security { background: rgba(252, 129, 129, 0.15); color: #fc8181; }
+        .activity-icon.password { background: rgba(214, 158, 46, 0.15); color: #d69e2e; }
+
+        .activity-item > div:last-child {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .activity-item > div:last-child > div:first-child {
+            color: #1e293b;
+            font-weight: 500;
+            margin-bottom: 4px;
+            font-size: 0.9375rem;
+        }
+
+        .activity-item > div:last-child small {
+            color: #94a3b8;
+            font-size: 0.8125rem;
+        }
+
+        /* Alerts */
+        .alert {
+            padding: 14px 18px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border: 1px solid;
+            display: none;
+            font-size: 0.9375rem;
+            font-weight: 500;
+        }
+
+        .alert-success {
+            background: rgba(72, 187, 120, 0.1);
+            border-color: rgba(72, 187, 120, 0.25);
+            color: #38a169;
+        }
+
+        .alert-error {
+            background: rgba(252, 129, 129, 0.1);
+            border-color: rgba(252, 129, 129, 0.25);
+            color: #e53e3e;
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 14px;
+        }
+
+        .checkbox-group input[type="checkbox"] {
+            width: auto;
+            accent-color: #64748b;
+        }
+
+        /* Password Strength */
+        .password-strength {
+            margin-top: 10px;
+            height: 4px;
+            border-radius: 2px;
+            background: #e2e8f0;
+            overflow: hidden;
+        }
+
+        .password-strength-bar {
+            height: 100%;
+            transition: all 0.3s ease;
+            border-radius: 2px;
+        }
+
+        .strength-weak { background: #fc8181; width: 33%; }
+        .strength-medium { background: #d69e2e; width: 66%; }
+        .strength-strong { background: #48bb78; width: 100%; }
+
+        /* Password Toggle */
+        .password-input-group {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .password-toggle {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: #64748b;
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9rem;
+        }
+
+        .password-toggle:hover {
+            background: #f1f5f9;
+            color: #1e293b;
+        }
+
+        .password-toggle:focus {
+            outline: none;
+            background: #e2e8f0;
+        }
+
+        .form-control.with-toggle {
+            padding-right: 45px;
+        }
+
+        /* MFA Toggle Switch */
+        .mfa-section {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 20px;
+            background: #f8fafc;
+            border-radius: 12px;
+            margin-bottom: 20px;
+        }
+
+        .mfa-info {
+            flex: 1;
+        }
+
+        .mfa-info h4 {
+            margin: 0 0 8px 0;
+            color: #1e293b;
+            font-size: 1rem;
+            font-weight: 600;
+        }
+
+        .mfa-info p {
+            margin: 0;
+            color: #64748b;
+            font-size: 0.875rem;
+        }
+
+        .mfa-toggle-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .mfa-status {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.8125rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .mfa-status.enabled {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .mfa-status.disabled {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .toggle-switch {
+            position: relative;
+            width: 56px;
+            height: 28px;
+        }
+
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #cbd5e1;
+            transition: 0.3s;
+            border-radius: 28px;
+        }
+
+        .toggle-slider:before {
+            position: absolute;
+            content: "";
+            height: 22px;
+            width: 22px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: 0.3s;
+            border-radius: 50%;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        input:checked + .toggle-slider {
+            background-color: #48bb78;
+        }
+
+        input:checked + .toggle-slider:before {
+            transform: translateX(28px);
+        }
+
+        /* OTP Modal */
+        .otp-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .otp-modal.active {
+            display: flex;
+        }
+
+        .otp-modal-content {
+            background: white;
+            padding: 32px;
+            border-radius: 16px;
+            width: 100%;
+            max-width: 420px;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+        }
+
+        .otp-modal-header {
+            text-align: center;
+            margin-bottom: 24px;
+        }
+
+        .otp-modal-header h3 {
+            margin: 0 0 8px 0;
+            color: #1e293b;
+            font-size: 1.5rem;
+        }
+
+        .otp-modal-header p {
+            margin: 0;
+            color: #64748b;
+            font-size: 0.9375rem;
+        }
+
+        .otp-input {
+            width: 100%;
+            padding: 14px 16px;
+            font-size: 1.25rem;
+            letter-spacing: 8px;
+            text-align: center;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            margin-bottom: 16px;
+            transition: border-color 0.2s;
+        }
+
+        .otp-input:focus {
+            outline: none;
+            border-color: #3b82f6;
+        }
+
+        .otp-timer {
+            text-align: center;
+            color: #64748b;
+            font-size: 0.875rem;
+            margin-bottom: 16px;
+        }
+
+        .resend-otp-btn {
+            background: none;
+            border: none;
+            color: #3b82f6;
+            cursor: pointer;
+            font-size: 0.875rem;
+            padding: 8px 16px;
+            border-radius: 8px;
+            transition: background 0.2s;
+        }
+
+        .resend-otp-btn:hover:not(:disabled) {
+            background: #eff6ff;
+        }
+
+        .resend-otp-btn:disabled {
+            color: #cbd5e1;
+            cursor: not-allowed;
+        }
+
+        .otp-modal-buttons {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+        }
+
+        .otp-modal-buttons button {
+            flex: 1;
+            padding: 12px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-verify {
+            background: #3b82f6;
+            color: white;
+            border: none;
+        }
+
+        .btn-verify:hover {
+            background: #2563eb;
+        }
+
+        .btn-cancel {
+            background: #f1f5f9;
+            color: #64748b;
+            border: none;
+        }
+
+        .btn-cancel:hover {
+            background: #e2e8f0;
+        }
+
+        /* Password Modal */
+        .password-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .password-modal.active {
+            display: flex;
+        }
+
+        .password-modal-content {
+            background: white;
+            padding: 32px;
+            border-radius: 16px;
+            width: 100%;
+            max-width: 400px;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+        }
+
+        .password-modal-header {
+            text-align: center;
+            margin-bottom: 24px;
+        }
+
+        .password-modal-header h3 {
+            margin: 0 0 8px 0;
+            color: #1e293b;
+            font-size: 1.5rem;
+        }
+
+        .password-modal-header p {
+            margin: 0;
+            color: #64748b;
+            font-size: 0.9375rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .content-grid { grid-template-columns: 1fr; }
+        }
+
+        @media (max-width: 768px) {
+            .header-content { padding: 0 20px; }
+            .main-content { padding: 0 20px; margin: 24px auto; }
+            .profile-header { padding: 28px; }
+            .profile-info { flex-direction: column; text-align: center; gap: 28px; }
+            .stats-grid { grid-template-columns: 1fr; gap: 12px; }
+            .content-card { padding: 24px; }
+            .user-details h1 { font-size: 1.75rem; }
+        }
+
+        @media (max-width: 480px) {
+            .stats-grid { grid-template-columns: 1fr; }
+            .avatar { width: 100px; height: 100px; font-size: 2.5rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="header">
+            <div class="header-content">
+                <div class="logo">
+                    <i class="fas fa-graduation-cap"></i>
+                    School Management System
+                </div>
+                <a href="dashboard.html" class="back-btn">
+                    <i class="fas fa-arrow-left"></i> Back to Dashboard
+                </a>
+            </div>
+        </div>
+
+        <div class="main-content">
+            <div class="profile-header">
+                <div class="profile-info">
+                    <div class="avatar-section">
+                        <div class="avatar" id="avatarDisplay">
+                            <i class="fas fa-user-shield"></i>
+                        </div>
+                        <input type="file" id="avatarInput" accept="image/*" style="display: none;">
+                        <button class="upload-btn" onclick="document.getElementById('avatarInput').click()">
+                            <i class="fas fa-camera"></i> Change Photo
+                        </button>
+                    </div>
+                    <div class="user-details">
+                        <h1 id="displayName"></h1>
+                        <div class="contact-info" style="margin-bottom: 16px; color: #64748b; font-size: 0.9375rem;">
+                            <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 4px;">
+                                <i class="fas fa-envelope" style="color: #94a3b8;"></i>
+                                <span id="displayEmail"></span>
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 8px;">
+                                <i class="fas fa-phone" style="color: #94a3b8;"></i>
+                                <span id="displayPhone"></span>
+                            </div>
+                        </div>
+                        <span class="role-badge">
+                            <i class="fas fa-shield-alt"></i> ADMIN
+                        </span>
+                        <div class="stats-grid">
+                            <div class="stat-card">
+                                <div class="stat-value" id="totalStudents">-</div>
+                                <div class="stat-label">Total Students</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-value" id="totalTeachers">-</div>
+                                <div class="stat-label">Total Teachers</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="content-grid">
+                <div class="content-card">
+                    <h3 class="card-title">
+                        <i class="fas fa-user-edit"></i> Personal Information
+                    </h3>
+                    <div id="personalAlert" class="alert"></div>
+                    <form id="personalForm">
+                        <div class="form-group">
+                            <label>Full Name</label>
+                            <input type="text" class="form-control" id="fullName" value="" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Email Address</label>
+                            <input type="email" class="form-control" id="email" value="" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Phone Number</label>
+                            <input type="tel" class="form-control" id="phone" value="" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save"></i> Save Changes
+                        </button>
+                    </form>
+                </div>
+
+                <div class="content-card">
+                    <h3 class="card-title">
+                        <i class="fas fa-lock"></i> Password Settings
+                    </h3>
+                    <div id="passwordAlert" class="alert"></div>
+                    <form id="passwordForm">
+                        <div class="form-group">
+                            <label>Current Password</label>
+                            <div class="password-input-group">
+                                <input type="password" class="form-control with-toggle" id="currentPassword" placeholder="Enter current password">
+                                <button type="button" class="password-toggle" onclick="togglePassword('currentPassword', this)">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>New Password</label>
+                            <div class="password-input-group">
+                                <input type="password" class="form-control with-toggle" id="newPassword" placeholder="Enter new password">
+                                <button type="button" class="password-toggle" onclick="togglePassword('newPassword', this)">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                            </div>
+                            <div class="password-strength">
+                                <div class="password-strength-bar" id="passwordStrength"></div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Confirm New Password</label>
+                            <div class="password-input-group">
+                                <input type="password" class="form-control with-toggle" id="confirmPassword" placeholder="Confirm new password">
+                                <button type="button" class="password-toggle" onclick="togglePassword('confirmPassword', this)">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-key"></i> Change Password
+                        </button>
+                    </form>
+                </div>
+
+                <div class="content-card">
+                    <h3 class="card-title">
+                        <i class="fas fa-shield-alt"></i> Multi-Factor Authentication (MFA)
+                    </h3>
+                    <div id="mfaAlert" class="alert"></div>
+                    <div class="mfa-section">
+                        <div class="mfa-info">
+                            <h4>Two-Factor Authentication</h4>
+                            <p>Add extra security using OTP during login</p>
+                        </div>
+                        <div class="mfa-toggle-wrapper">
+                            <span class="mfa-status" id="mfaStatus">Disabled</span>
+                            <label class="toggle-switch">
+                                <input type="checkbox" id="mfaToggle">
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="content-card">
+                    <h3 class="card-title">
+                        <i class="fas fa-history"></i> Recent Activity
+                    </h3>
+                    <div class="activity-list" id="activityList">
+                        <div class="activity-item">
+                            <div class="activity-icon login">
+                                <i class="fas fa-sign-in-alt"></i>
+                            </div>
+                            <div>
+                                <div>Logged in to system</div>
+                                <small style="color: var(--text-secondary);">2 hours ago</small>
+                            </div>
+                        </div>
+                        <div class="activity-item">
+                            <div class="activity-icon update">
+                                <i class="fas fa-user-edit"></i>
+                            </div>
+                            <div>
+                                <div>Updated profile information</div>
+                                <small style="color: var(--text-secondary);">1 day ago</small>
+                            </div>
+                        </div>
+                        <div class="activity-item">
+                            <div class="activity-icon security">
+                                <i class="fas fa-shield-alt"></i>
+                            </div>
+                            <div>
+                                <div>Security settings modified</div>
+                                <small style="color: var(--text-secondary);">3 days ago</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Password Verification Modal -->
+    <div class="password-modal" id="passwordModal">
+        <div class="password-modal-content">
+            <div class="password-modal-header">
+                <h3>Verify Password</h3>
+                <p>Enter your password to continue</p>
+            </div>
+            <div class="form-group">
+                <label>Password</label>
+                <div class="password-input-group">
+                    <input type="password" class="form-control with-toggle" id="verifyPassword" placeholder="Enter your password">
+                    <button type="button" class="password-toggle" onclick="togglePassword('verifyPassword', this)">
+                        <i class="fas fa-eye"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="otp-modal-buttons">
+                <button class="btn-cancel" onclick="closePasswordModal()">Cancel</button>
+                <button class="btn-verify" onclick="submitPasswordVerification()">Verify</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- OTP Verification Modal -->
+    <div class="otp-modal" id="otpModal">
+        <div class="otp-modal-content">
+            <div class="otp-modal-header">
+                <h3>Verify OTP</h3>
+                <p>Enter the 6-digit code sent to your email</p>
+            </div>
+            <input type="text" class="otp-input" id="otpInput" maxlength="6" placeholder="000000">
+            <div class="otp-timer">
+                <span id="otpTimer">OTP expires in 5:00</span>
+            </div>
+            <button class="resend-otp-btn" id="resendOtpBtn" onclick="resendOTP()">
+                <i class="fas fa-redo"></i> Resend OTP
+            </button>
+            <div class="otp-modal-buttons">
+                <button class="btn-cancel" onclick="closeOtpModal()">Cancel</button>
+                <button class="btn-verify" onclick="verifyOTP()">Verify</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Initialize admin profile data
+        let adminData = {
+            fullName: '',
+            email: '',
+            phone: '',
+            department: '',
+            notifications: {
+                email: true,
+                security: true,
+                updates: false,
+                reports: true
+            },
+            activities: [
+                { type: 'login', text: 'Logged in to system', time: ' 5 sec ago' },
+                { type: 'update', text: 'Updated profile information', time: '1 day ago' },
+                { type: 'security', text: 'Security settings modified', time: '3 days ago' }
+            ]
+        };
+
+        // OTP Management
+
+        function getAuthHeaders() {
+            const headers = {};
+            const token = localStorage.getItem('token');
+            const sessionId = localStorage.getItem('sessionId');
+            if (token) headers['Authorization'] = `Bearer ${token}`;
+            if (sessionId) headers['X-Session-Id'] = sessionId;
+            return headers;
+        }
+
+        async function readResponseData(response) {
+            const rawText = await response.text().catch(() => '');
+            if (!rawText) return {};
+            try {
+                return JSON.parse(rawText);
+            } catch (e) {
+                return { raw: rawText };
+            }
+        }
+
+        // Load admin profile data from server
+        async function loadAdminData() {
+            try {
+                const response = await fetch('/api/me', {
+                    headers: {
+                        ...getAuthHeaders()
+                    }
+                });
+                const data = await readResponseData(response);
+                if (!response.ok || !data.user) {
+                    if (response.status === 401 || response.status === 403) {
+                        showAlert('personalAlert', 'Session expired. Redirecting to login...', 'error');
+                        setTimeout(() => {
+                            window.location.href = 'index.html';
+                        }, 2000);
+                    }
+                    return;
+                }
+
+                adminData.fullName = data.user.full_name || adminData.fullName;
+                adminData.email = data.user.email || adminData.email;
+                adminData.phone = data.user.phone || adminData.phone;
+                adminData.department = data.user.department || adminData.department;
+
+                // Load avatar from server data
+                loadSavedAvatar(data.user.avatar);
+
+                updateFormFields();
+            } catch (err) {
+                console.error('Failed to load admin profile:', err);
+            }
+        }
+
+        // Update form fields with loaded data
+        function updateFormFields() {
+            document.getElementById('fullName').value = adminData.fullName;
+            document.getElementById('email').value = adminData.email;
+            document.getElementById('phone').value = adminData.phone;
+            document.getElementById('displayName').textContent = adminData.fullName;
+            document.getElementById('displayEmail').textContent = adminData.email;
+            document.getElementById('displayPhone').textContent = adminData.phone;
+        }
+
+        // Save admin data locally (activities only)
+        function saveAdminData() {
+            localStorage.setItem('adminProfileActivities', JSON.stringify({
+                activities: adminData.activities
+            }));
+        }
+
+        // Show alert message
+        function showAlert(elementId, message, type) {
+            const alert = document.getElementById(elementId);
+            alert.textContent = message;
+            alert.className = `alert alert-${type}`;
+            alert.style.display = 'block';
+            
+            setTimeout(() => {
+                alert.style.display = 'none';
+            }, 5000);
+        }
+
+        // Add activity to log
+        function addActivity(type, text) {
+            const activity = { type, text, time: 'Just now' };
+            adminData.activities.unshift(activity);
+            if (adminData.activities.length > 10) {
+                adminData.activities.pop();
+            }
+            updateActivityList();
+            saveAdminData();
+        }
+
+        // Update activity list display
+        function updateActivityList() {
+            const activityList = document.getElementById('activityList');
+            activityList.innerHTML = adminData.activities.map(activity => `
+                <div class="activity-item">
+                    <div class="activity-icon ${activity.type}">
+                        <i class="fas fa-${getActivityIcon(activity.type)}"></i>
+                    </div>
+                    <div>
+                        <div>${activity.text}</div>
+                        <small style="color: var(--text-secondary);">${activity.time}</small>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Get activity icon
+        function getActivityIcon(type) {
+            const icons = {
+                login: 'sign-in-alt',
+                update: 'user-edit',
+                security: 'shield-alt',
+                password: 'key',
+                notification: 'bell'
+            };
+            return icons[type] || 'circle';
+        }
+
+        // Handle avatar upload - save to database
+        document.getElementById('avatarInput').addEventListener('change', async function(e) {
+            const file = e.target.files[0];
+            if (file && file.type.startsWith('image/')) {
+                const reader = new FileReader();
+                reader.onload = async function(e) {
+                    const imageData = e.target.result;
+
+                    // Update display immediately for better UX
+                    const avatarDisplay = document.getElementById('avatarDisplay');
+                    avatarDisplay.innerHTML = `<img src="${imageData}" alt="Profile">`;
+
+                    // Save to localStorage as backup
+                    localStorage.setItem('adminAvatar', imageData);
+
+                    // Upload to server/database
+                    try {
+                        const response = await fetch('/api/admin/avatar', {
+                            method: 'PUT',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                ...getAuthHeaders()
+                            },
+                            body: JSON.stringify({ avatar: imageData })
+                        });
+
+                        const data = await readResponseData(response);
+                        if (!response.ok) {
+                            throw new Error(data.message || 'Failed to save avatar');
+                        }
+
+                        addActivity('update', 'Profile photo updated');
+                        showAlert('personalAlert', 'Profile photo saved to database!', 'success');
+                    } catch (err) {
+                        console.error('Failed to save avatar to database:', err);
+                        showAlert('personalAlert', 'Photo displayed locally but failed to save to server. Will retry on next load.', 'error');
+                    }
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        // Load saved avatar - prefers server data, falls back to localStorage
+        function loadSavedAvatar(serverAvatar) {
+            const avatarDisplay = document.getElementById('avatarDisplay');
+
+            // Use server avatar if available
+            if (serverAvatar) {
+                avatarDisplay.innerHTML = `<img src="${serverAvatar}" alt="Profile">`;
+                // Sync to localStorage as backup
+                localStorage.setItem('adminAvatar', serverAvatar);
+                return;
+            }
+
+            // Fallback to localStorage
+            const savedAvatar = localStorage.getItem('adminAvatar');
+            if (savedAvatar) {
+                avatarDisplay.innerHTML = `<img src="${savedAvatar}" alt="Profile">`;
+            }
+        }
+
+        // Handle personal information form
+        document.getElementById('personalForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const fullName = document.getElementById('fullName').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const phone = document.getElementById('phone').value.trim();
+
+            // Validation
+            if (!fullName || !email || !phone) {
+                showAlert('personalAlert', 'Please fill in all fields', 'error');
+                return;
+            }
+
+            if (!validateEmail(email)) {
+                showAlert('personalAlert', 'Please enter a valid email address', 'error');
+                return;
+            }
+
+            if (!validatePhone(phone)) {
+                showAlert('personalAlert', 'Please enter a valid phone number', 'error');
+                return;
+            }
+
+            // Update data
+            adminData.fullName = fullName;
+            adminData.email = email;
+            adminData.phone = phone;
+
+            // Update display
+            document.getElementById('displayName').textContent = fullName;
+
+            (async () => {
+                try {
+                    const response = await fetch('/api/admin/profile', {
+                        method: 'PUT',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            ...getAuthHeaders()
+                        },
+                        body: JSON.stringify({
+                            fullName,
+                            email,
+                            phone,
+                            department: 'Administrator' // Default value since field was removed
+                        })
+                    });
+
+                    const data = await readResponseData(response);
+                    if (!response.ok) {
+                        throw new Error(data.message || 'Failed to update profile');
+                    }
+
+                    addActivity('update', 'Personal information updated');
+                    showAlert('personalAlert', 'Personal information saved successfully!', 'success');
+                } catch (err) {
+                    showAlert('personalAlert', err.message || 'Failed to update profile', 'error');
+                }
+            })();
+        });
+
+        // Handle password form
+        document.getElementById('passwordForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const currentPassword = document.getElementById('currentPassword').value;
+            const newPassword = document.getElementById('newPassword').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            
+            // Validation
+            if (!currentPassword || !newPassword || !confirmPassword) {
+                showAlert('passwordAlert', 'Please fill in all password fields', 'error');
+                return;
+            }
+            
+            if (newPassword.length < 8) {
+                showAlert('passwordAlert', 'New password must be at least 8 characters long', 'error');
+                return;
+            }
+            
+            if (newPassword !== confirmPassword) {
+                showAlert('passwordAlert', 'New passwords do not match', 'error');
+                return;
+            }
+            
+            if (currentPassword === newPassword) {
+                showAlert('passwordAlert', 'New password must be different from current password', 'error');
+                return;
+            }
+            
+            (async () => {
+                try {
+                    const response = await fetch('/api/admin/change-password', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            ...getAuthHeaders()
+                        },
+                        body: JSON.stringify({
+                            currentPassword,
+                            newPassword
+                        })
+                    });
+
+                    const data = await readResponseData(response);
+                    if (!response.ok) {
+                        throw new Error(data.message || 'Failed to update password');
+                    }
+
+                    addActivity('password', 'Password changed successfully');
+                    showAlert('passwordAlert', 'Password changed successfully! Redirecting to login...', 'success');
+
+                    // Clear password fields
+                    document.getElementById('currentPassword').value = '';
+                    document.getElementById('newPassword').value = '';
+                    document.getElementById('confirmPassword').value = '';
+                    document.getElementById('passwordStrength').className = 'password-strength-bar';
+
+                    // Redirect to login after 2 seconds
+                    setTimeout(() => {
+                        window.location.href = 'index.html';
+                    }, 2000);
+                } catch (err) {
+                    showAlert('passwordAlert', err.message || 'Failed to update password', 'error');
+                }
+            })();
+        });
+
+        // Password strength checker
+        document.getElementById('newPassword').addEventListener('input', function(e) {
+            const password = e.target.value;
+            const strengthBar = document.getElementById('passwordStrength');
+            
+            if (password.length === 0) {
+                strengthBar.className = 'password-strength-bar';
+                return;
+            }
+            
+            let strength = 0;
+            if (password.length >= 8) strength++;
+            if (password.match(/[a-z]/) && password.match(/[A-Z]/)) strength++;
+            if (password.match(/[0-9]/)) strength++;
+            if (password.match(/[^a-zA-Z0-9]/)) strength++;
+            
+            if (strength <= 1) {
+                strengthBar.className = 'password-strength-bar strength-weak';
+            } else if (strength === 2) {
+                strengthBar.className = 'password-strength-bar strength-medium';
+            } else {
+                strengthBar.className = 'password-strength-bar strength-strong';
+            }
+        });
+
+        // Email validation
+        function validateEmail(email) {
+            const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return re.test(email);
+        }
+
+        // Phone validation
+        function validatePhone(phone) {
+            const re = /^[\d\s\-\+\(\)]+$/;
+            return re.test(phone) && phone.length >= 10;
+        }
+
+        // Password toggle functionality
+        function togglePassword(fieldId, toggleButton) {
+            const passwordField = document.getElementById(fieldId);
+            const icon = toggleButton.querySelector('i');
+            
+            if (passwordField.type === 'password') {
+                passwordField.type = 'text';
+                icon.classList.remove('fa-eye');
+                icon.classList.add('fa-eye-slash');
+            } else {
+                passwordField.type = 'password';
+                icon.classList.remove('fa-eye-slash');
+                icon.classList.add('fa-eye');
+            }
+        }
+
+        // MFA Toggle functionality
+        let mfaEnabled = false;
+        let pendingMFAAction = null;
+        let otpTimerInterval = null;
+        let resendTimerInterval = null;
+
+        // Load MFA status on page load
+        async function loadMFAStatus() {
+            try {
+                const response = await fetch('/api/admin/info', {
+                    headers: getAuthHeaders()
+                });
+                const data = await response.json();
+                
+                if (data.success) {
+                    mfaEnabled = data.admin.two_factor_enabled;
+                    updateMFAUI();
+                }
+            } catch (error) {
+                console.error('Error loading MFA status:', error);
+            }
+        }
+
+        // Update MFA UI based on status
+        function updateMFAUI() {
+            const toggle = document.getElementById('mfaToggle');
+            const status = document.getElementById('mfaStatus');
+            
+            toggle.checked = mfaEnabled;
+            
+            if (mfaEnabled) {
+                status.textContent = 'Enabled';
+                status.classList.remove('disabled');
+                status.classList.add('enabled');
+            } else {
+                status.textContent = 'Disabled';
+                status.classList.remove('enabled');
+                status.classList.add('disabled');
+            }
+        }
+
+        // Handle MFA toggle change
+        document.getElementById('mfaToggle').addEventListener('change', function(e) {
+            const newEnableState = e.target.checked;
+            
+            if (newEnableState !== mfaEnabled) {
+                pendingMFAAction = newEnableState;
+                openPasswordModal();
+            } else {
+                e.target.checked = mfaEnabled;
+            }
+        });
+
+        // Open password verification modal
+        function openPasswordModal() {
+            document.getElementById('passwordModal').classList.add('active');
+            document.getElementById('verifyPassword').value = '';
+            document.getElementById('verifyPassword').focus();
+        }
+
+        // Close password verification modal
+        function closePasswordModal() {
+            document.getElementById('passwordModal').classList.remove('active');
+            document.getElementById('mfaToggle').checked = mfaEnabled;
+            pendingMFAAction = null;
+        }
+
+        // Submit password verification
+        async function submitPasswordVerification() {
+            const password = document.getElementById('verifyPassword').value;
+            
+            if (!password) {
+                showAlert('mfaAlert', 'Please enter your password', 'danger');
+                return;
+            }
+            
+            try {
+                const response = await fetch('/api/admin/mfa-toggle', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        ...getAuthHeaders()
+                    },
+                    body: JSON.stringify({
+                        enable: pendingMFAAction,
+                        password: password
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    closePasswordModal();
+                    
+                    if (data.step === 'VERIFY_OTP') {
+                        // Need to verify OTP to enable MFA
+                        openOtpModal();
+                    } else {
+                        // MFA disabled successfully
+                        mfaEnabled = false;
+                        updateMFAUI();
+                        showAlert('mfaAlert', 'MFA disabled successfully', 'success');
+                        addActivity('security', 'MFA Disabled');
+                    }
+                } else {
+                    showAlert('mfaAlert', data.message, 'danger');
+                }
+            } catch (error) {
+                console.error('Error toggling MFA:', error);
+                showAlert('mfaAlert', 'Failed to toggle MFA', 'danger');
+            }
+        }
+
+        // Open OTP verification modal
+        function openOtpModal() {
+            document.getElementById('otpModal').classList.add('active');
+            document.getElementById('otpInput').value = '';
+            document.getElementById('otpInput').focus();
+            startOTPTimer();
+            startResendTimer();
+        }
+
+        // Close OTP verification modal
+        function closeOtpModal() {
+            document.getElementById('otpModal').classList.remove('active');
+            document.getElementById('mfaToggle').checked = mfaEnabled;
+            pendingMFAAction = null;
+            
+            if (otpTimerInterval) {
+                clearInterval(otpTimerInterval);
+                otpTimerInterval = null;
+            }
+            
+            if (resendTimerInterval) {
+                clearInterval(resendTimerInterval);
+                resendTimerInterval = null;
+            }
+        }
+
+        // Start OTP countdown timer
+        function startOTPTimer() {
+            let timeLeft = 300; // 5 minutes in seconds
+            
+            if (otpTimerInterval) {
+                clearInterval(otpTimerInterval);
+            }
+            
+            otpTimerInterval = setInterval(() => {
+                const minutes = Math.floor(timeLeft / 60);
+                const seconds = timeLeft % 60;
+                document.getElementById('otpTimer').textContent = 
+                    `OTP expires in ${minutes}:${seconds.toString().padStart(2, '0')}`;
+                
+                if (timeLeft <= 0) {
+                    clearInterval(otpTimerInterval);
+                    document.getElementById('otpTimer').textContent = 'OTP expired';
+                    document.getElementById('otpInput').disabled = true;
+                }
+                
+                timeLeft--;
+            }, 1000);
+        }
+
+        // Start resend button timer (30 seconds)
+        function startResendTimer() {
+            const resendBtn = document.getElementById('resendOtpBtn');
+            let timeLeft = 30;
+            
+            resendBtn.disabled = true;
+            resendBtn.innerHTML = `<i class="fas fa-clock"></i> Resend in ${timeLeft}s`;
+            
+            if (resendTimerInterval) {
+                clearInterval(resendTimerInterval);
+            }
+            
+            resendTimerInterval = setInterval(() => {
+                timeLeft--;
+                
+                if (timeLeft <= 0) {
+                    clearInterval(resendTimerInterval);
+                    resendBtn.disabled = false;
+                    resendBtn.innerHTML = '<i class="fas fa-redo"></i> Resend OTP';
+                } else {
+                    resendBtn.innerHTML = `<i class="fas fa-clock"></i> Resend in ${timeLeft}s`;
+                }
+            }, 1000);
+        }
+
+        // Resend OTP
+        async function resendOTP() {
+            try {
+                const response = await fetch('/api/admin/resend-mfa-otp', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        ...getAuthHeaders()
+                    }
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    showAlert('mfaAlert', 'New OTP sent to your email', 'success');
+                    startOTPTimer();
+                    startResendTimer();
+                    document.getElementById('otpInput').value = '';
+                    document.getElementById('otpInput').disabled = false;
+                    document.getElementById('otpInput').focus();
+                } else {
+                    showAlert('mfaAlert', data.message, 'danger');
+                }
+            } catch (error) {
+                console.error('Error resending OTP:', error);
+                showAlert('mfaAlert', 'Failed to resend OTP', 'danger');
+            }
+        }
+
+        // Verify OTP
+        async function verifyOTP() {
+            const otp = document.getElementById('otpInput').value;
+            
+            if (!otp || otp.length !== 6) {
+                showAlert('mfaAlert', 'Please enter a valid 6-digit OTP', 'danger');
+                return;
+            }
+            
+            try {
+                const response = await fetch('/api/admin/verify-mfa-enable', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        ...getAuthHeaders()
+                    },
+                    body: JSON.stringify({ otp: otp })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    closeOtpModal();
+                    mfaEnabled = true;
+                    updateMFAUI();
+                    showAlert('mfaAlert', 'MFA enabled successfully', 'success');
+                    addActivity('security', 'MFA Enabled');
+                } else {
+                    showAlert('mfaAlert', data.message, 'danger');
+                }
+            } catch (error) {
+                console.error('Error verifying OTP:', error);
+                showAlert('mfaAlert', 'Failed to verify OTP', 'danger');
+            }
+        }
+
+        // Handle OTP input - only allow numbers
+        document.getElementById('otpInput').addEventListener('input', function(e) {
+            this.value = this.value.replace(/[^0-9]/g, '');
+        });
+
+        // Handle Enter key in OTP input
+        document.getElementById('otpInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                verifyOTP();
+            }
+        });
+
+        // Handle Enter key in password input
+        document.getElementById('verifyPassword').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                submitPasswordVerification();
+            }
+        });
+
+        // Load statistics data from database
+        async function loadStatisticsData() {
+            try {
+                // Fetch total students
+                const studentsResponse = await fetch('/api/students/count');
+                const studentsData = await studentsResponse.json();
+                if (studentsResponse.ok && studentsData.status === 'success') {
+                    document.getElementById('totalStudents').textContent = studentsData.total;
+                } else {
+                    document.getElementById('totalStudents').textContent = 'Error';
+                }
+
+                // Fetch total teachers
+                const teachersResponse = await fetch('/api/teachers/count');
+                const teachersData = await teachersResponse.json();
+                if (teachersResponse.ok && teachersData.status === 'success') {
+                    document.getElementById('totalTeachers').textContent = teachersData.total;
+                } else {
+                    document.getElementById('totalTeachers').textContent = 'Error';
+                }
+            } catch (error) {
+                console.error('Failed to load statistics:', error);
+                document.getElementById('totalStudents').textContent = 'Error';
+                document.getElementById('totalTeachers').textContent = 'Error';
+            }
+        }
+
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            const savedActivities = localStorage.getItem('adminProfileActivities');
+            if (savedActivities) {
+                try {
+                    const parsed = JSON.parse(savedActivities);
+                    if (parsed.activities) {
+                        adminData.activities = parsed.activities;
+                    }
+                } catch (e) {
+                }
+            }
+            // loadSavedAvatar is now called inside loadAdminData with server data
+            loadAdminData();
+            updateActivityList();
+            loadStatisticsData(); // Load dynamic statistics
+            loadMFAStatus(); // Load MFA status
+        });
+    </script>
+</body>
+</html>

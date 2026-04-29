@@ -1,0 +1,829 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fee Payment - Student Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #3b82f6;
+            --secondary-color: #2563eb;
+            --accent-color: #60a5fa;
+            --success-color: #22c55e;
+            --warning-color: #f59e0b;
+            --danger-color: #ef4444;
+            --dark-bg: #f1f5f9;
+            --card-bg: #ffffff;
+            --text-primary: #0f172a;
+            --text-secondary: #64748b;
+            --border-color: #e2e8f0;
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--dark-bg);
+            min-height: 100vh;
+            color: var(--text-primary);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #1e3a5f 0%, #2d4a6f 100%);
+            color: white;
+            padding: 30px 40px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .header h1 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .header h1 i {
+            color: var(--accent-color);
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: var(--shadow-md);
+            border: 1px solid var(--border-color);
+            margin-bottom: 24px;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 16px;
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        .card-header h2 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .card-header h2 i {
+            color: var(--primary-color);
+        }
+
+        .table-container {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 14px 16px;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        th {
+            background: #f8fafc;
+            font-weight: 600;
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        td {
+            font-size: 0.9rem;
+        }
+
+        tr:hover {
+            background: #f8fafc;
+        }
+
+        .status-badge {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .status-pending {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .status-paid {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .status-verified {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .status-rejected {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .amount {
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--secondary-color);
+            transform: translateY(-1px);
+        }
+
+        .btn-success {
+            background: var(--success-color);
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #16a34a;
+        }
+
+        .btn-danger {
+            background: var(--danger-color);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #dc2626;
+        }
+
+        .alert {
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin-bottom: 16px;
+            display: none;
+        }
+
+        .alert-success {
+            background: #dcfce7;
+            color: #166534;
+            border: 1px solid #86efac;
+        }
+
+        .alert-error {
+            background: #fee2e2;
+            color: #991b1b;
+            border: 1px solid #fca5a5;
+        }
+
+        .alert.show {
+            display: block;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--text-secondary);
+        }
+
+        .empty-state i {
+            font-size: 3rem;
+            margin-bottom: 16px;
+            color: var(--border-color);
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.show {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            max-width: 500px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 16px;
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        .modal-header h3 {
+            font-size: 1.25rem;
+            font-weight: 600;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--text-secondary);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--text-primary);
+            font-size: 0.9rem;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 0.95rem;
+            font-family: inherit;
+            transition: all 0.2s;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        /* Payment Details Section */
+        .payment-details {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        .payment-details h3 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 16px;
+            color: var(--text-primary);
+        }
+
+        .qr-section {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .qr-section img {
+            max-width: 200px;
+            border-radius: 8px;
+            border: 2px solid var(--border-color);
+        }
+
+        .payment-info {
+            margin-top: 16px;
+        }
+
+        .payment-info p {
+            margin: 8px 0;
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+        }
+
+        .payment-info strong {
+            color: var(--text-primary);
+        }
+
+        .waiting-message {
+            text-align: center;
+            padding: 40px 20px;
+            background: #fef3c7;
+            border-radius: 12px;
+            margin: 20px 0;
+        }
+
+        .waiting-message i {
+            font-size: 3rem;
+            color: #f59e0b;
+            margin-bottom: 16px;
+        }
+
+        .waiting-message h3 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #92400e;
+        }
+
+        .waiting-message p {
+            color: #92400e;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>
+                <i class="fas fa-money-bill-wave"></i>
+                Fee Payment
+            </h1>
+        </div>
+
+        <div id="alert" class="alert"></div>
+
+        <!-- Pending Fees -->
+        <div class="card">
+            <div class="card-header">
+                <h2>
+                    <i class="fas fa-list"></i>
+                    Pending Fees
+                </h2>
+                <button class="btn btn-primary" onclick="loadFees()" style="padding: 8px 16px; font-size: 0.85rem;">
+                    <i class="fas fa-sync-alt"></i>
+                    Refresh
+                </button>
+            </div>
+
+            <div class="table-container">
+                <table id="feesTable">
+                    <thead>
+                        <tr>
+                            <th>Description</th>
+                            <th>Amount</th>
+                            <th>Due Date</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="feesBody">
+                        <tr>
+                            <td colspan="5" class="empty-state">
+                                <i class="fas fa-inbox"></i>
+                                <p>No pending fees</p>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Payment History -->
+        <div class="card">
+            <div class="card-header">
+                <h2>
+                    <i class="fas fa-history"></i>
+                    Payment History
+                </h2>
+                <button class="btn btn-primary" onclick="loadPaymentHistory()" style="padding: 8px 16px; font-size: 0.85rem;">
+                    <i class="fas fa-sync-alt"></i>
+                    Refresh
+                </button>
+            </div>
+
+            <div class="table-container">
+                <table id="paymentsTable">
+                    <thead>
+                        <tr>
+                            <th>Description</th>
+                            <th>Amount</th>
+                            <th>Method</th>
+                            <th>Status</th>
+                            <th>Paid At</th>
+                        </tr>
+                    </thead>
+                    <tbody id="paymentsBody">
+                        <tr>
+                            <td colspan="5" class="empty-state">
+                                <i class="fas fa-inbox"></i>
+                                <p>No payment history</p>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- OTP Modal -->
+    <div id="otpModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Verify OTP</h3>
+                <button class="close-btn" onclick="closeModal('otpModal')">&times;</button>
+            </div>
+            <div id="otpAlert" class="alert"></div>
+            <form id="otpForm">
+                <input type="hidden" id="otpFeeId">
+                <div class="form-group">
+                    <label for="otp">Enter OTP sent to your registered mobile</label>
+                    <input type="text" id="otp" name="otp" required placeholder="Enter 6-digit OTP" maxlength="6">
+                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%;">
+                    <i class="fas fa-check"></i>
+                    Verify OTP
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Payment Modal -->
+    <div id="paymentModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Complete Payment</h3>
+                <button class="close-btn" onclick="closeModal('paymentModal')">&times;</button>
+            </div>
+            <div id="paymentAlert" class="alert"></div>
+            
+            <div id="paymentDetailsSection">
+                <div class="payment-details">
+                    <h3><i class="fas fa-qrcode"></i> Scan & Pay</h3>
+                    <div class="qr-section">
+                        <img id="qrCode" src="" alt="QR Code">
+                    </div>
+                    <div class="payment-info">
+                        <p><strong>UPI ID:</strong> <span id="upiId"></span></p>
+                        <hr style="margin: 12px 0; border: none; border-top: 1px solid var(--border-color);">
+                        <p><strong>Bank:</strong> <span id="bankName"></span></p>
+                        <p><strong>Account:</strong> <span id="accountNumber"></span></p>
+                        <p><strong>IFSC:</strong> <span id="ifscCode"></span></p>
+                    </div>
+                </div>
+
+                <form id="paymentForm">
+                    <input type="hidden" id="paymentFeeId">
+                    <div class="form-group">
+                        <label for="payment_method">Payment Method *</label>
+                        <select id="payment_method" name="payment_method" required>
+                            <option value="">Select payment method</option>
+                            <option value="UPI">UPI</option>
+                            <option value="BANK">Bank Transfer</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="transaction_id">Transaction ID (optional)</label>
+                        <input type="text" id="transaction_id" name="transaction_id" placeholder="Enter transaction ID for reference">
+                    </div>
+                    <button type="submit" class="btn btn-success" style="width: 100%;">
+                        <i class="fas fa-check-circle"></i>
+                        I Have Paid
+                    </button>
+                </form>
+            </div>
+
+            <div id="waitingSection" style="display: none;">
+                <div class="waiting-message">
+                    <i class="fas fa-clock"></i>
+                    <h3>Waiting for Admin Approval</h3>
+                    <p>Your payment has been submitted. Please wait for admin verification.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = '/api/fees';
+
+        // Load fees on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            loadFees();
+            loadPaymentHistory();
+        });
+
+        // Show alert message
+        function showAlert(message, type, alertId = 'alert') {
+            const alert = document.getElementById(alertId);
+            alert.className = `alert alert-${type} show`;
+            alert.textContent = message;
+            setTimeout(() => {
+                alert.classList.remove('show');
+            }, 5000);
+        }
+
+        // Get auth token
+        function getAuthToken() {
+            return localStorage.getItem('token');
+        }
+
+        // Load fees
+        async function loadFees() {
+            try {
+                const response = await fetch(`${API_BASE}/student`, {
+                    headers: {
+                        'Authorization': `Bearer ${getAuthToken()}`
+                    }
+                });
+
+                const data = await response.json();
+
+                if (data.status === 'success') {
+                    renderFees(data.fees);
+                } else {
+                    showAlert('Failed to load fees', 'error');
+                }
+            } catch (error) {
+                console.error('Error loading fees:', error);
+                showAlert('Error loading fees. Please try again.', 'error');
+            }
+        }
+
+        // Render fees table
+        function renderFees(fees) {
+            const tbody = document.getElementById('feesBody');
+            const pendingFees = fees.filter(fee => fee.status === 'PENDING');
+
+            if (pendingFees.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="5" class="empty-state">
+                            <i class="fas fa-inbox"></i>
+                            <p>No pending fees</p>
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+
+            tbody.innerHTML = pendingFees.map(fee => `
+                <tr>
+                    <td><strong>${fee.description || 'Fee'}</strong></td>
+                    <td class="amount">₹${fee.amount.toFixed(2)}</td>
+                    <td>${fee.due_date || '-'}</td>
+                    <td>
+                        <span class="status-badge status-${fee.status.toLowerCase()}">${fee.status}</span>
+                    </td>
+                    <td>
+                        <button class="btn btn-primary" onclick="initiatePayment(${fee.id})" style="padding: 8px 16px; font-size: 0.85rem;">
+                            <i class="fas fa-credit-card"></i>
+                            Pay Now
+                        </button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        // Initiate payment - Send OTP
+        async function initiatePayment(feeId) {
+            try {
+                const response = await fetch(`${API_BASE}/send-otp`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${getAuthToken()}`
+                    },
+                    body: JSON.stringify({ fee_id: feeId })
+                });
+
+                const data = await response.json();
+
+                if (data.status === 'success') {
+                    document.getElementById('otpFeeId').value = feeId;
+                    document.getElementById('otp').value = '';
+                    openModal('otpModal');
+                    if (data.otp) {
+                        showAlert(`OTP: ${data.otp} (Development mode)`, 'success', 'otpAlert');
+                    }
+                } else {
+                    showAlert(data.message || 'Failed to send OTP', 'error');
+                }
+            } catch (error) {
+                console.error('Error sending OTP:', error);
+                showAlert('Error sending OTP. Please try again.', 'error');
+            }
+        }
+
+        // Verify OTP
+        document.getElementById('otpForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const feeId = document.getElementById('otpFeeId').value;
+            const otp = document.getElementById('otp').value;
+
+            try {
+                const response = await fetch(`${API_BASE}/verify-otp`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${getAuthToken()}`
+                    },
+                    body: JSON.stringify({ fee_id: feeId, otp })
+                });
+
+                const data = await response.json();
+
+                if (data.status === 'success') {
+                    closeModal('otpModal');
+                    showPaymentModal(feeId);
+                } else {
+                    showAlert(data.message || 'Invalid OTP', 'error', 'otpAlert');
+                }
+            } catch (error) {
+                console.error('Error verifying OTP:', error);
+                showAlert('Error verifying OTP. Please try again.', 'error', 'otpAlert');
+            }
+        });
+
+        // Show payment modal with QR/Bank details
+        async function showPaymentModal(feeId) {
+            try {
+                const response = await fetch('/api/payment/details', {
+                    headers: {
+                        'Authorization': `Bearer ${getAuthToken()}`
+                    }
+                });
+
+                const data = await response.json();
+
+                if (data.status === 'success') {
+                    const details = data.payment_details;
+                    document.getElementById('qrCode').src = details.qr_code_path || '/uploads/qr.png';
+                    document.getElementById('upiId').textContent = details.upi_id || 'N/A';
+                    document.getElementById('bankName').textContent = details.bank_name || 'N/A';
+                    document.getElementById('accountNumber').textContent = details.account_number || 'N/A';
+                    document.getElementById('ifscCode').textContent = details.ifsc || 'N/A';
+                    
+                    document.getElementById('paymentFeeId').value = feeId;
+                    document.getElementById('payment_method').value = '';
+                    document.getElementById('transaction_id').value = '';
+                    document.getElementById('paymentDetailsSection').style.display = 'block';
+                    document.getElementById('waitingSection').style.display = 'none';
+                    
+                    openModal('paymentModal');
+                } else {
+                    showAlert('Failed to load payment details', 'error');
+                }
+            } catch (error) {
+                console.error('Error loading payment details:', error);
+                showAlert('Error loading payment details. Please try again.', 'error');
+            }
+        }
+
+        // Mark payment as done
+        document.getElementById('paymentForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const feeId = document.getElementById('paymentFeeId').value;
+            const paymentMethod = document.getElementById('payment_method').value;
+            const transactionId = document.getElementById('transaction_id').value;
+
+            try {
+                const response = await fetch(`${API_BASE}/mark-paid`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${getAuthToken()}`
+                    },
+                    body: JSON.stringify({
+                        fee_id: feeId,
+                        payment_method: paymentMethod,
+                        transaction_id: transactionId
+                    })
+                });
+
+                const data = await response.json();
+
+                if (data.status === 'success') {
+                    document.getElementById('paymentDetailsSection').style.display = 'none';
+                    document.getElementById('waitingSection').style.display = 'block';
+                    showAlert(data.message, 'success', 'paymentAlert');
+                    loadFees();
+                    loadPaymentHistory();
+                } else {
+                    showAlert(data.message || 'Failed to mark payment', 'error', 'paymentAlert');
+                }
+            } catch (error) {
+                console.error('Error marking payment:', error);
+                showAlert('Error marking payment. Please try again.', 'error', 'paymentAlert');
+            }
+        });
+
+        // Load payment history
+        async function loadPaymentHistory() {
+            try {
+                const response = await fetch(`${API_BASE}/payments/history`, {
+                    headers: {
+                        'Authorization': `Bearer ${getAuthToken()}`
+                    }
+                });
+
+                const data = await response.json();
+
+                if (data.status === 'success') {
+                    renderPayments(data.payments);
+                } else {
+                    showAlert('Failed to load payment history', 'error');
+                }
+            } catch (error) {
+                console.error('Error loading payment history:', error);
+            }
+        }
+
+        // Render payments table
+        function renderPayments(payments) {
+            const tbody = document.getElementById('paymentsBody');
+
+            if (payments.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="5" class="empty-state">
+                            <i class="fas fa-inbox"></i>
+                            <p>No payment history</p>
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+
+            tbody.innerHTML = payments.map(payment => `
+                <tr>
+                    <td><strong>${payment.description || 'Fee'}</strong></td>
+                    <td class="amount">₹${payment.amount.toFixed(2)}</td>
+                    <td>${payment.payment_method || '-'}</td>
+                    <td>
+                        <span class="status-badge status-${payment.status.toLowerCase()}">${payment.status}</span>
+                    </td>
+                    <td>${new Date(payment.paid_at).toLocaleString()}</td>
+                </tr>
+            `).join('');
+        }
+
+        // Modal functions
+        function openModal(modalId) {
+            document.getElementById(modalId).classList.add('show');
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.remove('show');
+        }
+
+        // Close modal on outside click
+        window.onclick = function(event) {
+            if (event.target.classList.contains('modal')) {
+                event.target.classList.remove('show');
+            }
+        }
+    </script>
+</body>
+</html>

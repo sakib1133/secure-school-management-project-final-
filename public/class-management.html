@@ -1,0 +1,1172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Class & Subject Management - School Management System</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #3b82f6;
+            --secondary: #1e40af;
+            --dark: #0f172a;
+            --card: #111827;
+            --text: #f1f5f9;
+            --text-secondary: #94a3b8;
+            --border: #334155;
+            --success: #22c55e;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, var(--dark), #1a1f3a);
+            color: var(--text);
+            min-height: 100vh;
+        }
+
+        .header {
+            background: var(--card);
+            border-bottom: 2px solid var(--border);
+            padding: 20px 0;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+        }
+
+        .header-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .back-btn {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 12px 24px;
+            text-decoration: none;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .back-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(59, 130, 246, 0.4);
+        }
+
+        .main-content {
+            max-width: 1400px;
+            margin: 40px auto;
+            padding: 0 30px;
+        }
+
+        .page-header {
+            background: var(--card);
+            border-radius: 16px;
+            padding: 30px;
+            margin-bottom: 30px;
+            border: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .page-title {
+            font-size: 2rem;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            background: var(--card);
+            padding: 10px;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+        }
+
+        .tab {
+            padding: 12px 24px;
+            background: transparent;
+            border: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            font-weight: 600;
+        }
+
+        .tab.active {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+        }
+
+        .tab:hover {
+            background: rgba(59, 130, 246, 0.1);
+            color: var(--primary);
+        }
+
+        .content-card {
+            background: var(--card);
+            border-radius: 16px;
+            padding: 30px;
+            border: 1px solid var(--border);
+            margin-bottom: 30px;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        .card-title {
+            font-size: 1.4rem;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(59, 130, 246, 0.4);
+        }
+
+        .classes-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 25px;
+        }
+
+        .class-card {
+            background: var(--dark);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 25px;
+            transition: all 0.3s ease;
+        }
+
+        .class-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            border-color: var(--primary);
+        }
+
+        .class-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .class-name {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: var(--primary);
+        }
+
+        .class-strength {
+            background: rgba(59, 130, 246, 0.2);
+            color: var(--primary);
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+        }
+
+        .class-info {
+            margin-bottom: 20px;
+        }
+
+        .info-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 8px;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .info-item i {
+            color: var(--primary);
+            width: 20px;
+        }
+
+        .subjects-list {
+            margin-bottom: 20px;
+        }
+
+        .subject-tag {
+            display: inline-block;
+            background: rgba(34, 197, 94, 0.2);
+            color: var(--success);
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            margin: 5px 5px 5px 0;
+        }
+
+        .class-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .action-btn {
+            flex: 1;
+            padding: 8px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+
+        .action-btn.edit {
+            background: rgba(59, 130, 246, 0.2);
+            color: var(--primary);
+        }
+
+        .action-btn.delete {
+            background: rgba(239, 68, 68, 0.2);
+            color: var(--danger);
+        }
+
+        .action-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .subjects-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .subjects-table th {
+            background: var(--dark);
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+            color: var(--primary);
+            border-bottom: 2px solid var(--border);
+        }
+
+        .subjects-table td {
+            padding: 15px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .subjects-table tr:hover {
+            background: rgba(59, 130, 246, 0.05);
+        }
+
+        .subject-code {
+            background: rgba(59, 130, 246, 0.2);
+            color: var(--primary);
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .credits-badge {
+            background: rgba(245, 158, 11, 0.2);
+            color: var(--warning);
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        @media (max-width: 768px) {
+            .page-header { flex-direction: column; gap: 20px; }
+            .tabs { flex-wrap: wrap; }
+            .classes-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+    <style>
+        /* Modal styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            max-width: 500px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .modal-title {
+            margin: 0;
+            font-size: 1.3rem;
+            color: var(--text);
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 0;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 6px;
+            transition: all 0.2s;
+        }
+
+        .close-btn:hover {
+            background: var(--danger);
+            color: white;
+        }
+
+        .modal-body {
+            padding: 20px;
+        }
+
+        .modal-footer {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+            padding: 20px;
+            border-top: 1px solid var(--border);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--text);
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px;
+            background: var(--dark);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            color: var(--text);
+            font-size: 1rem;
+            transition: all 0.2s;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        /* Card styles for classes/subjects */
+        .classes-grid, .subjects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .class-card, .subject-card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 20px;
+            transition: all 0.3s;
+        }
+
+        .class-card:hover, .subject-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .class-header, .subject-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .class-header h4, .subject-header h4 {
+            margin: 0;
+            color: var(--text);
+        }
+
+        .class-room, .subject-code {
+            background: var(--primary);
+            color: white;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+        }
+
+        .detail-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 8px;
+            color: var(--text-secondary);
+        }
+
+        .class-actions, .subject-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .action-btn {
+            padding: 8px 12px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.2s;
+        }
+
+        .action-btn.edit {
+            background: var(--warning);
+            color: white;
+        }
+
+        .action-btn.delete {
+            background: var(--danger);
+            color: white;
+        }
+
+        .action-btn:hover {
+            opacity: 0.8;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="header-content">
+            <div class="logo">
+                <i class="fas fa-graduation-cap"></i>
+                School Management System
+            </div>
+            <a href="dashboard.html" class="back-btn">
+                <i class="fas fa-arrow-left"></i> Back to Dashboard
+            </a>
+        </div>
+    </div>
+
+    <div class="main-content">
+        <div class="page-header">
+            <h1 class="page-title">
+                <i class="fas fa-school"></i>
+                Class & Subject Management
+            </h1>
+            <button class="btn btn-primary" onclick="openAddModal()">
+                <i class="fas fa-plus"></i> Add New
+            </button>
+        </div>
+
+        <div class="tabs">
+            <button class="tab active" onclick="showTab('classes')">
+                <i class="fas fa-door-open"></i> Classes
+            </button>
+            <button class="tab" onclick="showTab('subjects')">
+                <i class="fas fa-book"></i> Subjects
+            </button>
+        </div>
+
+        <div id="classes-content" class="tab-content">
+            <div class="content-card">
+                <div class="card-header">
+                    <h3 class="card-title">
+                        <i class="fas fa-door-open"></i>
+                        Classes Overview
+                    </h3>
+                </div>
+
+                <div class="classes-grid">
+                    <div class="class-card">
+                        <div class="class-header">
+                            <div class="class-name">Class 10A</div>
+                            <div class="class-strength">32 Students</div>
+                        </div>
+                        <div class="class-info">
+                            <div class="info-item">
+                                <i class="fas fa-chalkboard-teacher"></i>
+                                Class Teacher: Robert Smith
+                            </div>
+                            <div class="info-item">
+                                <i class="fas fa-map-marker-alt"></i>
+                                Room: 201, Building A
+                            </div>
+                            <div class="info-item">
+                                <i class="fas fa-clock"></i>
+                                Schedule: 8:00 AM - 2:30 PM
+                            </div>
+                        </div>
+                        <div class="subjects-list">
+                            <div class="subject-tag">Mathematics</div>
+                            <div class="subject-tag">Physics</div>
+                            <div class="subject-tag">Chemistry</div>
+                            <div class="subject-tag">English</div>
+                        </div>
+                        <div class="class-actions">
+                            <button class="action-btn edit">
+                                <i class="fas fa-edit"></i> Edit
+                            </button>
+                            <button class="action-btn delete">
+                                <i class="fas fa-trash"></i> Delete
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="class-card">
+                        <div class="class-header">
+                            <div class="class-name">Class 10B</div>
+                            <div class="class-strength">30 Students</div>
+                        </div>
+                        <div class="class-info">
+                            <div class="info-item">
+                                <i class="fas fa-chalkboard-teacher"></i>
+                                Class Teacher: Emily Johnson
+                            </div>
+                            <div class="info-item">
+                                <i class="fas fa-map-marker-alt"></i>
+                                Room: 202, Building A
+                            </div>
+                            <div class="info-item">
+                                <i class="fas fa-clock"></i>
+                                Schedule: 8:00 AM - 2:30 PM
+                            </div>
+                        </div>
+                        <div class="subjects-list">
+                            <div class="subject-tag">Mathematics</div>
+                            <div class="subject-tag">Biology</div>
+                            <div class="subject-tag">Chemistry</div>
+                            <div class="subject-tag">English</div>
+                        </div>
+                        <div class="class-actions">
+                            <button class="action-btn edit">
+                                <i class="fas fa-edit"></i> Edit
+                            </button>
+                            <button class="action-btn delete">
+                                <i class="fas fa-trash"></i> Delete
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="class-card">
+                        <div class="class-header">
+                            <div class="class-name">Class 9A</div>
+                            <div class="class-strength">35 Students</div>
+                        </div>
+                        <div class="class-info">
+                            <div class="info-item">
+                                <i class="fas fa-chalkboard-teacher"></i>
+                                Class Teacher: Michael Wilson
+                            </div>
+                            <div class="info-item">
+                                <i class="fas fa-map-marker-alt"></i>
+                                Room: 301, Building B
+                            </div>
+                            <div class="info-item">
+                                <i class="fas fa-clock"></i>
+                                Schedule: 8:00 AM - 2:30 PM
+                            </div>
+                        </div>
+                        <div class="subjects-list">
+                            <div class="subject-tag">Mathematics</div>
+                            <div class="subject-tag">Physics</div>
+                            <div class="subject-tag">History</div>
+                            <div class="subject-tag">Geography</div>
+                        </div>
+                        <div class="class-actions">
+                            <button class="action-btn edit">
+                                <i class="fas fa-edit"></i> Edit
+                            </button>
+                            <button class="action-btn delete">
+                                <i class="fas fa-trash"></i> Delete
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="class-card">
+                        <div class="class-header">
+                            <div class="class-name">Class 9B</div>
+                            <div class="class-strength">33 Students</div>
+                        </div>
+                        <div class="class-info">
+                            <div class="info-item">
+                                <i class="fas fa-chalkboard-teacher"></i>
+                                Class Teacher: Sarah Brown
+                            </div>
+                            <div class="info-item">
+                                <i class="fas fa-map-marker-alt"></i>
+                                Room: 302, Building B
+                            </div>
+                            <div class="info-item">
+                                <i class="fas fa-clock"></i>
+                                Schedule: 8:00 AM - 2:30 PM
+                            </div>
+                        </div>
+                        <div class="subjects-list">
+                            <div class="subject-tag">Mathematics</div>
+                            <div class="subject-tag">Biology</div>
+                            <div class="subject-tag">History</div>
+                            <div class="subject-tag">Geography</div>
+                        </div>
+                        <div class="class-actions">
+                            <button class="action-btn edit">
+                                <i class="fas fa-edit"></i> Edit
+                            </button>
+                            <button class="action-btn delete">
+                                <i class="fas fa-trash"></i> Delete
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="subjects-content" class="tab-content" style="display: none;">
+            <div class="content-card">
+                <div class="card-header">
+                    <h3 class="card-title">
+                        <i class="fas fa-book"></i>
+                        Subjects Catalog
+                    </h3>
+                </div>
+
+                <table class="subjects-table">
+                    <thead>
+                        <tr>
+                            <th>Subject Name</th>
+                            <th>Code</th>
+                            <th>Department</th>
+                            <th>Credits</th>
+                            <th>Teacher</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Mathematics</td>
+                            <td><span class="subject-code">MATH101</span></td>
+                            <td>Science</td>
+                            <td><span class="credits-badge">4 Credits</span></td>
+                            <td>Robert Smith</td>
+                            <td>
+                                <button class="action-btn edit">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Physics</td>
+                            <td><span class="subject-code">PHY101</span></td>
+                            <td>Science</td>
+                            <td><span class="credits-badge">4 Credits</span></td>
+                            <td>Emily Johnson</td>
+                            <td>
+                                <button class="action-btn edit">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Chemistry</td>
+                            <td><span class="subject-code">CHEM101</span></td>
+                            <td>Science</td>
+                            <td><span class="credits-badge">4 Credits</span></td>
+                            <td>Emily Johnson</td>
+                            <td>
+                                <button class="action-btn edit">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>English Literature</td>
+                            <td><span class="subject-code">ENG101</span></td>
+                            <td>Arts</td>
+                            <td><span class="credits-badge">3 Credits</span></td>
+                            <td>Michael Wilson</td>
+                            <td>
+                                <button class="action-btn edit">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>History</td>
+                            <td><span class="subject-code">HIST101</span></td>
+                            <td>Arts</td>
+                            <td><span class="credits-badge">3 Credits</span></td>
+                            <td>Sarah Brown</td>
+                            <td>
+                                <button class="action-btn edit">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Add Class/Subject Modal -->
+    <div id="addModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="addModalTitle">Add New</h3>
+                <button class="close-btn" onclick="closeModal()">&times;</button>
+            </div>
+            <form id="addForm">
+                <input type="hidden" id="editId">
+                <input type="hidden" id="addType">
+                <div id="classFields" style="display:none;">
+                    <div class="form-group">
+                        <label>Class Name</label>
+                        <input type="text" class="form-control" id="className" placeholder="e.g., Grade 10-A">
+                    </div>
+                    <div class="form-group">
+                        <label>Room Number</label>
+                        <input type="text" class="form-control" id="classRoom" placeholder="e.g., Room 101">
+                    </div>
+                    <div class="form-group">
+                        <label>Capacity</label>
+                        <input type="number" class="form-control" id="classCapacity" placeholder="Max students" min="1">
+                    </div>
+                </div>
+                <div id="subjectFields" style="display:none;">
+                    <div class="form-group">
+                        <label>Subject Name</label>
+                        <input type="text" class="form-control" id="subjectName" placeholder="e.g., Mathematics">
+                    </div>
+                    <div class="form-group">
+                        <label>Subject Code</label>
+                        <input type="text" class="form-control" id="subjectCode" placeholder="e.g., MATH101">
+                    </div>
+                    <div class="form-group">
+                        <label>Credits</label>
+                        <input type="number" class="form-control" id="subjectCredits" placeholder="Credits" min="1">
+                    </div>
+                </div>
+                <div style="display: flex; gap: 10px;">
+                    <button type="submit" class="btn btn-primary" id="addSubmitBtn">Add</button>
+                    <button type="button" class="btn btn-secondary" onclick="closeModal()">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Confirmation Modal -->
+    <div id="confirmModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="confirmTitle">Confirm</h3>
+                <button class="close-btn" onclick="closeConfirmModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p id="confirmMessage">Are you sure?</p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" id="confirmOkBtn">OK</button>
+                <button class="btn btn-secondary" id="confirmCancelBtn">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+    <script>
+        let allClasses = [];
+        let allSubjects = [];
+        let currentTab = 'classes';
+
+        function openAddModal() {
+            const type = currentTab === 'classes' ? 'class' : 'subject';
+            document.getElementById('addType').value = type;
+            document.getElementById('addModalTitle').textContent = type === 'class' ? 'Add New Class' : 'Add New Subject';
+            document.getElementById('addSubmitBtn').textContent = type === 'class' ? 'Add Class' : 'Add Subject';
+            document.getElementById('editId').value = '';
+            document.getElementById('addForm').reset();
+            
+            // Show appropriate fields
+            document.getElementById('classFields').style.display = type === 'class' ? 'block' : 'none';
+            document.getElementById('subjectFields').style.display = type === 'subject' ? 'block' : 'none';
+            
+            document.getElementById('addModal').style.display = 'flex';
+        }
+
+        function closeModal() {
+            document.getElementById('addModal').style.display = 'none';
+        }
+
+        function closeConfirmModal() {
+            document.getElementById('confirmModal').style.display = 'none';
+        }
+
+        function showConfirm(title, message, onConfirm, okText = 'OK', cancelText = 'Cancel') {
+            document.getElementById('confirmTitle').textContent = title;
+            document.getElementById('confirmMessage').textContent = message;
+            document.getElementById('confirmOkBtn').textContent = okText;
+            document.getElementById('confirmCancelBtn').textContent = cancelText;
+            
+            document.getElementById('confirmModal').style.display = 'flex';
+            
+            const okBtn = document.getElementById('confirmOkBtn');
+            const cancelBtn = document.getElementById('confirmCancelBtn');
+            
+            // Remove old listeners
+            const newOkBtn = okBtn.cloneNode(true);
+            const newCancelBtn = cancelBtn.cloneNode(true);
+            okBtn.parentNode.replaceChild(newOkBtn, okBtn);
+            cancelBtn.parentNode.replaceChild(newCancelBtn, cancelBtn);
+            
+            newOkBtn.addEventListener('click', () => {
+                closeConfirmModal();
+                onConfirm();
+            });
+            
+            newCancelBtn.addEventListener('click', closeConfirmModal);
+        }
+
+        function showTab(tabName) {
+            currentTab = tabName;
+            // Hide all tab contents
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.style.display = 'none';
+            });
+            
+            // Remove active class from all tabs
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Show selected tab content
+            document.getElementById(tabName + '-content').style.display = 'block';
+            
+            // Add active class to clicked tab
+            event.target.classList.add('active');
+        }
+
+        // Load classes and subjects
+        async function loadClasses() {
+            try {
+                const response = await authenticatedFetch('/classes');
+                const data = await response.json();
+                if (!response.ok) throw new Error(data.message || 'Failed to load classes');
+                allClasses = Array.isArray(data.data) ? data.data : [];
+                renderClasses();
+            } catch (err) {
+                console.error('Failed to load classes:', err);
+            }
+        }
+
+        async function loadSubjects() {
+            try {
+                const response = await authenticatedFetch('/subjects');
+                const data = await response.json();
+                if (!response.ok) throw new Error(data.message || 'Failed to load subjects');
+                allSubjects = Array.isArray(data.data) ? data.data : [];
+                renderSubjects();
+            } catch (err) {
+                console.error('Failed to load subjects:', err);
+            }
+        }
+
+        function renderClasses() {
+            const container = document.querySelector('#classes-content .content-card');
+            const existingGrid = container.querySelector('.classes-grid');
+            if (existingGrid) existingGrid.remove();
+            
+            if (!allClasses || allClasses.length === 0) {
+                container.innerHTML += '<p style="text-align: center; color: var(--text-secondary);">No classes found.</p>';
+                return;
+            }
+            
+            const grid = document.createElement('div');
+            grid.className = 'classes-grid';
+            grid.innerHTML = allClasses.map(cls => `
+                <div class="class-card">
+                    <div class="class-header">
+                        <h4>${cls.name || 'Unknown'}</h4>
+                        <span class="class-room">${cls.room || 'No room'}</span>
+                    </div>
+                    <div class="class-details">
+                        <div class="detail-item">
+                            <i class="fas fa-users"></i>
+                            Capacity: ${cls.capacity || 'Not set'}
+                        </div>
+                        <div class="detail-item">
+                            <i class="fas fa-user-graduate"></i>
+                            Students: -
+                        </div>
+                    </div>
+                    <div class="class-actions">
+                        <button class="action-btn edit" onclick="editClass(${cls.id})">
+                            <i class="fas fa-edit"></i> Edit
+                        </button>
+                        <button class="action-btn delete" onclick="deleteClass(${cls.id})">
+                            <i class="fas fa-trash"></i> Delete
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+            container.appendChild(grid);
+        }
+
+        function renderSubjects() {
+            const container = document.querySelector('#subjects-content .content-card');
+            const existingGrid = container.querySelector('.subjects-grid');
+            if (existingGrid) existingGrid.remove();
+            
+            if (!allSubjects || allSubjects.length === 0) {
+                container.innerHTML += '<p style="text-align: center; color: var(--text-secondary);">No subjects found.</p>';
+                return;
+            }
+            
+            const grid = document.createElement('div');
+            grid.className = 'subjects-grid';
+            grid.innerHTML = allSubjects.map(subject => `
+                <div class="subject-card">
+                    <div class="subject-header">
+                        <h4>${subject.name || 'Unknown'}</h4>
+                        <span class="subject-code">${subject.code || 'No code'}</span>
+                    </div>
+                    <div class="subject-details">
+                        <div class="detail-item">
+                            <i class="fas fa-star"></i>
+                            Credits: ${subject.credits || 'Not set'}
+                        </div>
+                        <div class="detail-item">
+                            <i class="fas fa-book"></i>
+                            Type: Core
+                        </div>
+                    </div>
+                    <div class="subject-actions">
+                        <button class="action-btn edit" onclick="editSubject(${subject.id})">
+                            <i class="fas fa-edit"></i> Edit
+                        </button>
+                        <button class="action-btn delete" onclick="deleteSubject(${subject.id})">
+                            <i class="fas fa-trash"></i> Delete
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+            container.appendChild(grid);
+        }
+
+        // Form submission
+        document.getElementById('addForm').addEventListener('submit', async function(e) {
+            console.log('Form submitted');
+            e.preventDefault();
+            const editId = document.getElementById('editId').value;
+            const isEdit = !!editId;
+            const type = document.getElementById('addType').value;
+
+            console.log('Type:', type, 'Edit:', isEdit);
+
+            let payload;
+            if (type === 'class') {
+                const className = document.getElementById('className').value.trim();
+                if (!className) {
+                    showConfirm('Validation Error', 'Class name is required.', () => {}, 'OK');
+                    return;
+                }
+                payload = {
+                    name: className,
+                    room: document.getElementById('classRoom').value.trim(),
+                    capacity: document.getElementById('classCapacity').value ? parseInt(document.getElementById('classCapacity').value) : null
+                };
+            } else {
+                const subjectName = document.getElementById('subjectName').value.trim();
+                if (!subjectName) {
+                    showConfirm('Validation Error', 'Subject name is required.', () => {}, 'OK');
+                    return;
+                }
+                payload = {
+                    name: subjectName,
+                    code: document.getElementById('subjectCode').value.trim(),
+                    credits: document.getElementById('subjectCredits').value ? parseInt(document.getElementById('subjectCredits').value) : null
+                };
+            }
+
+            console.log('Payload:', payload);
+
+            try {
+                const method = isEdit ? 'PUT' : 'POST';
+                const url = isEdit ? `/${type === 'class' ? 'classes' : 'subjects'}/${editId}` : `/${type === 'class' ? 'classes' : 'subjects'}`;
+                console.log('Sending request:', method, url);
+                const response = await authenticatedFetch(url, {
+                    method,
+                    body: JSON.stringify(payload)
+                });
+                const data = await response.json();
+                console.log('Response:', data);
+                if (!response.ok) throw new Error(data.message || `Failed to ${isEdit ? 'update' : 'add'} ${type}`);
+                showConfirm('Success', `${type.charAt(0).toUpperCase() + type.slice(1)} ${isEdit ? 'updated' : 'added'} successfully!`, () => {}, 'OK');
+                closeModal();
+                if (type === 'class') await loadClasses();
+                else await loadSubjects();
+            } catch (err) {
+                console.error('Error:', err);
+                showConfirm('Error', 'Error: ' + (err.message || 'Something went wrong'), () => {}, 'OK');
+            }
+        });
+
+        // Edit class
+        async function editClass(id) {
+            const cls = allClasses.find(c => c.id == id);
+            if (!cls) {
+                showConfirm('Not Found', 'Class not found.', () => {}, 'OK');
+                return;
+            }
+            document.getElementById('addModalTitle').textContent = 'Edit Class';
+            document.getElementById('addSubmitBtn').textContent = 'Update Class';
+            document.getElementById('editId').value = id;
+            document.getElementById('addType').value = 'class';
+            document.getElementById('className').value = cls.name || '';
+            document.getElementById('classRoom').value = cls.room || '';
+            document.getElementById('classCapacity').value = cls.capacity || '';
+            document.getElementById('classFields').style.display = 'block';
+            document.getElementById('subjectFields').style.display = 'none';
+            document.getElementById('addModal').style.display = 'flex';
+        }
+
+        // Delete class
+        async function deleteClass(id) {
+            showConfirm(
+                'Delete Class',
+                'Are you sure you want to delete this class?',
+                async () => {
+                    try {
+                        const response = await authenticatedFetch(`/classes/${id}`, { method: 'DELETE' });
+                        const data = await response.json();
+                        if (!response.ok) throw new Error(data.message || 'Failed to delete class');
+                        showConfirm('Success', 'Class deleted successfully!', () => {}, 'OK');
+                        await loadClasses();
+                    } catch (err) {
+                        showConfirm('Error', 'Error: ' + (err.message || 'Something went wrong'), () => {}, 'OK');
+                    }
+                },
+                'Delete',
+                'Cancel'
+            );
+        }
+
+        // Edit subject
+        async function editSubject(id) {
+            console.log('Editing subject with ID:', id);
+            console.log('All subjects:', allSubjects);
+            const subject = allSubjects.find(s => s.id == id);
+            console.log('Found subject:', subject);
+            if (!subject) {
+                showConfirm('Not Found', 'Subject not found.', () => {}, 'OK');
+                return;
+            }
+            document.getElementById('addModalTitle').textContent = 'Edit Subject';
+            document.getElementById('addSubmitBtn').textContent = 'Update Subject';
+            document.getElementById('editId').value = id;
+            document.getElementById('addType').value = 'subject';
+            document.getElementById('subjectName').value = subject.name || '';
+            document.getElementById('subjectCode').value = subject.code || '';
+            document.getElementById('subjectCredits').value = subject.credits || '';
+            document.getElementById('classFields').style.display = 'none';
+            document.getElementById('subjectFields').style.display = 'block';
+            document.getElementById('addModal').style.display = 'flex';
+        }
+
+        // Delete subject
+        async function deleteSubject(id) {
+            showConfirm(
+                'Delete Subject',
+                'Are you sure you want to delete this subject?',
+                async () => {
+                    try {
+                        const response = await authenticatedFetch(`/subjects/${id}`, { method: 'DELETE' });
+                        const data = await response.json();
+                        if (!response.ok) throw new Error(data.message || 'Failed to delete subject');
+                        showConfirm('Success', 'Subject deleted successfully!', () => {}, 'OK');
+                        await loadSubjects();
+                    } catch (err) {
+                        showConfirm('Error', 'Error: ' + (err.message || 'Something went wrong'), () => {}, 'OK');
+                    }
+                },
+                'Delete',
+                'Cancel'
+            );
+        }
+
+
+        // Initialize
+        window.addEventListener('DOMContentLoaded', () => {
+            loadClasses();
+            loadSubjects();
+        });
+    </script>
+</body>
+</html>

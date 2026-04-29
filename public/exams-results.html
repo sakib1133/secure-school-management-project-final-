@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exams & Results - School Management System</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #3b82f6;
+            --secondary: #1e40af;
+            --dark: #0f172a;
+            --card: #111827;
+            --text: #f1f5f9;
+            --text-secondary: #94a3b8;
+            --border: #334155;
+            --success: #22c55e;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f8fafc, #ffffff);
+            color: #1e293b;
+            min-height: 100vh;
+        }
+
+        .header {
+            background: #1e293b;
+            border-bottom: 1px solid #334155;
+            padding: 20px 0;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.15);
+        }
+
+        .header-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .back-btn {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 12px 24px;
+            text-decoration: none;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .back-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(59, 130, 246, 0.4);
+        }
+
+        .main-content {
+            max-width: 1400px;
+            margin: 40px auto;
+            padding: 0 30px;
+        }
+
+        .page-header {
+            background: #ffffff;
+            border-radius: 16px;
+            padding: 30px;
+            margin-bottom: 30px;
+            border: 1px solid #e2e8f0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .page-title {
+            font-size: 2rem;
+            color: #1e293b;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            background: #ffffff;
+            padding: 10px;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .tab {
+            padding: 12px 24px;
+            background: transparent;
+            border: none;
+            color: #64748b;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            font-weight: 600;
+        }
+
+        .tab.active {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+        }
+
+        .content-card {
+            background: #ffffff;
+            border-radius: 16px;
+            padding: 30px;
+            border: 1px solid #e2e8f0;
+            border-left: 4px solid #3b82f6;
+            margin-bottom: 30px;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        .card-title {
+            font-size: 1.4rem;
+            color: #1e293b;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(59, 130, 246, 0.4);
+        }
+
+        .exam-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 25px;
+        }
+
+        .exam-card {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 25px;
+            transition: all 0.3s ease;
+        }
+
+        .exam-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            border-color: var(--primary);
+        }
+
+        .exam-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .exam-name {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #1e293b;
+        }
+
+        .exam-status {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .exam-status.upcoming {
+            background: rgba(59, 130, 246, 0.2);
+            color: var(--primary);
+        }
+
+        .exam-status.ongoing {
+            background: rgba(245, 158, 11, 0.2);
+            color: var(--warning);
+        }
+
+        .exam-status.completed {
+            background: rgba(34, 197, 94, 0.2);
+            color: var(--success);
+        }
+
+        .exam-details {
+            margin-bottom: 20px;
+        }
+
+        .detail-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 8px;
+            color: #64748b;
+            font-size: 0.9rem;
+        }
+
+        .detail-item i {
+            color: var(--primary);
+            width: 20px;
+        }
+
+        .results-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .results-table th {
+            background: #f1f5f9;
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+            color: #1e293b;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        .results-table td {
+            padding: 15px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .results-table tr:hover {
+            background: #f8fafc;
+        }
+
+        .grade-badge {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .grade-badge.A { background: rgba(34, 197, 94, 0.2); color: var(--success); }
+        .grade-badge.B { background: rgba(59, 130, 246, 0.2); color: var(--primary); }
+        .grade-badge.C { background: rgba(245, 158, 11, 0.2); color: var(--warning); }
+        .grade-badge.D { background: rgba(239, 68, 68, 0.2); color: var(--danger); }
+
+        .score-circle {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+
+        .score-circle.excellent { background: rgba(34, 197, 94, 0.2); color: var(--success); }
+        .score-circle.good { background: rgba(59, 130, 246, 0.2); color: var(--primary); }
+        .score-circle.average { background: rgba(245, 158, 11, 0.2); color: var(--warning); }
+        .score-circle.poor { background: rgba(239, 68, 68, 0.2); color: var(--danger); }
+
+        @media (max-width: 768px) {
+            .page-header { flex-direction: column; gap: 20px; }
+            .tabs { flex-wrap: wrap; }
+            .exam-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="header-content">
+            <div class="logo">
+                <i class="fas fa-graduation-cap"></i>
+                School Management System
+            </div>
+            <a href="dashboard.html" class="back-btn">
+                <i class="fas fa-arrow-left"></i> Back to Dashboard
+            </a>
+        </div>
+    </div>
+
+    <div class="main-content">
+        <div class="page-header">
+            <h1 class="page-title">
+                <i class="fas fa-clipboard-list"></i>
+                Exams & Results
+            </h1>
+        </div>
+
+        <div class="tabs">
+            <button class="tab active" onclick="showTab('exams')">
+                <i class="fas fa-clipboard-list"></i> Exams
+            </button>
+            <button class="tab" onclick="showTab('results')">
+                <i class="fas fa-chart-bar"></i> Results
+            </button>
+            <button class="tab" onclick="showTab('analytics')">
+                <i class="fas fa-analytics"></i> Analytics
+            </button>
+        </div>
+
+        <div id="exams-content" class="tab-content">
+            <div class="content-card">
+                <div class="card-header">
+                    <h3 class="card-title">
+                        <i class="fas fa-calendar-alt"></i>
+                        Upcoming Exams
+                    </h3>
+                </div>
+
+                <div class="exam-grid">
+                    <div class="exam-card">
+                        <div class="exam-header">
+                            <div class="exam-name">Mathematics Final</div>
+                            <div class="exam-status upcoming">Upcoming</div>
+                        </div>
+                        <div class="exam-details">
+                            <div class="detail-item">
+                                <i class="fas fa-calendar"></i>
+                                Date: January 20, 2024
+                            </div>
+                            <div class="detail-item">
+                                <i class="fas fa-clock"></i>
+                                Time: 9:00 AM - 12:00 PM
+                            </div>
+                            <div class="detail-item">
+                                <i class="fas fa-users"></i>
+                                Classes: 10A, 10B
+                            </div>
+                            <div class="detail-item">
+                                <i class="fas fa-map-marker-alt"></i>
+                                Venue: Main Hall
+                            </div>
+                        </div>
+                        <div style="display: flex; gap: 10px;">
+                            <button class="btn btn-primary" style="flex: 1;">
+                                <i class="fas fa-edit"></i> Edit
+                            </button>
+                            <button class="btn btn-primary" style="flex: 1;">
+                                <i class="fas fa-eye"></i> View
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="exam-card">
+                        <div class="exam-header">
+                            <div class="exam-name">Physics Mid-term</div>
+                            <div class="exam-status ongoing">Ongoing</div>
+                        </div>
+                        <div class="exam-details">
+                            <div class="detail-item">
+                                <i class="fas fa-calendar"></i>
+                                Date: January 15, 2024
+                            </div>
+                            <div class="detail-item">
+                                <i class="fas fa-clock"></i>
+                                Time: 10:00 AM - 11:30 PM
+                            </div>
+                            <div class="detail-item">
+                                <i class="fas fa-users"></i>
+                                Classes: 10A
+                            </div>
+                            <div class="detail-item">
+                                <i class="fas fa-map-marker-alt"></i>
+                                Venue: Lab 201
+                            </div>
+                        </div>
+                        <div style="display: flex; gap: 10px;">
+                            <button class="btn btn-primary" style="flex: 1;">
+                                <i class="fas fa-monitor"></i> Monitor
+                            </button>
+                            <button class="btn btn-primary" style="flex: 1;">
+                                <i class="fas fa-stop"></i> End Exam
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="exam-card">
+                        <div class="exam-header">
+                            <div class="exam-name">English Literature</div>
+                            <div class="exam-status completed">Completed</div>
+                        </div>
+                        <div class="exam-details">
+                            <div class="detail-item">
+                                <i class="fas fa-calendar"></i>
+                                Date: January 10, 2024
+                            </div>
+                            <div class="detail-item">
+                                <i class="fas fa-clock"></i>
+                                Time: 8:00 AM - 10:00 AM
+                            </div>
+                            <div class="detail-item">
+                                <i class="fas fa-users"></i>
+                                Classes: 9A, 9B
+                            </div>
+                            <div class="detail-item">
+                                <i class="fas fa-check-circle"></i>
+                                Results Published
+                            </div>
+                        </div>
+                        <div style="display: flex; gap: 10px;">
+                            <button class="btn btn-primary" style="flex: 1;">
+                                <i class="fas fa-chart-bar"></i> Results
+                            </button>
+                            <button class="btn btn-primary" style="flex: 1;">
+                                <i class="fas fa-download"></i> Export
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="results-content" class="tab-content" style="display: none;">
+            <div class="content-card">
+                <div class="card-header">
+                    <h3 class="card-title">
+                        <i class="fas fa-trophy"></i>
+                        Latest Results
+                    </h3>
+                </div>
+
+                <table class="results-table">
+                    <thead>
+                        <tr>
+                            <th>Student</th>
+                            <th>Exam</th>
+                            <th>Score</th>
+                            <th>Grade</th>
+                            <th>Class</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <div style="display: flex; align-items: center; gap: 10px;">
+                                    <div style="width: 35px; height: 35px; border-radius: 50%; background: linear-gradient(135deg, var(--primary), var(--secondary)); display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 0.9rem;">JD</div>
+                                    <div>
+                                        <div>John Doe</div>
+                                        <small style="color: var(--text-secondary);">STU001</small>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>English Literature</td>
+                            <td>
+                                <div class="score-circle excellent">92%</div>
+                            </td>
+                            <td><span class="grade-badge A">A</span></td>
+                            <td>10A</td>
+                            <td><span class="grade-badge A">Passed</span></td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div style="display: flex; align-items: center; gap: 10px;">
+                                    <div style="width: 35px; height: 35px; border-radius: 50%; background: linear-gradient(135deg, var(--primary), var(--secondary)); display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 0.9rem;">JS</div>
+                                    <div>
+                                        <div>Jane Smith</div>
+                                        <small style="color: var(--text-secondary);">STU002</small>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>English Literature</td>
+                            <td>
+                                <div class="score-circle good">85%</div>
+                            </td>
+                            <td><span class="grade-badge B">B</span></td>
+                            <td>10A</td>
+                            <td><span class="grade-badge A">Passed</span></td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div style="display: flex; align-items: center; gap: 10px;">
+                                    <div style="width: 35px; height: 35px; border-radius: 50%; background: linear-gradient(135deg, var(--primary), var(--secondary)); display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 0.9rem;">MJ</div>
+                                    <div>
+                                        <div>Michael Johnson</div>
+                                        <small style="color: var(--text-secondary);">STU003</small>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>English Literature</td>
+                            <td>
+                                <div class="score-circle average">78%</div>
+                            </td>
+                            <td><span class="grade-badge C">C</span></td>
+                            <td>10A</td>
+                            <td><span class="grade-badge A">Passed</span></td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div style="display: flex; align-items: center; gap: 10px;">
+                                    <div style="width: 35px; height: 35px; border-radius: 50%; background: linear-gradient(135deg, var(--primary), var(--secondary)); display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 0.9rem;">EW</div>
+                                    <div>
+                                        <div>Emma Wilson</div>
+                                        <small style="color: var(--text-secondary);">STU004</small>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>English Literature</td>
+                            <td>
+                                <div class="score-circle poor">65%</div>
+                            </td>
+                            <td><span class="grade-badge D">D</span></td>
+                            <td>10B</td>
+                            <td><span class="grade-badge A">Passed</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div id="analytics-content" class="tab-content" style="display: none;">
+            <div class="content-card">
+                <div class="card-header">
+                    <h3 class="card-title">
+                        <i class="fas fa-chart-line"></i>
+                        Performance Analytics
+                    </h3>
+                </div>
+                <div style="text-align: center; padding: 50px; color: var(--text-secondary);">
+                    <i class="fas fa-chart-pie" style="font-size: 4rem; margin-bottom: 20px; color: var(--primary);"></i>
+                    <h3>Exam Analytics Dashboard</h3>
+                    <p>Comprehensive analysis of student performance, exam statistics, and trends.</p>
+                    <button class="btn btn-primary">
+                        <i class="fas fa-analytics"></i> Generate Report
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function showTab(tabName) {
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.style.display = 'none';
+            });
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.getElementById(tabName + '-content').style.display = 'block';
+            event.target.classList.add('active');
+        }
+    </script>
+</body>
+</html>

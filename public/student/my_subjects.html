@@ -1,0 +1,846 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Subjects - Student Portal</title>
+    <link rel="stylesheet" href="../styles.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #0f172a;
+            --primary-dark: #020617;
+            --secondary: #1e293b;
+            --accent: #3b82f6;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --info: #06b6d4;
+            --dark: #020617;
+            --gray: #64748b;
+            --light: #f1f5f9;
+            --white: #ffffff;
+            --shadow-sm: 0 1px 2px 0 rgb(15 23 42 / 0.05);
+            --shadow: 0 4px 6px -1px rgb(15 23 42 / 0.1), 0 2px 4px -2px rgb(15 23 42 / 0.1);
+            --shadow-lg: 0 10px 15px -3px rgb(15 23 42 / 0.1), 0 4px 6px -4px rgb(15 23 42 / 0.1);
+            --shadow-xl: 0 20px 25px -5px rgb(15 23 42 / 0.1), 0 8px 10px -6px rgb(15 23 42 / 0.1);
+            --radius: 8px;
+            --transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: #ffffff;
+            min-height: 100vh;
+            color: var(--dark);
+            line-height: 1.5;
+            font-size: 14px;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        .subjects-container {
+            max-width: 100%;
+            margin: 0 auto;
+            background: #ffffff;
+            border-radius: 0;
+            padding: 0;
+            box-shadow: none;
+            border: none;
+            min-height: 100vh;
+        }
+
+        .header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            padding: 2.5rem 2rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: 
+                linear-gradient(30deg, rgba(255,255,255,0.03) 12%, transparent 12.5%, transparent 87%, rgba(255,255,255,0.03) 87.5%, rgba(255,255,255,0.03)),
+                linear-gradient(150deg, rgba(255,255,255,0.03) 12%, transparent 12.5%, transparent 87%, rgba(255,255,255,0.03) 87.5%, rgba(255,255,255,0.03)),
+                linear-gradient(30deg, rgba(255,255,255,0.03) 12%, transparent 12.5%, transparent 87%, rgba(255,255,255,0.03) 87.5%, rgba(255,255,255,0.03)),
+                linear-gradient(150deg, rgba(255,255,255,0.03) 12%, transparent 12.5%, transparent 87%, rgba(255,255,255,0.03) 87.5%, rgba(255,255,255,0.03)),
+                linear-gradient(60deg, rgba(255,255,255,0.05) 25%, transparent 25.5%, transparent 75%, rgba(255,255,255,0.05) 75%, rgba(255,255,255,0.05)),
+                linear-gradient(120deg, rgba(255,255,255,0.05) 25%, transparent 25.5%, transparent 75%, rgba(255,255,255,0.05) 75%, rgba(255,255,255,0.05));
+            background-size: 80px 140px;
+            pointer-events: none;
+        }
+
+        .header-content {
+            position: relative;
+            z-index: 1;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header h1 {
+            font-size: 2.25rem;
+            font-weight: 600;
+            color: white;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+            margin-bottom: 0.5rem;
+            letter-spacing: -0.025em;
+        }
+
+        .header .material-icons {
+            font-size: 2.25rem;
+            color: white;
+        }
+
+        .header .subtitle {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.875rem;
+            font-weight: 400;
+            margin-top: 0.5rem;
+        }
+
+        .content-wrapper {
+            padding: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+            background: #fafbfc;
+        }
+
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: var(--white);
+            color: var(--dark);
+            padding: 0.625rem 1.25rem;
+            border: 1px solid #e5e7eb;
+            border-radius: var(--radius);
+            text-decoration: none;
+            font-weight: 500;
+            margin-bottom: 2rem;
+            transition: var(--transition);
+            box-shadow: var(--shadow-sm);
+            font-size: 0.875rem;
+        }
+
+        .back-btn:hover {
+            background: #f9fafb;
+            border-color: #d1d5db;
+            transform: translateY(-1px);
+            box-shadow: var(--shadow);
+        }
+
+        .subjects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .subject-card {
+            background: var(--white);
+            border-radius: var(--radius);
+            padding: 1.5rem;
+            box-shadow: var(--shadow);
+            border: 1px solid #e5e7eb;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .subject-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 3px;
+            height: 100%;
+            background: linear-gradient(180deg, var(--accent), #1d4ed8);
+        }
+
+        .subject-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+            border-color: #d1d5db;
+        }
+
+        .subject-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.25rem;
+        }
+
+        .subject-icon-container {
+            width: 48px;
+            height: 48px;
+            border-radius: var(--radius);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .subject-icon-computer {
+            background: linear-gradient(135deg, var(--accent), #1d4ed8);
+            color: white;
+        }
+
+        .subject-icon-math {
+            background: linear-gradient(135deg, var(--success), #059669);
+            color: white;
+        }
+
+        .subject-icon-physics {
+            background: linear-gradient(135deg, var(--warning), #d97706);
+            color: white;
+        }
+
+        .subject-icon-chemistry {
+            background: linear-gradient(135deg, var(--danger), #dc2626);
+            color: white;
+        }
+
+        .subject-icon-english {
+            background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+            color: white;
+        }
+
+        .subject-icon-history {
+            background: linear-gradient(135deg, #ec4899, #db2777);
+            color: white;
+        }
+
+        .subject-title {
+            flex: 1;
+        }
+
+        .subject-name {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: var(--dark);
+            margin-bottom: 0.25rem;
+        }
+
+        .subject-code {
+            font-size: 0.75rem;
+            color: var(--gray);
+            font-weight: 500;
+        }
+
+        .subject-details {
+            margin-bottom: 1.25rem;
+        }
+
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .detail-row:last-child {
+            border-bottom: none;
+        }
+
+        .detail-label {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--gray);
+            font-weight: 500;
+            font-size: 0.875rem;
+        }
+
+        .detail-label .material-icons {
+            font-size: 1rem;
+        }
+
+        .detail-value {
+            color: var(--dark);
+            font-weight: 600;
+            font-size: 0.875rem;
+        }
+
+        .progress-section {
+            margin-top: 1.25rem;
+        }
+
+        .progress-label {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+            font-size: 0.875rem;
+        }
+
+        .progress-text {
+            color: var(--gray);
+        }
+
+        .progress-percentage {
+            color: var(--dark);
+            font-weight: 600;
+        }
+
+        .progress-bar {
+            height: 6px;
+            background: #f1f5f9;
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            border-radius: 3px;
+            transition: width 0.3s ease;
+        }
+
+        .progress-good {
+            background: linear-gradient(90deg, var(--success), #059669);
+        }
+
+        .progress-average {
+            background: linear-gradient(90deg, var(--warning), #d97706);
+        }
+
+        .progress-excellent {
+            background: linear-gradient(90deg, var(--accent), #1d4ed8);
+        }
+
+        .teacher-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-top: 1.25rem;
+            padding: 1rem;
+            background: #f8fafc;
+            border-radius: var(--radius);
+            border: 1px solid #e5e7eb;
+        }
+
+        .teacher-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 0.875rem;
+        }
+
+        .teacher-details {
+            flex: 1;
+        }
+
+        .teacher-name {
+            font-weight: 600;
+            color: var(--dark);
+            margin-bottom: 0.125rem;
+            font-size: 0.875rem;
+        }
+
+        .teacher-email {
+            font-size: 0.75rem;
+            color: var(--gray);
+        }
+
+        .stats-section {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            border-radius: var(--radius);
+            padding: 2rem;
+            margin-top: 2rem;
+            box-shadow: var(--shadow-lg);
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .stats-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: 
+                linear-gradient(30deg, rgba(255,255,255,0.02) 12%, transparent 12.5%, transparent 87%, rgba(255,255,255,0.02) 87.5%, rgba(255,255,255,0.02)),
+                linear-gradient(150deg, rgba(255,255,255,0.02) 12%, transparent 12.5%, transparent 87%, rgba(255,255,255,0.02) 87.5%, rgba(255,255,255,0.02)),
+                linear-gradient(30deg, rgba(255,255,255,0.02) 12%, transparent 12.5%, transparent 87%, rgba(255,255,255,0.02) 87.5%, rgba(255,255,255,0.02)),
+                linear-gradient(150deg, rgba(255,255,255,0.02) 12%, transparent 12.5%, transparent 87%, rgba(255,255,255,0.02) 87.5%, rgba(255,255,255,0.02));
+            background-size: 60px 100px;
+            pointer-events: none;
+        }
+
+        .stats-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .stats-section h2 {
+            text-align: center;
+            margin-bottom: 1.5rem;
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: white;
+            letter-spacing: -0.025em;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 1.5rem;
+            text-align: center;
+        }
+
+        .stat-item {
+            padding: 1.5rem;
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: var(--radius);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: var(--transition);
+        }
+
+        .stat-item:hover {
+            background: rgba(255, 255, 255, 0.12);
+            transform: translateY(-1px);
+        }
+
+        .stat-value {
+            font-size: 1.75rem;
+            font-weight: 700;
+            margin-bottom: 0.375rem;
+            color: white;
+        }
+
+        .stat-label {
+            font-size: 0.75rem;
+            opacity: 0.8;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .header {
+                padding: 2rem 1rem;
+            }
+
+            .header h1 {
+                font-size: 1.875rem;
+            }
+
+            .content-wrapper {
+                padding: 1.5rem 1rem;
+            }
+
+            .subjects-grid {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 1rem;
+            }
+
+            .stats-section {
+                padding: 1.5rem 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="subjects-container">
+        <header class="header">
+            <div class="header-content">
+                <h1>
+                    <i class="material-icons">book</i>
+                    My Subjects
+                </h1>
+                <div class="subtitle">Course Overview</div>
+            </div>
+        </header>
+
+        <div class="content-wrapper">
+            <a href="student_dashboard.html" class="back-btn">
+                <i class="material-icons">arrow_back</i>
+                Back to Dashboard
+            </a>
+
+        <div class="subjects-grid">
+            <div class="subject-card">
+                <div class="subject-header">
+                    <div class="subject-icon-container subject-icon-computer">
+                        <i class="material-icons">computer</i>
+                    </div>
+                    <div class="subject-title">
+                        <div class="subject-name">Computer Science</div>
+                        <div class="subject-code">CS101</div>
+                    </div>
+                </div>
+
+                <div class="subject-details">
+                    <div class="detail-row">
+                        <div class="detail-label">
+                            <i class="material-icons" style="font-size: 18px;">schedule</i>
+                            Duration
+                        </div>
+                        <div class="detail-value">16 Weeks</div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-label">
+                            <i class="material-icons" style="font-size: 18px;">credit_score</i>
+                            Credits
+                        </div>
+                        <div class="detail-value">4 Credits</div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-label">
+                            <i class="material-icons" style="font-size: 18px;">assessment</i>
+                            Assessment Type
+                        </div>
+                        <div class="detail-value">Theory + Lab</div>
+                    </div>
+                </div>
+
+                <div class="progress-section">
+                    <div class="progress-label">
+                        <span class="progress-text">Course Progress</span>
+                        <span class="progress-percentage">78%</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill progress-good" style="width: 78%;"></div>
+                    </div>
+                </div>
+
+                <div class="teacher-info">
+                    <div class="teacher-avatar">DS</div>
+                    <div class="teacher-details">
+                        <div class="teacher-name">Dr. David Smith</div>
+                        <div class="teacher-email">d.smith@university.edu</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="subject-card">
+                <div class="subject-header">
+                    <div class="subject-icon-container subject-icon-math">
+                        <i class="material-icons">calculate</i>
+                    </div>
+                    <div class="subject-title">
+                        <div class="subject-name">Mathematics</div>
+                        <div class="subject-code">MATH201</div>
+                    </div>
+                </div>
+
+                <div class="subject-details">
+                    <div class="detail-row">
+                        <div class="detail-label">
+                            <i class="material-icons" style="font-size: 18px;">schedule</i>
+                            Duration
+                        </div>
+                        <div class="detail-value">16 Weeks</div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-label">
+                            <i class="material-icons" style="font-size: 18px;">credit_score</i>
+                            Credits
+                        </div>
+                        <div class="detail-value">4 Credits</div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-label">
+                            <i class="material-icons" style="font-size: 18px;">assessment</i>
+                            Assessment Type
+                        </div>
+                        <div class="detail-value">Theory Only</div>
+                    </div>
+                </div>
+
+                <div class="progress-section">
+                    <div class="progress-label">
+                        <span class="progress-text">Course Progress</span>
+                        <span class="progress-percentage">65%</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill progress-average" style="width: 65%;"></div>
+                    </div>
+                </div>
+
+                <div class="teacher-info">
+                    <div class="teacher-avatar">RJ</div>
+                    <div class="teacher-details">
+                        <div class="teacher-name">Prof. Robert Johnson</div>
+                        <div class="teacher-email">r.johnson@university.edu</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="subject-card">
+                <div class="subject-header">
+                    <div class="subject-icon-container subject-icon-physics">
+                        <i class="material-icons">science</i>
+                    </div>
+                    <div class="subject-title">
+                        <div class="subject-name">Physics</div>
+                        <div class="subject-code">PHY301</div>
+                    </div>
+                </div>
+
+                <div class="subject-details">
+                    <div class="detail-row">
+                        <div class="detail-label">
+                            <i class="material-icons" style="font-size: 18px;">schedule</i>
+                            Duration
+                        </div>
+                        <div class="detail-value">16 Weeks</div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-label">
+                            <i class="material-icons" style="font-size: 18px;">credit_score</i>
+                            Credits
+                        </div>
+                        <div class="detail-value">4 Credits</div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-label">
+                            <i class="material-icons" style="font-size: 18px;">assessment</i>
+                            Assessment Type
+                        </div>
+                        <div class="detail-value">Theory + Lab</div>
+                    </div>
+                </div>
+
+                <div class="progress-section">
+                    <div class="progress-label">
+                        <span class="progress-text">Course Progress</span>
+                        <span class="progress-percentage">82%</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill progress-excellent" style="width: 82%;"></div>
+                    </div>
+                </div>
+
+                <div class="teacher-info">
+                    <div class="teacher-avatar">JB</div>
+                    <div class="teacher-details">
+                        <div class="teacher-name">Dr. James Brown</div>
+                        <div class="teacher-email">j.brown@university.edu</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="subject-card">
+                <div class="subject-header">
+                    <div class="subject-icon-container subject-icon-chemistry">
+                        <i class="material-icons">biotech</i>
+                    </div>
+                    <div class="subject-title">
+                        <div class="subject-name">Chemistry</div>
+                        <div class="subject-code">CHEM201</div>
+                    </div>
+                </div>
+
+                <div class="subject-details">
+                    <div class="detail-row">
+                        <div class="detail-label">
+                            <i class="material-icons" style="font-size: 18px;">schedule</i>
+                            Duration
+                        </div>
+                        <div class="detail-value">16 Weeks</div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-label">
+                            <i class="material-icons" style="font-size: 18px;">credit_score</i>
+                            Credits
+                        </div>
+                        <div class="detail-value">4 Credits</div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-label">
+                            <i class="material-icons" style="font-size: 18px;">assessment</i>
+                            Assessment Type
+                        </div>
+                        <div class="detail-value">Theory + Lab</div>
+                    </div>
+                </div>
+
+                <div class="progress-section">
+                    <div class="progress-label">
+                        <span class="progress-text">Course Progress</span>
+                        <span class="progress-percentage">71%</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill progress-good" style="width: 71%;"></div>
+                    </div>
+                </div>
+
+                <div class="teacher-info">
+                    <div class="teacher-avatar">EW</div>
+                    <div class="teacher-details">
+                        <div class="teacher-name">Dr. Emily Wilson</div>
+                        <div class="teacher-email">e.wilson@university.edu</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="subject-card">
+                <div class="subject-header">
+                    <div class="subject-icon-container subject-icon-english">
+                        <i class="material-icons">menu_book</i>
+                    </div>
+                    <div class="subject-title">
+                        <div class="subject-name">English</div>
+                        <div class="subject-code">ENG101</div>
+                    </div>
+                </div>
+
+                <div class="subject-details">
+                    <div class="detail-row">
+                        <div class="detail-label">
+                            <i class="material-icons" style="font-size: 18px;">schedule</i>
+                            Duration
+                        </div>
+                        <div class="detail-value">16 Weeks</div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-label">
+                            <i class="material-icons" style="font-size: 18px;">credit_score</i>
+                            Credits
+                        </div>
+                        <div class="detail-value">3 Credits</div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-label">
+                            <i class="material-icons" style="font-size: 18px;">assessment</i>
+                            Assessment Type
+                        </div>
+                        <div class="detail-value">Theory Only</div>
+                    </div>
+                </div>
+
+                <div class="progress-section">
+                    <div class="progress-label">
+                        <span class="progress-text">Course Progress</span>
+                        <span class="progress-percentage">88%</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill progress-excellent" style="width: 88%;"></div>
+                    </div>
+                </div>
+
+                <div class="teacher-info">
+                    <div class="teacher-avatar">MD</div>
+                    <div class="teacher-details">
+                        <div class="teacher-name">Ms. Mary Davis</div>
+                        <div class="teacher-email">m.davis@university.edu</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="subject-card">
+                <div class="subject-header">
+                    <div class="subject-icon-container subject-icon-history">
+                        <i class="material-icons">history_edu</i>
+                    </div>
+                    <div class="subject-title">
+                        <div class="subject-name">History</div>
+                        <div class="subject-code">HIST101</div>
+                    </div>
+                </div>
+
+                <div class="subject-details">
+                    <div class="detail-row">
+                        <div class="detail-label">
+                            <i class="material-icons" style="font-size: 18px;">schedule</i>
+                            Duration
+                        </div>
+                        <div class="detail-value">16 Weeks</div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-label">
+                            <i class="material-icons" style="font-size: 18px;">credit_score</i>
+                            Credits
+                        </div>
+                        <div class="detail-value">3 Credits</div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-label">
+                            <i class="material-icons" style="font-size: 18px;">assessment</i>
+                            Assessment Type
+                        </div>
+                        <div class="detail-value">Theory Only</div>
+                    </div>
+                </div>
+
+                <div class="progress-section">
+                    <div class="progress-label">
+                        <span class="progress-text">Course Progress</span>
+                        <span class="progress-percentage">45%</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill progress-average" style="width: 45%;"></div>
+                    </div>
+                </div>
+
+                <div class="teacher-info">
+                    <div class="teacher-avatar">JM</div>
+                    <div class="teacher-details">
+                        <div class="teacher-name">Dr. John Miller</div>
+                        <div class="teacher-email">j.miller@university.edu</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="stats-section">
+            <div class="stats-content">
+                <h2>Academic Statistics</h2>
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <div class="stat-value">6</div>
+                        <div class="stat-label">Total Subjects</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">22</div>
+                        <div class="stat-label">Total Credits</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">71.5%</div>
+                        <div class="stat-label">Average Progress</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">96</div>
+                        <div class="stat-label">Total Hours/Week</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        </div>
+    </div>
+</body>
+</html>

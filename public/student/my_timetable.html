@@ -1,0 +1,839 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Timetable - Student Portal</title>
+    <link rel="stylesheet" href="../styles.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #0f172a;
+            --primary-dark: #020617;
+            --secondary: #1e293b;
+            --accent: #3b82f6;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --info: #06b6d4;
+            --dark: #020617;
+            --gray: #64748b;
+            --light: #f1f5f9;
+            --white: #ffffff;
+            --shadow-sm: 0 1px 2px 0 rgb(15 23 42 / 0.05);
+            --shadow: 0 4px 6px -1px rgb(15 23 42 / 0.1), 0 2px 4px -2px rgb(15 23 42 / 0.1);
+            --shadow-lg: 0 10px 15px -3px rgb(15 23 42 / 0.1), 0 4px 6px -4px rgb(15 23 42 / 0.1);
+            --shadow-xl: 0 20px 25px -5px rgb(15 23 42 / 0.1), 0 8px 10px -6px rgb(15 23 42 / 0.1);
+            --radius: 8px;
+            --transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: #ffffff;
+            min-height: 100vh;
+            color: var(--dark);
+            line-height: 1.5;
+            font-size: 14px;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        .timetable-container {
+            max-width: 100%;
+            margin: 0 auto;
+            background: #ffffff;
+            border-radius: 0;
+            padding: 0;
+            box-shadow: none;
+            border: none;
+            min-height: 100vh;
+        }
+
+        .header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            padding: 2.5rem 2rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: 
+                linear-gradient(30deg, rgba(255,255,255,0.03) 12%, transparent 12.5%, transparent 87%, rgba(255,255,255,0.03) 87.5%, rgba(255,255,255,0.03)),
+                linear-gradient(150deg, rgba(255,255,255,0.03) 12%, transparent 12.5%, transparent 87%, rgba(255,255,255,0.03) 87.5%, rgba(255,255,255,0.03)),
+                linear-gradient(30deg, rgba(255,255,255,0.03) 12%, transparent 12.5%, transparent 87%, rgba(255,255,255,0.03) 87.5%, rgba(255,255,255,0.03)),
+                linear-gradient(150deg, rgba(255,255,255,0.03) 12%, transparent 12.5%, transparent 87%, rgba(255,255,255,0.03) 87.5%, rgba(255,255,255,0.03)),
+                linear-gradient(60deg, rgba(255,255,255,0.05) 25%, transparent 25.5%, transparent 75%, rgba(255,255,255,0.05) 75%, rgba(255,255,255,0.05)),
+                linear-gradient(120deg, rgba(255,255,255,0.05) 25%, transparent 25.5%, transparent 75%, rgba(255,255,255,0.05) 75%, rgba(255,255,255,0.05));
+            background-size: 80px 140px;
+            pointer-events: none;
+        }
+
+        .header-content {
+            position: relative;
+            z-index: 1;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header h1 {
+            font-size: 2.25rem;
+            font-weight: 600;
+            color: white;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+            margin-bottom: 0.5rem;
+            letter-spacing: -0.025em;
+        }
+
+        .header .material-icons {
+            font-size: 2.25rem;
+            color: white;
+        }
+
+        .header .subtitle {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.875rem;
+            font-weight: 400;
+            margin-top: 0.5rem;
+        }
+
+        .content-wrapper {
+            padding: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+            background: #fafbfc;
+        }
+
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: var(--white);
+            color: var(--dark);
+            padding: 0.625rem 1.25rem;
+            border: 1px solid #e5e7eb;
+            border-radius: var(--radius);
+            text-decoration: none;
+            font-weight: 500;
+            margin-bottom: 2rem;
+            transition: var(--transition);
+            box-shadow: var(--shadow-sm);
+            font-size: 0.875rem;
+        }
+
+        .back-btn:hover {
+            background: #f9fafb;
+            border-color: #d1d5db;
+            transform: translateY(-1px);
+            box-shadow: var(--shadow);
+        }
+
+        .timetable-grid {
+            overflow-x: auto;
+            margin-bottom: 2rem;
+            background: var(--white);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            border: 1px solid #e5e7eb;
+        }
+
+        .timetable-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            background: var(--white);
+            border-radius: var(--radius);
+            overflow: hidden;
+        }
+
+        .timetable-table th {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            padding: 1rem 0.75rem;
+            text-align: center;
+            font-weight: 600;
+            font-size: 0.875rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            letter-spacing: 0.025em;
+            text-transform: uppercase;
+        }
+
+        .timetable-table td {
+            padding: 0.75rem;
+            text-align: center;
+            border: 1px solid #e5e7eb;
+            vertical-align: middle;
+            min-height: 80px;
+            background: var(--white);
+        }
+
+        .timetable-table tr:nth-child(even) {
+            background: #fafbfc;
+        }
+
+        .time-slot {
+            font-weight: 600;
+            color: var(--dark);
+            background: #f8fafc;
+            font-size: 0.875rem;
+            border-right: 2px solid #e5e7eb;
+        }
+
+        .subject-cell {
+            position: relative;
+            padding: 0.75rem;
+            border-radius: var(--radius);
+            margin: 0.125rem;
+            transition: var(--transition);
+            cursor: pointer;
+        }
+
+        .subject-cell:hover {
+            transform: translateY(-1px);
+            box-shadow: var(--shadow);
+        }
+
+        .subject-computer {
+            background: linear-gradient(135deg, var(--accent), #1d4ed8);
+            color: white;
+            border: 1px solid rgba(59, 130, 246, 0.2);
+        }
+
+        .subject-math {
+            background: linear-gradient(135deg, var(--success), #059669);
+            color: white;
+            border: 1px solid rgba(16, 185, 129, 0.2);
+        }
+
+        .subject-physics {
+            background: linear-gradient(135deg, var(--warning), #d97706);
+            color: white;
+            border: 1px solid rgba(245, 158, 11, 0.2);
+        }
+
+        .subject-chemistry {
+            background: linear-gradient(135deg, var(--danger), #dc2626);
+            color: white;
+            border: 1px solid rgba(239, 68, 68, 0.2);
+        }
+
+        .subject-english {
+            background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+            color: white;
+            border: 1px solid rgba(139, 92, 246, 0.2);
+        }
+
+        .subject-history {
+            background: linear-gradient(135deg, #ec4899, #db2777);
+            color: white;
+            border: 1px solid rgba(236, 72, 153, 0.2);
+        }
+
+        .subject-break {
+            background: linear-gradient(135deg, #6b7280, #4b5563);
+            color: white;
+            border: 1px solid rgba(107, 114, 128, 0.2);
+        }
+
+        .subject-name {
+            font-weight: 600;
+            font-size: 0.875rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .subject-room {
+            font-size: 0.75rem;
+            opacity: 0.9;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.25rem;
+        }
+
+        .subject-room .material-icons {
+            font-size: 0.875rem;
+        }
+
+        .subject-teacher {
+            font-size: 0.75rem;
+            opacity: 0.8;
+            margin-top: 0.25rem;
+        }
+
+        .legend {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            justify-content: center;
+            margin-top: 2rem;
+            padding: 1.5rem;
+            background: var(--white);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            border: 1px solid #e5e7eb;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            border-radius: var(--radius);
+            font-size: 0.875rem;
+            font-weight: 500;
+            background: #f8fafc;
+            border: 1px solid #e5e7eb;
+            transition: var(--transition);
+        }
+
+        .legend-item:hover {
+            background: #f1f5f9;
+            border-color: #d1d5db;
+        }
+
+        .legend-color {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+
+        .current-period {
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .header {
+                padding: 2rem 1rem;
+            }
+
+            .header h1 {
+                font-size: 1.875rem;
+            }
+
+            .content-wrapper {
+                padding: 1.5rem 1rem;
+            }
+
+            .timetable-table {
+                font-size: 0.75rem;
+            }
+            
+            .timetable-table th,
+            .timetable-table td {
+                padding: 0.5rem 0.25rem;
+            }
+            
+            .subject-name {
+                font-size: 0.75rem;
+            }
+            
+            .subject-room,
+            .subject-teacher {
+                font-size: 0.625rem;
+            }
+
+            .legend {
+                gap: 0.5rem;
+                padding: 1rem;
+            }
+
+            .legend-item {
+                padding: 0.375rem 0.75rem;
+                font-size: 0.75rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="timetable-container">
+        <header class="header">
+            <div class="header-content">
+                <h1>
+                    <i class="material-icons">schedule</i>
+                    My Timetable
+                </h1>
+                <div class="subtitle">Weekly Schedule - B.Tech Semester 1</div>
+            </div>
+        </header>
+
+        <div class="content-wrapper">
+            <a href="student_dashboard.html" class="back-btn">
+                <i class="material-icons">arrow_back</i>
+                Back to Dashboard
+            </a>
+
+        <div class="timetable-grid">
+            <table class="timetable-table">
+                <thead>
+                    <tr>
+                        <th>Time</th>
+                        <th>Monday</th>
+                        <th>Tuesday</th>
+                        <th>Wednesday</th>
+                        <th>Thursday</th>
+                        <th>Friday</th>
+                        <th>Saturday</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="time-slot">8:00 - 9:00</td>
+                        <td>
+                            <div class="subject-cell subject-computer">
+                                <div class="subject-name">Computer Science</div>
+                                <div class="subject-room">
+                                    <i class="material-icons" style="font-size: 14px;">computer</i>
+                                    Lab 301
+                                </div>
+                                <div class="subject-teacher">Dr. Smith</div>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="subject-cell subject-math">
+                                <div class="subject-name">Mathematics</div>
+                                <div class="subject-room">
+                                    <i class="material-icons" style="font-size: 14px;">meeting_room</i>
+                                    Room 205
+                                </div>
+                                <div class="subject-teacher">Prof. Johnson</div>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="subject-cell subject-physics">
+                                <div class="subject-name">Physics</div>
+                                <div class="subject-room">
+                                    <i class="material-icons" style="font-size: 14px;">science</i>
+                                    Lab 102
+                                </div>
+                                <div class="subject-teacher">Dr. Brown</div>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="subject-cell subject-computer">
+                                <div class="subject-name">Computer Science</div>
+                                <div class="subject-room">
+                                    <i class="material-icons" style="font-size: 14px;">computer</i>
+                                    Lab 301
+                                </div>
+                                <div class="subject-teacher">Dr. Smith</div>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="subject-cell subject-english">
+                                <div class="subject-name">English</div>
+                                <div class="subject-room">
+                                    <i class="material-icons" style="font-size: 14px;">menu_book</i>
+                                    Room 101
+                                </div>
+                                <div class="subject-teacher">Ms. Davis</div>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="subject-cell subject-math">
+                                <div class="subject-name">Mathematics</div>
+                                <div class="subject-room">
+                                    <i class="material-icons" style="font-size: 14px;">meeting_room</i>
+                                    Room 205
+                                </div>
+                                <div class="subject-teacher">Prof. Johnson</div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="time-slot">9:00 - 10:00</td>
+                        <td>
+                            <div class="subject-cell subject-math">
+                                <div class="subject-name">Mathematics</div>
+                                <div class="subject-room">
+                                    <i class="material-icons" style="font-size: 14px;">meeting_room</i>
+                                    Room 205
+                                </div>
+                                <div class="subject-teacher">Prof. Johnson</div>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="subject-cell subject-physics">
+                                <div class="subject-name">Physics</div>
+                                <div class="subject-room">
+                                    <i class="material-icons" style="font-size: 14px;">science</i>
+                                    Lab 102
+                                </div>
+                                <div class="subject-teacher">Dr. Brown</div>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="subject-cell subject-chemistry">
+                                <div class="subject-name">Chemistry</div>
+                                <div class="subject-room">
+                                    <i class="material-icons" style="font-size: 14px;">biotech</i>
+                                    Lab 201
+                                </div>
+                                <div class="subject-teacher">Dr. Wilson</div>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="subject-cell subject-chemistry">
+                                <div class="subject-name">Chemistry</div>
+                                <div class="subject-room">
+                                    <i class="material-icons" style="font-size: 14px;">biotech</i>
+                                    Lab 201
+                                </div>
+                                <div class="subject-teacher">Dr. Wilson</div>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="subject-cell subject-physics">
+                                <div class="subject-name">Physics</div>
+                                <div class="subject-room">
+                                    <i class="material-icons" style="font-size: 14px;">science</i>
+                                    Lab 102
+                                </div>
+                                <div class="subject-teacher">Dr. Brown</div>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="subject-cell subject-english">
+                                <div class="subject-name">English</div>
+                                <div class="subject-room">
+                                    <i class="material-icons" style="font-size: 14px;">menu_book</i>
+                                    Room 101
+                                </div>
+                                <div class="subject-teacher">Ms. Davis</div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="time-slot">10:00 - 10:30</td>
+                        <td colspan="6">
+                            <div class="subject-cell subject-break">
+                                <div class="subject-name">
+                                    <i class="material-icons" style="font-size: 16px;">coffee</i>
+                                    Break Time
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="time-slot">10:30 - 11:30</td>
+                        <td>
+                            <div class="subject-cell subject-chemistry">
+                                <div class="subject-name">Chemistry</div>
+                                <div class="subject-room">
+                                    <i class="material-icons" style="font-size: 14px;">biotech</i>
+                                    Lab 201
+                                </div>
+                                <div class="subject-teacher">Dr. Wilson</div>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="subject-cell subject-english">
+                                <div class="subject-name">English</div>
+                                <div class="subject-room">
+                                    <i class="material-icons" style="font-size: 14px;">menu_book</i>
+                                    Room 101
+                                </div>
+                                <div class="subject-teacher">Ms. Davis</div>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="subject-cell subject-math">
+                                <div class="subject-name">Mathematics</div>
+                                <div class="subject-room">
+                                    <i class="material-icons" style="font-size: 14px;">meeting_room</i>
+                                    Room 205
+                                </div>
+                                <div class="subject-teacher">Prof. Johnson</div>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="subject-cell subject-math">
+                                <div class="subject-name">Mathematics</div>
+                                <div class="subject-room">
+                                    <i class="material-icons" style="font-size: 14px;">meeting_room</i>
+                                    Room 205
+                                </div>
+                                <div class="subject-teacher">Prof. Johnson</div>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="subject-cell subject-computer">
+                                <div class="subject-name">Computer Science</div>
+                                <div class="subject-room">
+                                    <i class="material-icons" style="font-size: 14px;">computer</i>
+                                    Lab 301
+                                </div>
+                                <div class="subject-teacher">Dr. Smith</div>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="subject-cell subject-history">
+                                <div class="subject-name">History</div>
+                                <div class="subject-room">
+                                    <i class="material-icons" style="font-size: 14px;">history_edu</i>
+                                    Room 302
+                                </div>
+                                <div class="subject-teacher">Dr. Miller</div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="time-slot">11:30 - 12:30</td>
+                        <td>
+                            <div class="subject-cell subject-english">
+                                <div class="subject-name">English</div>
+                                <div class="subject-room">
+                                    <i class="material-icons" style="font-size: 14px;">menu_book</i>
+                                    Room 101
+                                </div>
+                                <div class="subject-teacher">Ms. Davis</div>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="subject-cell subject-computer">
+                                <div class="subject-name">Computer Science</div>
+                                <div class="subject-room">
+                                    <i class="material-icons" style="font-size: 14px;">computer</i>
+                                    Lab 301
+                                </div>
+                                <div class="subject-teacher">Dr. Smith</div>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="subject-cell subject-english">
+                                <div class="subject-name">English</div>
+                                <div class="subject-room">
+                                    <i class="material-icons" style="font-size: 14px;">menu_book</i>
+                                    Room 101
+                                </div>
+                                <div class="subject-teacher">Ms. Davis</div>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="subject-cell subject-physics">
+                                <div class="subject-name">Physics</div>
+                                <div class="subject-room">
+                                    <i class="material-icons" style="font-size: 14px;">science</i>
+                                    Lab 102
+                                </div>
+                                <div class="subject-teacher">Dr. Brown</div>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="subject-cell subject-chemistry">
+                                <div class="subject-name">Chemistry</div>
+                                <div class="subject-room">
+                                    <i class="material-icons" style="font-size: 14px;">biotech</i>
+                                    Lab 201
+                                </div>
+                                <div class="subject-teacher">Dr. Wilson</div>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="subject-cell subject-physics">
+                                <div class="subject-name">Physics</div>
+                                <div class="subject-room">
+                                    <i class="material-icons" style="font-size: 14px;">science</i>
+                                    Lab 102
+                                </div>
+                                <div class="subject-teacher">Dr. Brown</div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="time-slot">12:30 - 1:30</td>
+                        <td colspan="6">
+                            <div class="subject-cell subject-break">
+                                <div class="subject-name">
+                                    <i class="material-icons" style="font-size: 16px;">restaurant</i>
+                                    Lunch Break
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="time-slot">1:30 - 2:30</td>
+                        <td>
+                            <div class="subject-cell subject-history">
+                                <div class="subject-name">History</div>
+                                <div class="subject-room">
+                                    <i class="material-icons" style="font-size: 14px;">history_edu</i>
+                                    Room 302
+                                </div>
+                                <div class="subject-teacher">Dr. Miller</div>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="subject-cell subject-history">
+                                <div class="subject-name">History</div>
+                                <div class="subject-room">
+                                    <i class="material-icons" style="font-size: 14px;">history_edu</i>
+                                    Room 302
+                                </div>
+                                <div class="subject-teacher">Dr. Miller</div>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="subject-cell subject-computer">
+                                <div class="subject-name">Computer Science</div>
+                                <div class="subject-room">
+                                    <i class="material-icons" style="font-size: 14px;">computer</i>
+                                    Lab 301
+                                </div>
+                                <div class="subject-teacher">Dr. Smith</div>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="subject-cell subject-english">
+                                <div class="subject-name">English</div>
+                                <div class="subject-room">
+                                    <i class="material-icons" style="font-size: 14px;">menu_book</i>
+                                    Room 101
+                                </div>
+                                <div class="subject-teacher">Ms. Davis</div>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="subject-cell subject-history">
+                                <div class="subject-name">History</div>
+                                <div class="subject-room">
+                                    <i class="material-icons" style="font-size: 14px;">history_edu</i>
+                                    Room 302
+                                </div>
+                                <div class="subject-teacher">Dr. Miller</div>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="subject-cell subject-computer">
+                                <div class="subject-name">Computer Science</div>
+                                <div class="subject-room">
+                                    <i class="material-icons" style="font-size: 14px;">computer</i>
+                                    Lab 301
+                                </div>
+                                <div class="subject-teacher">Dr. Smith</div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="time-slot">2:30 - 3:30</td>
+                        <td>
+                            <div class="subject-cell subject-physics">
+                                <div class="subject-name">Physics Lab</div>
+                                <div class="subject-room">
+                                    <i class="material-icons" style="font-size: 14px;">science</i>
+                                    Lab 102
+                                </div>
+                                <div class="subject-teacher">Dr. Brown</div>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="subject-cell subject-chemistry">
+                                <div class="subject-name">Chemistry Lab</div>
+                                <div class="subject-room">
+                                    <i class="material-icons" style="font-size: 14px;">biotech</i>
+                                    Lab 201
+                                </div>
+                                <div class="subject-teacher">Dr. Wilson</div>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="subject-cell subject-physics">
+                                <div class="subject-name">Physics Lab</div>
+                                <div class="subject-room">
+                                    <i class="material-icons" style="font-size: 14px;">science</i>
+                                    Lab 102
+                                </div>
+                                <div class="subject-teacher">Dr. Brown</div>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="subject-cell subject-history">
+                                <div class="subject-name">History</div>
+                                <div class="subject-room">
+                                    <i class="material-icons" style="font-size: 14px;">history_edu</i>
+                                    Room 302
+                                </div>
+                                <div class="subject-teacher">Dr. Miller</div>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="subject-cell subject-math">
+                                <div class="subject-name">Mathematics</div>
+                                <div class="subject-room">
+                                    <i class="material-icons" style="font-size: 14px;">meeting_room</i>
+                                    Room 205
+                                </div>
+                                <div class="subject-teacher">Prof. Johnson</div>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="subject-cell subject-break">
+                                <div class="subject-name">
+                                    <i class="material-icons" style="font-size: 16px;">sports_esports</i>
+                                    Sports & Games
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="legend">
+            <div class="legend-item">
+                <div class="legend-color" style="background: linear-gradient(135deg, #3b82f6, #1d4ed8);"></div>
+                Computer Science
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background: linear-gradient(135deg, #10b981, #059669);"></div>
+                Mathematics
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background: linear-gradient(135deg, #f59e0b, #d97706);"></div>
+                Physics
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background: linear-gradient(135deg, #ef4444, #dc2626);"></div>
+                Chemistry
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background: linear-gradient(135deg, #8b5cf6, #7c3aed);"></div>
+                English
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background: linear-gradient(135deg, #ec4899, #db2777);"></div>
+                History
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background: linear-gradient(135deg, #6b7280, #4b5563);"></div>
+                Break
+            </div>
+        </div>
+        </div>
+    </div>
+</body>
+</html>

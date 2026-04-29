@@ -1,0 +1,1149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - School Portal</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bodymovin/5.12.2/lottie.min.js"></script>
+    <!-- Login Chatbot Styles -->
+    <link rel="stylesheet" href="css/login-chatbot.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(rgba(0, 0, 0, 0.918), rgba(0, 0, 0, 0.4)),
+                url('images/graphic era.png') center/cover no-repeat,
+                url('https://images.unsplash.com/photo-1541339907198-e08756dedf3f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80') center/cover no-repeat;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            position: relative;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 450px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(2px);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 25px 45px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transform: translateY(0);
+            transition: all 0.3s ease;
+            position: relative;
+            z-index: 1;
+        }
+
+        .container:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
+        }
+
+        .animation-container {
+            width: 100%;
+            height: 150px;
+            margin-bottom: 30px;
+        }
+
+        h1 {
+            color: #fff;
+            text-align: center;
+            margin-bottom: 30px;
+            font-weight: 600;
+            font-size: 28px;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+            position: relative;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 15px 20px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            color: #fff;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            outline: none;
+        }
+
+        .form-group input:focus {
+            border-color: #00d4aa;
+            box-shadow: 0 0 0 3px rgba(0, 212, 170, 0.3);
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        /* Password toggle styles */
+        .password-container {
+            position: relative;
+        }
+        
+        .toggle-password {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: rgba(255, 255, 255, 0.6);
+            transition: color 0.3s ease;
+        }
+        
+        .toggle-password:hover {
+            color: #00d4aa;
+        }
+        
+        .toggle-password.active {
+            color: #00d4aa;
+        }
+
+        .form-group input::placeholder {
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 15px 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 50px;
+            color: #fff;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            outline: none;
+        }
+
+        .form-control:focus {
+            border-color: #4cc9f0;
+            box-shadow: 0 0 0 3px rgba(76, 201, 240, 0.3);
+        }
+
+        .btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(45deg, #00d4aa, #007cf0);
+            border: none;
+            border-radius: 12px;
+            color: white;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+            box-shadow: 0 4px 15px rgba(0, 212, 170, 0.3);
+        }
+
+        .btn:hover {
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 15px 40px rgba(0, 212, 170, 0.5);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, #007cf0, #00d4aa);
+            z-index: -1;
+            transition: opacity 0.3s ease;
+            opacity: 0;
+        }
+
+        .btn:hover::before {
+            opacity: 1;
+        }
+
+        .error-message {
+            display: none;
+        }
+
+        /* Validation Alert Toast */
+        .validation-alert {
+            position: fixed;
+            top: 15px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%);
+            border: 1px solid #fca5a5;
+            border-radius: 10px;
+            padding: 14px 20px;
+            display: none;
+            align-items: center;
+            gap: 12px;
+            z-index: 20000;
+            box-shadow: 0 4px 20px rgba(239, 68, 68, 0.2), 0 2px 8px rgba(0, 0, 0, 0.1);
+            min-width: auto;
+            max-width: 340px;
+            animation: alertSlideDown 0.3s ease-out;
+        }
+
+        .validation-alert.show {
+            display: flex !important;
+        }
+
+        @keyframes alertSlideDown {
+            from {
+                opacity: 0;
+                transform: translateX(-50%) translateY(-15px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(-50%) translateY(0);
+            }
+        }
+
+        .validation-alert-icon {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            color: #fff;
+            font-size: 16px;
+            font-weight: 700;
+        }
+
+        .validation-alert-text {
+            color: #991b1b;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        /* Enhanced Security Banner Styles */
+        .security-banner-enhanced {
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.15), rgba(5, 150, 105, 0.25));
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            border-radius: 20px;
+            padding: 20px;
+            margin-bottom: 25px;
+            box-shadow: 
+                0 8px 32px rgba(16, 185, 129, 0.2),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .security-banner-enhanced::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            animation: shimmer 3s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { left: -100%; }
+            100% { left: 100%; }
+        }
+
+        .security-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .security-icon-enhanced {
+            position: relative;
+            flex-shrink: 0;
+        }
+
+        .shield-icon {
+            width: 56px;
+            height: 56px;
+            background: linear-gradient(135deg, #10b981, #059669);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+            position: relative;
+            z-index: 2;
+        }
+
+        .pulse-ring {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 56px;
+            height: 56px;
+            border: 2px solid #10b981;
+            border-radius: 50%;
+            animation: pulse 2s ease-out infinite;
+            z-index: 1;
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: translate(-50%, -50%) scale(1);
+                opacity: 1;
+            }
+            100% {
+                transform: translate(-50%, -50%) scale(1.3);
+                opacity: 0;
+            }
+        }
+
+        .security-text-enhanced {
+            flex: 1;
+        }
+
+        .security-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 4px;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .security-subtitle {
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.9);
+            line-height: 1.4;
+            font-weight: 400;
+        }
+
+        .security-badges {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .security-badge {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            padding: 8px 12px;
+            color: #fff;
+            font-size: 12px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            cursor: default;
+        }
+
+        .security-badge:hover {
+            background: rgba(255, 255, 255, 0.15);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .badge-icon {
+            width: 32px;
+            height: 32px;
+            background: rgba(16, 185, 129, 0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #10b981;
+            flex-shrink: 0;
+        }
+
+        .header-btn {
+            background: transparent;
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            padding: 8px 14px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-weight: 500;
+            font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .header-btn:hover {
+            background: rgba(59, 130, 246, 0.1);
+            border-color: var(--primary-color);
+            color: var(--primary-color);
+        }
+
+        .header-btn.logout-btn {
+            background: rgba(239, 68, 68, 0.08);
+            border-color: rgba(239, 68, 68, 0.3);
+            color: var(--danger-color);
+        }
+
+        .header-btn.logout-btn:hover {
+            background: rgba(239, 68, 68, 0.15);
+            border-color: var(--danger-color);
+        }
+
+        /* Compact Session Alert Styles */
+        .session-warning {
+            position: fixed;
+            top: 15px;
+            right: 15px;
+            left: auto;
+            transform: none;
+            background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+            border: 1px solid #f59e0b;
+            border-radius: 10px;
+            padding: 12px 16px;
+            display: none;
+            align-items: center;
+            gap: 10px;
+            z-index: 10000;
+            box-shadow: 0 4px 20px rgba(245, 158, 11, 0.25), 0 2px 8px rgba(0, 0, 0, 0.1);
+            min-width: auto;
+            max-width: 280px;
+            animation: alertSlideIn 0.3s ease-out;
+        }
+
+        .session-warning.show {
+            display: flex !important;
+        }
+
+        @keyframes alertSlideIn {
+            from {
+                opacity: 0;
+                transform: translateX(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .alert-icon {
+            font-size: 18px;
+            flex-shrink: 0;
+            animation: iconPulse 2s ease-in-out infinite;
+        }
+
+        @keyframes iconPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.15); }
+        }
+
+        .alert-content {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .alert-content strong {
+            color: #92400e;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .alert-content span {
+            color: #78350f;
+            font-size: 11px;
+            font-weight: 400;
+            line-height: 1.3;
+        }
+
+        /* Forgot Password Link */
+        .forgot-password {
+            text-align: right;
+            margin: -10px 0 20px 0;
+        }
+
+        .forgot-password a {
+            color: #00d4aa;
+            font-size: 13px;
+            font-weight: 500;
+            text-decoration: none;
+            transition: all 0.2s ease;
+            padding: 4px 8px;
+            border-radius: 6px;
+        }
+
+        .forgot-password a:hover {
+            color: #10b981;
+            background: rgba(0, 212, 170, 0.1);
+        }
+
+        /* Contact Modal Styles */
+        .contact-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(4px);
+            z-index: 20000;
+            align-items: center;
+            justify-content: center;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .contact-modal.show {
+            display: flex !important;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .contact-modal-content {
+            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+            border-radius: 16px;
+            width: 90%;
+            max-width: 380px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            animation: modalSlideUp 0.4s ease;
+            overflow: hidden;
+        }
+
+        @keyframes modalSlideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .contact-modal-header {
+            background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+            padding: 20px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .contact-modal-header h3 {
+            color: #fff;
+            font-size: 18px;
+            font-weight: 600;
+            margin: 0;
+        }
+
+        .close-modal {
+            background: none;
+            border: none;
+            color: #fff;
+            font-size: 28px;
+            cursor: pointer;
+            padding: 0;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: all 0.2s ease;
+        }
+
+        .close-modal:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .contact-modal-body {
+            padding: 24px;
+        }
+
+        .contact-item {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 16px;
+            background: #f1f5f9;
+            border-radius: 12px;
+            margin-bottom: 12px;
+            transition: all 0.2s ease;
+        }
+
+        .contact-item:hover {
+            background: #e2e8f0;
+            transform: translateX(4px);
+        }
+
+        .contact-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .contact-icon {
+            font-size: 24px;
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .contact-info {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .contact-label {
+            font-size: 12px;
+            color: #64748b;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .contact-value {
+            font-size: 15px;
+            color: #1e293b;
+            font-weight: 600;
+        }
+
+        @media (max-width: 576px) {
+            .container {
+                padding: 30px 20px;
+            }
+            
+            h1 {
+                font-size: 24px;
+            }
+            
+            .form-group input {
+                padding: 12px 15px;
+            }
+            
+            .btn {
+                padding: 12px;
+            }
+
+            .security-banner-enhanced {
+                padding: 15px;
+                margin-bottom: 20px;
+            }
+
+            .security-header {
+                flex-direction: column;
+                text-align: center;
+                gap: 12px;
+            }
+
+            .security-title {
+                font-size: 16px;
+            }
+
+            .security-subtitle {
+                font-size: 12px;
+            }
+
+            .security-badges {
+                flex-direction: column;
+                gap: 8px;
+            }
+
+            .security-badge {
+                justify-content: center;
+                padding: 10px;
+            }
+
+            .session-warning {
+                top: 10px;
+                right: 10px;
+                left: 10px;
+                transform: none;
+                max-width: none;
+                padding: 10px 14px;
+            }
+            .alert-content strong {
+                font-size: 12px;
+            }
+            .alert-content span {
+                font-size: 10px;
+            }
+            .alert-icon {
+                font-size: 16px;
+            }
+            .forgot-password {
+                margin: -8px 0 16px 0;
+            }
+            .forgot-password a {
+                font-size: 12px;
+            }
+            .contact-modal-content {
+                width: 95%;
+            }
+            .contact-modal-header {
+                padding: 16px 20px;
+            }
+            .contact-modal-header h3 {
+                font-size: 16px;
+            }
+            .contact-modal-body {
+                padding: 20px;
+            }
+            .contact-item {
+                padding: 14px;
+            }
+            .contact-value {
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Session Warning Alert (outside container) -->
+    <div class="session-warning" id="sessionWarning">
+        <div class="alert-icon">⚠️</div>
+        <div class="alert-content">
+            <strong>Session Expiring</strong>
+            <span>Your session will expire in <span id="warningTime">10</span> minutes. Please save your work.</span>
+        </div>
+    </div>
+    
+    <div class="container">
+        <div class="animation-container" id="lottie-animation"></div>
+        <form id="loginForm">
+            <div class="form-group">
+                <label class="role-label">Select Your Role</label>
+                <div class="role-options">
+                    <label class="role-option">
+                        <input type="radio" name="role" value="admin">
+                        <div class="role-card">
+                            <div class="role-icon">
+                                <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" fill="none">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                                </svg>
+                            </div>
+                            <span>Admin</span>
+                        </div>
+                    </label>
+                    <label class="role-option">
+                        <input type="radio" name="role" value="teacher">
+                        <div class="role-card">
+                            <div class="role-icon">
+                                <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" fill="none">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+                                </svg>
+                            </div>
+                            <span>Teacher</span>
+                        </div>
+                    </label>
+                    <label class="role-option">
+                        <input type="radio" name="role" value="student">
+                        <div class="role-card">
+                            <div class="role-icon">
+                                <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" fill="none">
+                                    <path d="M12 14l9-5-9-5-9 5 9 5z"></path>
+                                    <path d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.01a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z"></path>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l9-5-9-5-9 5 9 5zm0 0l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.01a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14zm-4 6v-7.5l4-2.222"></path>
+                                </svg>
+                            </div>
+                            <span>Student</span>
+                        </div>
+                    </label>
+                </div>
+            </div>
+            <style>
+                .role-label {
+                    display: block;
+                    margin-bottom: 12px;
+                    font-weight: 500;
+                    color: #fff;
+                    text-align: center;
+                }
+                .role-options {
+                    display: flex;
+                    gap: 10px;
+                    margin-bottom: 20px;
+                    flex-wrap: nowrap;
+                    justify-content: center;
+                }
+                .role-option {
+                    flex: 0 0 auto;
+                    width: 90px;
+                }
+                .role-option input[type="radio"] {
+                    display: none;
+                }
+                .role-card {
+                    background: rgba(255, 255, 255, 0.08);
+                    backdrop-filter: blur(10px);
+                    border: 1.5px solid rgba(255, 255, 255, 0.15);
+                    border-radius: 10px;
+                    padding: 12px 8px;
+                    text-align: center;
+                    cursor: pointer;
+                    transition: all 0.2s ease;
+                    height: 100%;
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                    justify-content: center;
+                }
+                .role-card:hover {
+                    background: rgba(255, 255, 255, 0.12);
+                    border-color: rgba(255, 255, 255, 0.25);
+                    transform: translateY(-1px);
+                }
+                .role-option input[type="radio"]:checked + .role-card {
+                    border-color: #00d4aa;
+                    background: rgba(0, 212, 170, 0.15);
+                    box-shadow: 0 0 0 2px rgba(0, 212, 170, 0.25);
+                }
+                .role-icon {
+                    width: 28px;
+                    height: 28px;
+                    background: rgba(0, 212, 170, 0.12);
+                    border-radius: 8px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    margin: 0 auto 6px;
+                    color: #00d4aa;
+                }
+                .role-icon svg {
+                    width: 16px;
+                    height: 16px;
+                }
+                .role-card span {
+                    display: block;
+                    color: #fff;
+                    font-size: 12px;
+                    font-weight: 500;
+                }
+                @media (max-width: 400px) {
+                    .role-options {
+                        gap: 8px;
+                    }
+                    .role-option {
+                        width: 80px;
+                    }
+                    .role-card {
+                        padding: 10px 6px;
+                    }
+                    .role-icon {
+                        width: 24px;
+                        height: 24px;
+                    }
+                    .role-icon svg {
+                        width: 14px;
+                        height: 14px;
+                    }
+                    .role-card span {
+                        font-size: 11px;
+                    }
+                }
+            </style>
+            <div class="form-group">
+                <input type="text" id="username" placeholder="Username">
+            </div>
+            <div class="form-group password-container">
+                <input type="password" id="password" placeholder="Password">
+                <span class="toggle-password" id="togglePassword">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="eye-icon">
+                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                        <circle cx="12" cy="12" r="3"></circle>
+                    </svg>
+                </span>
+            </div>
+            <div class="forgot-password">
+                <a href="#" id="forgotPasswordLink">Forgot Password?</a>
+            </div>
+            <button type="submit" class="btn">Login</button>
+            <div class="error-message" id="errorMessage"></div>
+        </form>
+
+    </div>
+
+    <!-- Validation Alert Toast (outside container) -->
+    <div class="validation-alert" id="validationAlert">
+        <div class="validation-alert-icon">!</div>
+        <span class="validation-alert-text" id="validationText">Please select your role first</span>
+    </div>
+
+    <!-- Forgot Password Contact Modal -->
+    <div class="contact-modal" id="contactModal">
+        <div class="contact-modal-content">
+            <div class="contact-modal-header">
+                <h3>Contact Administration</h3>
+                <button class="close-modal" id="closeModal">&times;</button>
+            </div>
+            <div class="contact-modal-body">
+                <div class="contact-item">
+                    <div class="contact-icon">📞</div>
+                    <div class="contact-info">
+                        <span class="contact-label">Phone</span>
+                        <span class="contact-value">7017759464</span>
+                    </div>
+                </div>
+                <div class="contact-item">
+                    <div class="contact-icon">✉️</div>
+                    <div class="contact-info">
+                        <span class="contact-label">Email</span>
+                        <span class="contact-value">sakibmalik5347@gmail.com</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/security.js"></script>
+    <!-- Login Chatbot Script -->
+    <script src="js/login-chatbot.js"></script>
+    <script>
+        // Toggle password visibility
+        function setupPasswordToggle() {
+            const togglePassword = document.getElementById('togglePassword');
+            const passwordInput = document.getElementById('password');
+            
+            if (togglePassword && passwordInput) {
+                console.log('Password toggle elements found');
+                
+                // Mouse events for desktop
+                togglePassword.addEventListener('mousedown', function(e) {
+                    e.preventDefault();
+                    passwordInput.type = 'text';
+                    this.classList.add('active');
+                    console.log('Password shown');
+                });
+                
+                togglePassword.addEventListener('mouseup', function(e) {
+                    e.preventDefault();
+                    passwordInput.type = 'password';
+                    this.classList.remove('active');
+                    console.log('Password hidden');
+                });
+                
+                togglePassword.addEventListener('mouseleave', function(e) {
+                    e.preventDefault();
+                    passwordInput.type = 'password';
+                    this.classList.remove('active');
+                    console.log('Password hidden (mouseleave)');
+                });
+                
+                // Click event for mobile and toggle
+                togglePassword.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    if (passwordInput.type === 'password') {
+                        passwordInput.type = 'text';
+                        this.classList.add('active');
+                        console.log('Password shown (click)');
+                    } else {
+                        passwordInput.type = 'password';
+                        this.classList.remove('active');
+                        console.log('Password hidden (click)');
+                    }
+                });
+            } else {
+                console.log('Password toggle elements not found:', {
+                    togglePassword: !!togglePassword,
+                    passwordInput: !!passwordInput
+                });
+            }
+        }
+        
+        // Combined DOMContentLoaded event listener
+        document.addEventListener('DOMContentLoaded', function() {
+            // Setup password toggle first
+            setupPasswordToggle();
+            
+            // Setup forgot password modal
+            setupForgotPasswordModal();
+        });
+
+        // Forgot Password Modal Handler
+        function setupForgotPasswordModal() {
+            const forgotLink = document.getElementById('forgotPasswordLink');
+            const modal = document.getElementById('contactModal');
+            const closeModal = document.getElementById('closeModal');
+            
+            if (forgotLink && modal && closeModal) {
+                // Show modal on link click
+                forgotLink.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    modal.classList.add('show');
+                    console.log('Contact modal opened');
+                });
+                
+                // Close modal on X button click
+                closeModal.addEventListener('click', function() {
+                    modal.classList.remove('show');
+                    console.log('Contact modal closed');
+                });
+                
+                // Close modal on clicking outside
+                modal.addEventListener('click', function(e) {
+                    if (e.target === modal) {
+                        modal.classList.remove('show');
+                        console.log('Contact modal closed (clicked outside)');
+                    }
+                });
+                
+                // Close modal on Escape key
+                document.addEventListener('keydown', function(e) {
+                    if (e.key === 'Escape' && modal.classList.contains('show')) {
+                        modal.classList.remove('show');
+                        console.log('Contact modal closed (Escape key)');
+                    }
+                });
+            }
+        }
+
+        // Initialize Lottie animation
+        var animation = lottie.loadAnimation({
+            container: document.getElementById('lottie-animation'),
+            renderer: 'svg',
+            loop: true,
+            autoplay: true,
+            path: 'https://assets3.lottiefiles.com/packages/lf20_hu9cd9.json'
+        });
+        
+        // Test session warning in console
+        console.log('To test session warning, run in console: document.getElementById("sessionWarning").classList.add("show")');
+        console.log('To hide it: document.getElementById("sessionWarning").classList.remove("show")');
+        
+        // Auto-test session warning on page load (blinks for 5 seconds then disappears)
+        setTimeout(() => {
+            const warning = document.getElementById('sessionWarning');
+            if (warning) {
+                warning.classList.add('show');
+                console.log('Session warning: Blinking for 5 seconds then will disappear');
+                
+                // Auto-hide after 5 seconds
+                setTimeout(() => {
+                    warning.classList.remove('show');
+                    console.log('Session warning: Hidden after 5 seconds');
+                }, 5000);
+            }
+        }, 1000);
+        
+        // Validation Alert Functions
+        function showValidationAlert(message) {
+            const alert = document.getElementById('validationAlert');
+            const text = document.getElementById('validationText');
+            if (alert && text) {
+                text.textContent = message;
+                alert.classList.add('show');
+                // Auto-hide after 3 seconds
+                clearTimeout(window._validationTimeout);
+                window._validationTimeout = setTimeout(function() {
+                    hideValidationAlert();
+                }, 3000);
+            }
+        }
+
+        function hideValidationAlert() {
+            const alert = document.getElementById('validationAlert');
+            if (alert) {
+                alert.classList.remove('show');
+            }
+        }
+
+        // Form submission
+        document.getElementById('loginForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            const role = document.querySelector('input[name="role"]:checked')?.value;
+            const errorElement = document.getElementById('errorMessage');
+            
+            // Simple validation
+            if (!role) {
+                showValidationAlert('Please select your role first');
+                return;
+            }
+            if (!username || !password) {
+                showValidationAlert('Please enter your username and password');
+                return;
+            }
+            hideValidationAlert();
+            
+            try {
+                const response = await fetch('/api/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ username, password, role })
+                });
+                
+                const data = await response.json();
+                
+                if (data.status === 'success') {
+                    // Store user data and JWT token in localStorage
+                    localStorage.setItem('userRole', data.user.role);
+                    localStorage.setItem('username', data.user.username);
+                    localStorage.setItem('token', data.token);
+                    
+                    // Store session ID if provided
+                    if (data.sessionId) {
+                        localStorage.setItem('sessionId', data.sessionId);
+                    }
+                    
+                    // Show success message with security confirmation
+                    securityManager.showSecurityAlert('Login successful! Redirecting to secure dashboard...', 'info');
+                    
+                    // Restart session monitoring for the new session
+                    securityManager.startSessionMonitoring();
+                    
+                    // Redirect based on role and login status after short delay
+                    setTimeout(() => {
+                        switch(role) {
+                            case 'admin':
+                                window.location.href = 'dashboard.html';
+                                break;
+                            case 'teacher':
+                                window.location.href = 'teacher/teacher_dashboard.html';
+                                break;
+                            case 'student':
+                                window.location.href = 'student/student_dashboard.html';
+                                break;
+                        }
+                    }, 1000);
+                } else if (data.status === 'first_time') {
+                    // First time login for student - redirect to change password
+                    localStorage.setItem('username', username);
+                    window.location.href = 'change_password.html';
+                } else {
+                    errorElement.textContent = data.message || 'Invalid username or password';
+                    errorElement.style.display = 'block';
+                }
+            } catch (error) {
+                console.error('Login error:', error);
+                errorElement.textContent = 'An error occurred during login. Please try again.';
+                errorElement.style.display = 'block';
+            }
+        });
+    </script>
+</body>
+</html>

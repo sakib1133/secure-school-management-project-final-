@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notifications - Student Portal</title>
+    <link rel="stylesheet" href="../styles.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 50%, #e2e8f0 100%);
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            color: #1f2937;
+        }
+
+        .notifications-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: transparent;
+            padding: 3rem 2rem;
+            min-height: 100vh;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+            padding-bottom: 2rem;
+            border-bottom: 3px solid #2563eb;
+            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+            border-radius: 20px;
+            padding: 3rem 2rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+            border: 1px solid #e2e8f0;
+        }
+
+        .header h1 {
+            color: #1e293b;
+            font-size: 2.5rem;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+            font-weight: 700;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .header .material-icons {
+            font-size: 2.5rem;
+            color: #2563eb;
+            background: rgba(37, 99, 235, 0.1);
+            padding: 0.5rem;
+            border-radius: 12px;
+        }
+
+        .header .subtitle {
+            color: #64748b;
+            font-size: 1rem;
+            margin-top: 1rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .notification-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .filter-tabs {
+            display: flex;
+            gap: 10px;
+            background: #f8fafc;
+            padding: 5px;
+            border-radius: 10px;
+        }
+
+        .filter-tab {
+            padding: 10px 20px;
+            background: transparent;
+            border: none;
+            color: #666;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-radius: 8px;
+        }
+
+        .filter-tab:hover {
+            color: #667eea;
+        }
+
+        .filter-tab.active {
+            background: white;
+            color: #667eea;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .control-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .control-btn {
+            padding: 10px 20px;
+            border: 1px solid #e2e8f0;
+            background: white;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 500;
+            color: #4b5563;
+        }
+
+        .control-btn:hover {
+            border-color: #667eea;
+            color: #667eea;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.2);
+        }
+
+        .notifications-list {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .notification-item {
+            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+            border-radius: 15px;
+            padding: 20px;
+            border: 1px solid #e2e8f0;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .notification-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+        }
+
+        .notification-item.urgent::before {
+            background: linear-gradient(180deg, #ef4444, #dc2626);
+        }
+
+        .notification-item.important::before {
+            background: linear-gradient(180deg, #f59e0b, #d97706);
+        }
+
+        .notification-item.info::before {
+            background: linear-gradient(180deg, #3b82f6, #1d4ed8);
+        }
+
+        .notification-item.success::before {
+            background: linear-gradient(180deg, #10b981, #059669);
+        }
+
+        .notification-item:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .notification-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 15px;
+        }
+
+        .notification-title-section {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .notification-icon {
+            width: 45px;
+            height: 45px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3rem;
+        }
+
+        .icon-urgent {
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+            color: white;
+        }
+
+        .icon-important {
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            color: white;
+        }
+
+        .icon-info {
+            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+            color: white;
+        }
+
+        .icon-success {
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+        }
+
+        .notification-content {
+            flex: 1;
+        }
+
+        .notification-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #1a1a2e;
+            margin-bottom: 5px;
+        }
+
+        .notification-meta {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-size: 0.85rem;
+            color: #666;
+        }
+
+        .notification-time {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .notification-source {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .notification-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .action-btn {
+            padding: 8px;
+            border: none;
+            background: transparent;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            color: #666;
+        }
+
+        .action-btn:hover {
+            background: #f1f5f9;
+            color: #667eea;
+        }
+
+        .notification-description {
+            color: #4b5563;
+            line-height: 1.6;
+            margin-bottom: 15px;
+            padding: 15px;
+            background: #f8fafc;
+            border-radius: 8px;
+        }
+
+        .notification-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 15px;
+            border-top: 1px solid #f1f5f9;
+        }
+
+        .notification-tags {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .notification-tag {
+            padding: 4px 12px;
+            background: #f0f7ff;
+            color: #667eea;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        .notification-status {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.85rem;
+            color: #666;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+        }
+
+        .status-unread {
+            background: #667eea;
+        }
+
+        .status-read {
+            background: #cbd5e1;
+        }
+
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+            background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%);
+            color: white;
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 16px;
+            text-decoration: none;
+            font-weight: 600;
+            margin-bottom: 3rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(37, 99, 235, 0.3);
+            font-size: 0.95rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .back-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(37, 99, 235, 0.4);
+            background: linear-gradient(135deg, #1e40af 0%, #1e3a8a 100%);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 6rem 2rem;
+            color: #64748b;
+            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+            border-radius: 20px;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+            margin: 3rem 0;
+        }
+
+        .empty-state i {
+            font-size: 4rem;
+            color: #cbd5e1;
+            margin-bottom: 2rem;
+            background: rgba(37, 99, 235, 0.1);
+            padding: 1rem;
+            border-radius: 50%;
+        }
+
+        .empty-state h3 {
+            color: #1e293b;
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        .empty-state p {
+            color: #64748b;
+            font-size: 1rem;
+            line-height: 1.6;
+        }
+
+        @media (max-width: 768px) {
+            .notification-controls {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .filter-tabs {
+                justify-content: center;
+            }
+            
+            .control-buttons {
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="notifications-container">
+        <a href="student_dashboard.html" class="back-btn">
+            <i class="material-icons">arrow_back</i>
+            Back to Dashboard
+        </a>
+
+        <div class="header">
+            <h1>
+                <i class="material-icons" style="color: #667eea;">notifications</i>
+                Notifications
+            </h1>
+            <div class="subtitle">Stay Updated with Latest Information</div>
+        </div>
+
+        <div class="notification-controls">
+            <div class="filter-tabs">
+                <button class="filter-tab active" onclick="filterNotifications('all')">All</button>
+               </div>
+
+            <div class="control-buttons">
+                <button class="control-btn" onclick="clearNotifications()">
+                    <i class="material-icons">clear_all</i>
+                    Clear All
+                </button>
+            </div>
+        </div>
+
+        <div class="notifications-list" id="notificationsList">
+        </div>
+
+        <div class="empty-state" id="emptyState" style="display: none;">
+            <i class="material-icons">notifications_none</i>
+            <h3>No Notifications</h3>
+            <p>You're all caught up! No new notifications at this time. Check back later for updates.</p>
+        </div>
+    </div>
+
+    <script>
+        // Get token from localStorage
+        function getAuthToken() {
+            return localStorage.getItem('token');
+        }
+
+        // Load notifications from API on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            loadNotifications();
+        });
+
+        async function loadNotifications() {
+            try {
+                const token = getAuthToken();
+                const response = await fetch('/api/notifications/student', {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+                const result = await response.json();
+                
+                if (result.status === 'success') {
+                    displayNotifications(result.data);
+                } else {
+                    console.error('Error loading notifications:', result.message);
+                    showEmptyState();
+                }
+            } catch (error) {
+                console.error('Error loading notifications:', error);
+                showEmptyState();
+            }
+        }
+
+        function displayNotifications(notifications) {
+            const notificationsList = document.getElementById('notificationsList');
+            const emptyState = document.getElementById('emptyState');
+            
+            notificationsList.innerHTML = '';
+            
+            if (notifications.length === 0) {
+                showEmptyState();
+                return;
+            }
+            
+            emptyState.style.display = 'none';
+            
+            notifications.forEach(notification => {
+                const dateStr = new Date(notification.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+                const timeStr = new Date(notification.created_at).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+                const isPinned = notification.is_pinned === 1;
+                
+                let typeClass = 'info';
+                let iconClass = 'icon-info';
+                
+                if (isPinned) {
+                    typeClass = 'important';
+                    iconClass = 'icon-important';
+                }
+                
+                const notificationItem = document.createElement('div');
+                notificationItem.className = `notification-item ${typeClass}`;
+                notificationItem.innerHTML = `
+                    <div class="notification-header">
+                        <div class="notification-title-section">
+                            <div class="notification-icon ${iconClass}">
+                                <i class="material-icons">${isPinned ? 'push_pin' : 'notifications'}</i>
+                            </div>
+                            <div class="notification-content">
+                                <div class="notification-title">${notification.title}</div>
+                                <div class="notification-meta">
+                                    <div class="notification-time">
+                                        <i class="material-icons" style="font-size: 16px;">schedule</i>
+                                        ${dateStr} at ${timeStr}
+                                    </div>
+                                    <div class="notification-source">
+                                        <i class="material-icons" style="font-size: 16px;">person</i>
+                                        ${notification.created_by}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="notification-description">
+                        ${notification.message}
+                    </div>
+                    <div class="notification-footer">
+                        <div class="notification-tags">
+                            <span class="notification-tag">${notification.target_role}</span>
+                            ${isPinned ? '<span class="notification-tag" style="background: rgba(245, 158, 11, 0.2); color: #f59e0b;">Pinned</span>' : ''}
+                        </div>
+                        <div class="notification-status">
+                            <span class="status-dot status-read"></span>
+                            <span>Read-only</span>
+                        </div>
+                    </div>
+                `;
+                
+                notificationsList.appendChild(notificationItem);
+            });
+        }
+
+        function showEmptyState() {
+            const notificationsList = document.getElementById('notificationsList');
+            const emptyState = document.getElementById('emptyState');
+            
+            notificationsList.innerHTML = '';
+            emptyState.style.display = 'block';
+        }
+
+        function filterNotifications(type) {
+            const notifications = document.querySelectorAll('.notification-item');
+            const tabs = document.querySelectorAll('.filter-tab');
+            
+            // Update active tab
+            tabs.forEach(tab => {
+                tab.classList.remove('active');
+                if (tab.textContent.toLowerCase() === type || 
+                    (type === 'all' && tab.textContent === 'All')) {
+                    tab.classList.add('active');
+                }
+            });
+            
+            // Filter notifications
+            notifications.forEach(notification => {
+                if (type === 'all') {
+                    notification.style.display = 'block';
+                } else if (type === 'pinned') {
+                    notification.style.display = notification.querySelector('.notification-tag')?.textContent.includes('Pinned') ? 'block' : 'none';
+                }
+            });
+        }
+        
+        function clearNotifications() {
+            // For students, this just refreshes the list (read-only)
+            loadNotifications();
+        }
+    </script>
+</body>
+</html>

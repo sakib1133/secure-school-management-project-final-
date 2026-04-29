@@ -1,0 +1,2824 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Dashboard</title>
+    <link rel="stylesheet" href="../styles.css">
+    <link rel="stylesheet" href="../css/student-help-guide.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <style>
+        /* Modern Sleek Header Styles */
+        .top-header {
+            background: linear-gradient(180deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            color: white;
+            padding: 1.2rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow:
+                0 8px 32px rgba(15, 52, 96, 0.4),
+                0 4px 16px rgba(22, 33, 62, 0.3),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 3px solid #e94560;
+        }
+
+        .top-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, #e94560, #ff6b6b, #e94560);
+            background-size: 200% 100%;
+        }
+
+        .school-info {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            position: relative;
+            z-index: 2;
+        }
+
+        .school-logo {
+            width: 55px;
+            height: 55px;
+            background: linear-gradient(135deg, #e94560, #ff6b6b);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 900;
+            color: white;
+            font-size: 1.4rem;
+            box-shadow:
+                0 6px 20px rgba(233, 69, 96, 0.4),
+                inset 0 1px 0 rgba(255, 255, 255, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .school-logo::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .school-name {
+            font-size: 1.6rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #ffffff, #e94560);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            position: relative;
+        }
+
+        .school-name::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(90deg, #e94560, #ff6b6b);
+        }
+
+        .student-info {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+            position: relative;
+            z-index: 2;
+        }
+
+        .student-details {
+            text-align: right;
+            position: relative;
+        }
+
+        .student-name {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 0.2rem;
+            color: #ffffff;
+        }
+
+        .student-roll {
+            font-size: 0.9rem;
+            color: #a8b2d1;
+            font-weight: 500;
+        }
+
+        .profile-icon {
+            width: 45px;
+            height: 45px;
+            background: rgba(233, 69, 96, 0.2);
+            border: 2px solid #e94560;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .profile-icon::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: linear-gradient(45deg, #e94560, #ff6b6b, #e94560);
+            border-radius: 50%;
+            z-index: -1;
+            opacity: 0;
+        }
+
+        .security-badge {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            background: rgba(233, 69, 96, 0.15);
+            border: 1px solid rgba(233, 69, 96, 0.3);
+            padding: 0.6rem 1.2rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            position: relative;
+        }
+
+        .security-badge::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: #e94560;
+            border-radius: 20px 0 0 20px;
+        }
+
+        .security-badge .lock-icon {
+            color: #e94560;
+            font-size: 1.1rem;
+        }
+
+        .tooltip {
+            position: absolute;
+            bottom: -45px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #1a1a2e;
+            color: white;
+            padding: 0.6rem 1rem;
+            border-radius: 8px;
+            font-size: 0.8rem;
+            white-space: nowrap;
+            opacity: 0;
+            pointer-events: none;
+            border: 1px solid #e94560;
+            box-shadow: 0 4px 15px rgba(233, 69, 96, 0.3);
+        }
+
+        .logout-btn {
+            background: linear-gradient(135deg, #e94560, #ff6b6b);
+            border: none;
+            color: white;
+            padding: 0.6rem 1.5rem;
+            border-radius: 25px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.9rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .logout-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+        }
+
+        /* Welcome Card Styles */
+        .welcome-card {
+            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+            border-radius: 20px;
+            padding: 2.5rem;
+            margin: 2rem auto;
+            max-width: 800px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .welcome-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: linear-gradient(90deg, #667eea, #764ba2, #667eea);
+            background-size: 200% 100%;
+        }
+
+        .welcome-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 2rem;
+        }
+
+        .welcome-text {
+            flex: 1;
+        }
+
+        .welcome-greeting {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #1a202c;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .student-class {
+            font-size: 1.2rem;
+            color: #4a5568;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .current-date-display {
+            font-size: 1rem;
+            color: #718096;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .session-timer {
+            background: linear-gradient(135deg, #fef3c7, #fde68a);
+            border: 1px solid #f59e0b;
+            border-radius: 15px;
+            padding: 1.5rem;
+            min-width: 200px;
+            text-align: center;
+        }
+
+        .timer-title {
+            font-size: 0.9rem;
+            color: #92400e;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        .timer-display {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #d97706;
+            margin-bottom: 0.5rem;
+        }
+
+        .timer-note {
+            font-size: 0.8rem;
+            color: #92400e;
+            opacity: 0.8;
+        }
+
+        /* Ultra-Modern Attractive Dashboard Design */
+        .quick-access-tiles {
+            margin: 1rem 0 2rem;
+            padding: 0 2rem;
+            max-width: 1400px;
+            margin-left: auto;
+            margin-right: auto;
+            position: relative;
+            z-index: 1;
+            clear: both;
+        }
+
+        .tile-header {
+            text-align: center;
+            margin-bottom: 3rem;
+            position: relative;
+        }
+
+        .tile-header::after {
+            content: '';
+            position: absolute;
+            bottom: -1rem;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 120px;
+            height: 6px;
+            background: linear-gradient(90deg, #667eea, #764ba2, #f093fb);
+            border-radius: 3px;
+        }
+
+        .tile-header h2 {
+            font-size: 3rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, #667eea, #764ba2, #f093fb);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+            text-shadow: 0 0 40px rgba(102, 126, 234, 0.3);
+        }
+
+        .tile-header p {
+            font-size: 1.3rem;
+            color: #64748b;
+            margin: 0;
+            font-weight: 600;
+            opacity: 0.8;
+        }
+
+        .tiles-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 2.5rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .access-tile {
+            background: linear-gradient(145deg, #ffffff, #f8fafc);
+            border-radius: 24px;
+            padding: 2.5rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            cursor: pointer;
+            border: 2px solid transparent;
+            box-shadow:
+                0 10px 40px rgba(0, 0, 0, 0.08),
+                0 2px 10px rgba(0, 0, 0, 0.04),
+                inset 0 1px 0 rgba(255, 255, 255, 0.8);
+            position: relative;
+            overflow: hidden;
+            min-height: 220px;
+            justify-content: center;
+        }
+
+        .access-tile::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 8px;
+            background: linear-gradient(90deg, var(--tile-color-1), var(--tile-color-2), var(--tile-color-3));
+            border-radius: 24px 24px 0 0;
+        }
+
+        .access-tile::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            transform: rotate(45deg);
+            opacity: 0;
+        }
+
+        .dashboard-tile { --tile-color-1: #667eea; --tile-color-2: #764ba2; --tile-color-3: #f093fb; }
+        .grades-tile { --tile-color-1: #f093fb; --tile-color-2: #f5576c; --tile-color-3: #ff6b6b; }
+        .timetable-tile { --tile-color-1: #4facfe; --tile-color-2: #00f2fe; --tile-color-3: #43e97b; }
+        .subjects-tile { --tile-color-1: #43e97b; --tile-color-2: #38f9d7; --tile-color-3: #4facfe; }
+        .assignments-tile { --tile-color-1: #fa709a; --tile-color-2: #fee140; --tile-color-3: #feca57; }
+        .ai-tile { --tile-color-1: #30cfd0; --tile-color-2: #330867; --tile-color-3: #667eea; }
+        .notifications-tile { --tile-color-1: #ff9a9e; --tile-color-2: #fecfef; --tile-color-3: #f093fb; }
+        .profile-tile { --tile-color-1: #a8edea; --tile-color-2: #fed6e3; --tile-color-3: #ff9a9e; }
+
+        .tile-icon {
+            width: 90px;
+            height: 90px;
+            border-radius: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            color: white;
+            position: relative;
+            margin-bottom: 2rem;
+            box-shadow:
+                0 10px 30px rgba(0, 0, 0, 0.2),
+                inset 0 1px 0 rgba(255, 255, 255, 0.3);
+        }
+
+        .tile-icon::before {
+            content: '';
+            position: absolute;
+            inset: -3px;
+            border-radius: 24px;
+            padding: 3px;
+            background: linear-gradient(135deg, var(--tile-color-1), var(--tile-color-2), var(--tile-color-3));
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            mask-composite: exclude;
+            opacity: 0.4;
+        }
+
+        .dashboard-tile .tile-icon {
+            background: linear-gradient(135deg, #667eea, #764ba2, #f093fb);
+        }
+
+        .grades-tile .tile-icon {
+            background: linear-gradient(135deg, #f093fb, #f5576c, #ff6b6b);
+        }
+
+        .timetable-tile .tile-icon {
+            background: linear-gradient(135deg, #4facfe, #00f2fe, #43e97b);
+        }
+
+        .subjects-tile .tile-icon {
+            background: linear-gradient(135deg, #43e97b, #38f9d7, #4facfe);
+        }
+
+        .assignments-tile .tile-icon {
+            background: linear-gradient(135deg, #fa709a, #fee140, #feca57);
+        }
+
+        .ai-tile .tile-icon {
+            background: linear-gradient(135deg, #30cfd0, #330867, #667eea);
+        }
+
+        .notifications-tile .tile-icon {
+            background: linear-gradient(135deg, #ff9a9e, #fecfef, #f093fb);
+        }
+
+        .profile-tile .tile-icon {
+            background: linear-gradient(135deg, #a8edea, #fed6e3, #ff9a9e);
+        }
+
+        .notification-badge {
+            position: absolute;
+            top: -10px;
+            right: -10px;
+            background: linear-gradient(135deg, #ef4444, #dc2626, #ff6b6b);
+            color: white;
+            border-radius: 50%;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9rem;
+            font-weight: 700;
+            border: 4px solid white;
+            box-shadow: 0 6px 20px rgba(239, 68, 68, 0.5);
+        }
+
+        .tile-content {
+            flex: 1;
+            position: relative;
+            z-index: 2;
+        }
+
+        .tile-content h3 {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: #1e293b;
+            margin: 0 0 0.8rem;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .tile-content p {
+            font-size: 1rem;
+            color: #64748b;
+            margin: 0;
+            font-weight: 600;
+            opacity: 0.8;
+        }
+
+        .tile-arrow {
+            position: absolute;
+            bottom: 2rem;
+            color: var(--tile-color-1);
+            font-size: 1.8rem;
+            opacity: 0.7;
+        }
+
+        /* Enhanced Mobile Responsive */
+        @media (max-width: 1200px) {
+            .tiles-grid {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 2rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .dashboard-top-section {
+                flex-direction: column;
+                gap: 1.5rem;
+                padding: 0 1rem;
+            }
+
+            .student-nav {
+                min-width: auto;
+                width: 100%;
+            }
+
+            .welcome-card-container {
+                min-width: auto;
+                width: 100%;
+            }
+
+            .welcome-card {
+                margin: 0;
+                max-width: 100%;
+            }
+
+            .quick-access-tiles {
+                padding: 0 1rem;
+                margin: 3rem 0;
+            }
+
+            .tiles-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 1.5rem;
+            }
+
+            .access-tile {
+                padding: 2rem;
+                min-height: 180px;
+            }
+
+            .tile-icon {
+                width: 70px;
+                height: 70px;
+                font-size: 2rem;
+                margin-bottom: 1.5rem;
+            }
+
+            .tile-header h2 {
+                font-size: 2.5rem;
+            }
+
+            .tile-header p {
+                font-size: 1.1rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .dashboard-top-section {
+                padding: 0 1rem;
+            }
+
+            .tiles-grid {
+                grid-template-columns: 1fr;
+                gap: 1.2rem;
+            }
+
+            .access-tile {
+                padding: 1.5rem;
+                min-height: 160px;
+                flex-direction: row;
+                text-align: left;
+            }
+
+            .tile-icon {
+                width: 60px;
+                height: 60px;
+                font-size: 1.8rem;
+                margin-bottom: 0;
+                margin-right: 1.5rem;
+            }
+
+            .tile-content h3 {
+                font-size: 1.3rem;
+            }
+
+            .tile-content p {
+                font-size: 0.9rem;
+            }
+
+            .tile-arrow {
+                position: static;
+                margin-left: auto;
+            }
+        }
+
+        /* Keep existing styles for compatibility */
+        .student-nav {
+            background: white;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            padding: 1rem 2rem;
+            margin-top: 2rem;
+            border-radius: 12px;
+            position: relative;
+            z-index: 10;
+        }
+
+        .student-nav .logo {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        .student-nav ul {
+            display: flex;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            gap: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .student-nav a {
+            text-decoration: none;
+            color: #6b7280;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+        }
+
+        .student-nav a.active {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            transform: translateX(8px) scale(1.02);
+            box-shadow:
+                0 8px 25px rgba(102, 126, 234, 0.3),
+                inset 0 1px 0 rgba(255, 255, 255, 0.2);
+        }
+
+        /* Ultra-Attractive Welcome Card Redesign - Perfect Fit */
+        .welcome-card {
+            background: linear-gradient(145deg, #ffffff 0%, #f8fafc 50%, #f1f5f9 100%);
+            border-radius: 20px;
+            padding: 0;
+            margin: 0;
+            max-width: 100%;
+            box-shadow:
+                0 20px 50px rgba(0, 0, 0, 0.08),
+                0 10px 20px rgba(0, 0, 0, 0.04),
+                inset 0 1px 0 rgba(255, 255, 255, 0.9);
+            position: relative;
+            overflow: hidden;
+            z-index: 5;
+            display: flex;
+            flex-direction: column;
+            border: 1px solid rgba(226, 232, 240, 0.8);
+            height: 100%;
+        }
+
+        .welcome-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: linear-gradient(90deg, #667eea, #764ba2, #f093fb);
+        }
+
+        .welcome-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 1.5rem 2rem;
+            border-bottom: none;
+            position: relative;
+            z-index: 2;
+            overflow: hidden;
+        }
+
+        .welcome-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+        }
+
+        .welcome-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 0;
+            position: relative;
+            z-index: 3;
+        }
+
+        .welcome-title::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+        }
+
+        .welcome-subtitle {
+            font-size: 1.2rem;
+            color: rgba(255, 255, 255, 0.95);
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            position: relative;
+            z-index: 3;
+        }
+
+        .welcome-subtitle i {
+            font-size: 1.5rem;
+            color: rgba(255, 255, 255, 0.9);
+            filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.3));
+        }
+
+        .welcome-subtitle::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 8px;
+            height: 8px;
+            background: rgba(255, 255, 255, 0.6);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        /* B.Tech Section */
+        .btech-section {
+            margin-top: 0;
+            text-align: center;
+            position: relative;
+            z-index: 3;
+            display: none;
+        }
+
+        .btech-section h1 {
+            font-size: 1.8rem;
+            font-weight: 900;
+            color: white;
+            margin: 0;
+            text-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            background: linear-gradient(135deg, #fff, #f8fafc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            padding: 0.5rem 1.5rem;
+            border-radius: 12px;
+            display: inline-block;
+            position: relative;
+            overflow: hidden;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            backdrop-filter: blur(5px);
+        }
+
+        .btech-section h1::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+        }
+
+        .welcome-content {
+            display: flex;
+            flex-direction: column;
+            padding: 1.5rem 2rem;
+            gap: 1.5rem;
+            position: relative;
+            z-index: 2;
+            flex: 1;
+            align-items: center;
+        }
+
+        .welcome-left {
+            width: 100%;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 0.75rem;
+        }
+
+        .welcome-info-item {
+            background: #ffffff;
+            border-radius: 12px;
+            padding: 0.875rem 1.25rem;
+            border: 1px solid #e2e8f0;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .welcome-info-label {
+            font-size: 0.75rem;
+            color: #64748b;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            min-width: 120px;
+        }
+
+        .welcome-info-label i {
+            font-size: 1.1rem;
+            color: #667eea;
+        }
+
+        .welcome-info-value {
+            font-size: 0.95rem;
+            color: #1e293b;
+            font-weight: 600;
+            flex: 1;
+            word-break: break-word;
+        }
+
+        .welcome-right {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+        }
+
+        .student-photo-box {
+            background: #ffffff;
+            border-radius: 16px;
+            padding: 1rem;
+            border: 1px solid #e2e8f0;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .student-photo-box::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #667eea, #764ba2, #667eea);
+        }
+
+        .student-photo {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #f8fafc, #e2e8f0);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            border: 2px solid #ffffff;
+        }
+
+        .student-photo img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 50%;
+        }
+
+        .student-photo-info {
+            text-align: center;
+            margin-top: 0.5rem;
+        }
+
+        .student-photo-name {
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: #1e293b;
+            margin-bottom: 0.1rem;
+        }
+
+        .student-photo-id {
+            font-size: 0.75rem;
+            color: #64748b;
+            font-weight: 500;
+        }
+
+        .session-timer {
+            background: linear-gradient(135deg, #fef3c7, #fde68a);
+            border-radius: 16px;
+            padding: 1rem 1.5rem;
+            text-align: center;
+            box-shadow:
+                0 10px 25px rgba(245, 158, 11, 0.3),
+                inset 0 1px 0 rgba(255, 255, 255, 0.4);
+            position: relative;
+            overflow: hidden;
+            border: 2px solid rgba(245, 158, 11, 0.3);
+        }
+
+        .session-timer::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #f59e0b, #d97706, #f59e0b);
+        }
+
+        .timer-title {
+            font-size: 0.9rem;
+            color: #92400e;
+            margin-bottom: 0.5rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.4rem;
+        }
+
+        .timer-display {
+            font-size: 1.5rem;
+            font-weight: 900;
+            color: #d97706;
+            margin-bottom: 0.3rem;
+            text-shadow: 0 2px 8px rgba(217, 119, 6, 0.3);
+        }
+
+        .timer-note {
+            font-size: 0.75rem;
+            color: #92400e;
+            opacity: 0.8;
+            font-weight: 600;
+        }
+
+        /* Side by Side Layout Container */
+        .dashboard-top-section {
+            display: flex;
+            align-items: stretch;
+            gap: 2rem;
+            margin: 1rem 0;
+            padding: 0 2rem;
+            max-width: 1400px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .student-nav {
+            background: linear-gradient(145deg, #ffffff, #f8fafc);
+            box-shadow: 
+                0 20px 40px rgba(0, 0, 0, 0.08),
+                0 8px 16px rgba(0, 0, 0, 0.04),
+                inset 0 1px 0 rgba(255, 255, 255, 0.9);
+            padding: 2rem;
+            border-radius: 24px;
+            position: relative;
+            z-index: 10;
+            flex: 1;
+            min-width: 300px;
+            border: 2px solid transparent;
+            background-clip: padding-box;
+            transition: all 0.4s cubic-bezier(0.23, 1, 0.320, 1);
+            overflow: hidden;
+            height: 100%;
+        }
+
+        .student-nav::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 6px;
+            background: linear-gradient(90deg, #667eea, #764ba2, #f093fb);
+            border-radius: 24px 24px 0 0;
+            transition: height 0.4s ease;
+            pointer-events: none;
+        }
+
+        .student-nav::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(102, 126, 234, 0.05), transparent);
+            transform: rotate(45deg);
+            transition: all 0.6s ease;
+            pointer-events: none;
+        }
+
+        .student-nav {
+            background: linear-gradient(145deg, #ffffff, #f8fafc);
+            box-shadow:
+                0 20px 40px rgba(0, 0, 0, 0.08),
+                0 8px 16px rgba(0, 0, 0, 0.04),
+                inset 0 1px 0 rgba(255, 255, 255, 0.9);
+            padding: 2rem;
+            border-radius: 24px;
+            position: relative;
+            z-index: 10;
+            flex: 1;
+            min-width: 300px;
+            border: 2px solid transparent;
+            background-clip: padding-box;
+            overflow: hidden;
+        }
+
+        .student-nav::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 6px;
+            background: linear-gradient(90deg, #667eea, #764ba2, #f093fb);
+            border-radius: 24px 24px 0 0;
+            pointer-events: none;
+        }
+
+        .student-nav::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(102, 126, 234, 0.05), transparent);
+            transform: rotate(45deg);
+            pointer-events: none;
+        }
+
+        .student-nav .logo {
+            font-size: 1.5rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #667eea, #764ba2, #f093fb);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 1.5rem;
+            text-align: center;
+            text-shadow: 0 0 30px rgba(102, 126, 234, 0.3);
+        }
+
+        .student-nav ul {
+            display: flex;
+            flex-direction: column;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            gap: 0.8rem;
+        }
+
+        .student-nav a {
+            text-decoration: none;
+            color: #64748b;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem 1.5rem;
+            border-radius: 16px;
+            font-weight: 600;
+            position: relative;
+            overflow: hidden;
+            background: linear-gradient(145deg, #ffffff, #f8fafc);
+            box-shadow:
+                0 4px 12px rgba(0, 0, 0, 0.04),
+                inset 0 1px 0 rgba(255, 255, 255, 0.8);
+        }
+
+        .student-nav a.active {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            box-shadow:
+                0 8px 25px rgba(102, 126, 234, 0.3),
+                inset 0 1px 0 rgba(255, 255, 255, 0.2);
+        }
+
+        .student-nav a i {
+            font-size: 1.3rem;
+        }
+
+        .welcome-card-container {
+            flex: 2;
+            min-width: 400px;
+            height: 100%;
+        }
+
+        /* Professional Events List */
+        .upcoming-events {
+            background: white;
+            border-radius: 8px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            margin-bottom: 2rem;
+        }
+
+        .upcoming-events h2 {
+            margin-bottom: 1rem;
+            color: #333;
+            font-size: 1.5rem;
+        }
+
+        .events-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .event-item {
+            display: flex;
+            align-items: center;
+            padding: 1rem;
+            border: 1px solid #e5e7eb;
+            border-radius: 6px;
+            background: #f9fafb;
+        }
+
+        .event-date {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-width: 60px;
+            padding: 0.5rem;
+            background: #f3f4f6;
+            border-radius: 4px;
+            margin-right: 1rem;
+        }
+
+        .event-date .day {
+            font-size: 1.25rem;
+            font-weight: bold;
+            color: #1f2937;
+        }
+
+        .event-date .month {
+            font-size: 0.75rem;
+            color: #6b7280;
+            text-transform: uppercase;
+        }
+
+        .event-details {
+            flex: 1;
+        }
+
+        .event-details h3 {
+            margin: 0 0 0.5rem 0;
+            color: #1f2937;
+            font-size: 1rem;
+        }
+
+        .event-info {
+            display: flex;
+            gap: 1rem;
+            font-size: 0.875rem;
+            color: #6b7280;
+        }
+
+        .event-status {
+            padding: 0.25rem 0.75rem;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+
+        .high-priority {
+            background: #fef2f2;
+            color: #dc2626;
+        }
+
+        .medium-priority {
+            background: #fef3c7;
+            color: #d97706;
+        }
+
+        .low-priority {
+            background: #f0f9ff;
+            color: #2563eb;
+        }
+
+        /* Quick Access Tiles Separation */
+        .quick-access-tiles {
+            margin: 1rem 0 2rem;
+            padding: 0 2rem;
+            max-width: 1400px;
+            margin-left: auto;
+            margin-right: auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Main Container Spacing */
+        .dashboard {
+            padding: 0;
+            min-height: auto;
+        }
+
+        /* Fix overlapping with proper spacing */
+        .top-header + .dashboard {
+            margin-top: 0;
+        }
+
+        .student-nav a.active {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+        }
+
+        .dashboard {
+            padding: 0;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .dashboard-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            border-left: 4px solid #667eea;
+        }
+
+        .card h3 {
+            color: #6b7280;
+            font-size: 1rem;
+            margin: 0 0 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .card p {
+            font-size: 2rem;
+            font-weight: 700;
+            margin: 0;
+            color: #2c3e50;
+        }
+
+        .card .icon {
+            font-size: 2.5rem;
+            color: #667eea;
+            margin-bottom: 1rem;
+        }
+
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .action-btn {
+            display: flex;
+            align-items: center;
+            padding: 1rem;
+            background: white;
+            border-radius: 8px;
+            text-decoration: none;
+            color: #2c3e50;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+
+        .action-btn i {
+            margin-right: 0.75rem;
+            font-size: 1.25rem;
+        }
+
+        /* Modern Upcoming Events Section */
+        .upcoming-events {
+            margin-top: 2rem;
+            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(102, 126, 234, 0.1);
+        }
+
+        .upcoming-events h2 {
+            margin-top: 0;
+            margin-bottom: 30px;
+            color: #1a1a2e;
+            font-size: 1.8rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .events-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 25px;
+        }
+
+        .event-card {
+            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+            border-radius: 18px;
+            padding: 25px;
+            border: 1px solid #e2e8f0;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.05);
+        }
+
+        .event-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #667eea, #764ba2, #f093fb, #667eea);
+            background-size: 300% 100%;
+        }
+
+        .event-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 20px;
+        }
+
+        .event-date-modern {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .date-circle {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            color: white;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .date-circle::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            transform: rotate(45deg);
+            opacity: 0;
+        }
+
+        .date-day {
+            font-size: 1.4rem;
+            line-height: 1;
+            margin-bottom: 2px;
+        }
+
+        .date-month {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 500;
+        }
+
+        .exam-bg {
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+        }
+
+        .deadline-bg {
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+        }
+
+        .payment-bg {
+            background: linear-gradient(135deg, #10b981, #059669);
+        }
+
+        .event-category {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            background: #f8fafc;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .event-category i {
+            color: #667eea;
+            font-size: 1.1rem;
+        }
+
+        .event-category span {
+            color: #1a1a2e;
+        }
+
+        .event-content {
+            margin-bottom: 15px;
+        }
+
+        .event-content h3 {
+            color: #1a1a2e;
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            line-height: 1.3;
+        }
+
+        .event-info {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .time-location {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 15px;
+            background: #f1f5f9;
+            border-radius: 10px;
+            border-left: 3px solid #667eea;
+        }
+
+        .time-location i {
+            color: #667eea;
+            font-size: 1.1rem;
+        }
+
+        .time-location span {
+            color: #4b5563;
+            font-weight: 500;
+        }
+
+        .amount-display {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px;
+            background: #f1f5f9;
+            border-radius: 10px;
+            border-left: 3px solid #10b981;
+        }
+
+        .amount-label {
+            color: #6b7280;
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+
+        .amount-value {
+            color: #1a1a2e;
+            font-size: 1.5rem;
+            font-weight: 800;
+        }
+
+        .event-urgency {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.85rem;
+        }
+
+        .event-urgency.high {
+            background: linear-gradient(135deg, #fef2f2, #fecaca);
+            color: #dc2626;
+            border: 1px solid #fca5a5;
+        }
+
+        .event-urgency.medium {
+            background: linear-gradient(135deg, #fef3c7, #fde68a);
+            color: #d97706;
+            border: 1px solid #f59e0b;
+        }
+
+        .event-urgency.low {
+            background: linear-gradient(135deg, #d1fae5, #a7f3d0);
+            color: #059669;
+            border: 1px solid #10b981;
+        }
+
+        .event-urgency i {
+            font-size: 1rem;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .top-header {
+                flex-direction: column;
+                gap: 1rem;
+                padding: 1rem;
+            }
+
+            .student-info {
+                flex-direction: column;
+                gap: 1rem;
+                text-align: center;
+            }
+
+            .welcome-content {
+                flex-direction: column;
+                text-align: center;
+                padding: 1rem;
+            }
+
+            .welcome-left {
+                grid-template-columns: 1fr;
+                gap: 0.5rem;
+            }
+
+            .welcome-info-item {
+                padding: 0.75rem 1rem;
+            }
+
+            .welcome-info-label {
+                min-width: auto;
+                font-size: 0.7rem;
+            }
+
+            .welcome-info-value {
+                font-size: 0.9rem;
+            }
+
+            .session-timer {
+                width: 100%;
+            }
+
+            .student-nav ul {
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Modern Top Header -->
+    <header class="top-header">
+        <div class="school-info">
+            <div class="school-logo">SM</div>
+            <div class="school-name">School Management</div>
+        </div>
+        
+        <div class="student-info">
+            <div class="profile-icon">
+                <i class="material-icons">person</i>
+            </div>
+            
+            <div class="security-badge">
+                <i class="material-icons lock-icon">lock</i>
+                <span>Secure Session Active</span>
+                <div class="tooltip">For your safety, inactive sessions are logged out</div>
+            </div>
+            
+            <a href="../login.html" class="logout-btn">
+                <i class="material-icons">logout</i>
+                Logout
+            </a>
+        </div>
+    </header>
+
+    <!-- Side by Side Layout: Navigation + Welcome Card -->
+    <div class="dashboard-top-section">
+        <!-- Original Navigation (unchanged for compatibility) -->
+        <nav class="student-nav">
+            <div class="logo">Student Portal</div>
+            <ul>
+                <li><a href="student_dashboard.html" class="active" target="_blank">
+                    <i class="material-icons">dashboard</i> Dashboard
+                </a></li>
+                <li><a href="my_grades.html" target="_blank">
+                    <i class="material-icons">grade</i> My Grades
+                </a></li>
+                <li><a href="my_timetable.html" target="_blank">
+                    <i class="material-icons">schedule</i> My Timetable
+                </a></li>
+                <li><a href="my_subjects.html" target="_blank">
+                    <i class="material-icons">book</i> My Subjects
+                </a></li>
+                                <li><a href="fees/index.html" target="_blank">
+                    <i class="material-icons">payment</i> Fees
+                </a></li>
+                <li><a href="my_grades.html" target="_blank">
+                    <i class="material-icons">assessment</i> Exam Results
+                </a></li>
+                <li><a href="notifications.html" target="_blank">
+                    <i class="material-icons">notifications</i> Notifications
+                </a></li>
+            </ul>
+        </nav>
+        
+        <!-- Student Profile Card -->
+        <div class="welcome-card-container">
+            <div class="welcome-card">
+                <!-- Profile Header -->
+                <div class="welcome-header">
+                    <div class="welcome-title">Student Profile</div>
+                    <div class="btech-section">
+                        <span style="font-size: 0.9rem; opacity: 0.9;"></span>
+                    </div>
+                </div>
+                
+                <!-- Profile Content -->
+                <div class="welcome-content">
+                    <!-- Top - Student Photo -->
+                    <div class="welcome-right">
+                        <div class="student-photo-box">
+                            <div class="student-photo">
+                                <img id="studentPhoto" src="" alt="Student Photo" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%; display: none;">
+                                <div id="studentInitials" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; font-size: 2.5rem; font-weight: bold; color: #667eea;">👤</div>
+                            </div>
+                            <div class="student-photo-info">
+                                <div class="student-photo-name" id="photoName"></div>
+                                <div class="student-photo-id" id="photoRollNo"></div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Middle - Info Boxes -->
+                    <div class="welcome-left">
+                        <!-- Name -->
+                        <div class="welcome-info-item">
+                            <div class="welcome-info-label">
+                                <i class="material-icons">person</i>
+                                Full Name
+                            </div>
+                            <div class="welcome-info-value" id="profileName">Loading...</div>
+                        </div>
+                        
+                        <!-- Class -->
+                        <div class="welcome-info-item">
+                            <div class="welcome-info-label">
+                                <i class="material-icons">class</i>
+                                Class
+                            </div>
+                            <div class="welcome-info-value" id="profileClass">Loading...</div>
+                        </div>
+                        
+                        <!-- Roll Number -->
+                        <div class="welcome-info-item">
+                            <div class="welcome-info-label">
+                                <i class="material-icons">format_list_numbered</i>
+                                Roll Number
+                            </div>
+                            <div class="welcome-info-value" id="profileRollNo">Loading...</div>
+                        </div>
+                        
+                        <!-- Admission Number -->
+                        <div class="welcome-info-item">
+                            <div class="welcome-info-label">
+                                <i class="material-icons">confirmation_number</i>
+                                Admission No.
+                            </div>
+                            <div class="welcome-info-value" id="profileAdmissionNo">Loading...</div>
+                        </div>
+                        
+                        <!-- Student ID -->
+                        <div class="welcome-info-item">
+                            <div class="welcome-info-label">
+                                <i class="material-icons">badge</i>
+                                Student ID
+                            </div>
+                            <div class="welcome-info-value" id="profileStudentId">Loading...</div>
+                        </div>
+                        
+                        <!-- Mobile -->
+                        <div class="welcome-info-item">
+                            <div class="welcome-info-label">
+                                <i class="material-icons">phone</i>
+                                Mobile Number
+                            </div>
+                            <div class="welcome-info-value" id="profileMobile">Loading...</div>
+                        </div>
+                        
+                        <!-- Email -->
+                        <div class="welcome-info-item">
+                            <div class="welcome-info-label">
+                                <i class="material-icons">email</i>
+                                Email Address
+                            </div>
+                            <div class="welcome-info-value" id="profileEmail">Loading...</div>
+                        </div>
+                        
+                        <!-- Address -->
+                        <div class="welcome-info-item">
+                            <div class="welcome-info-label">
+                                <i class="material-icons">location_on</i>
+                                Address
+                            </div>
+                            <div class="welcome-info-value" id="profileAddress">Loading...</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // API Base URL
+        const API_BASE = window.location.origin;
+        
+        // Get JWT token from localStorage
+        function getToken() {
+            return localStorage.getItem('token') || localStorage.getItem('jwt_token');
+        }
+        
+        // Load student profile data
+        async function loadStudentProfile() {
+            const token = getToken();
+            if (!token) {
+                window.location.href = '../login.html';
+                return;
+            }
+            
+            try {
+                // Load student profile from /students/me endpoint
+                const response = await fetch(`${API_BASE}/students/me`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const data = await response.json();
+                
+                if (data.status === 'success' && data.data) {
+                    const student = data.data;
+                    
+                    // Populate profile fields
+                    document.getElementById('profileName').textContent = student.name || 'Not Available';
+                    document.getElementById('profileClass').textContent = student.class || 'Not Available';
+                    document.getElementById('profileRollNo').textContent = student.roll_number || 'Not Available';
+                    document.getElementById('profileAdmissionNo').textContent = student.admission_number || 'Not Available';
+                    document.getElementById('profileStudentId').textContent = student.student_id || 'Not Available';
+                    document.getElementById('profileMobile').textContent = student.phone || 'Not Available';
+                    document.getElementById('profileEmail').textContent = student.email || 'Not Available';
+                    document.getElementById('profileAddress').textContent = student.address || 'Not Available';
+                    
+                    // Update photo section
+                    document.getElementById('photoName').textContent = student.name || '';
+                    document.getElementById('photoRollNo').textContent = student.roll_number ? `Roll No: ${student.roll_number}` : '';
+                    
+                    // Update photo
+                    const photoImg = document.getElementById('studentPhoto');
+                    const initialsDiv = document.getElementById('studentInitials');
+                    
+                    if (student.avatar) {
+                        photoImg.src = student.avatar;
+                        photoImg.style.display = 'block';
+                        initialsDiv.style.display = 'none';
+                    } else {
+                        // Show initials if no photo
+                        photoImg.style.display = 'none';
+                        initialsDiv.style.display = 'flex';
+                        if (student.name) {
+                            const nameParts = student.name.split(' ');
+                            const initialText = nameParts.map(n => n[0]).join('').toUpperCase().slice(0, 2);
+                            initialsDiv.textContent = initialText;
+                        }
+                    }
+                    
+                    // Update header student name
+                    document.getElementById('studentName').textContent = student.name || 'Student';
+                }
+            } catch (error) {
+                console.error('Error loading student profile:', error);
+            }
+        }
+        
+        // Check authentication and load profile on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            // Check if user is logged in and has student role
+            const userRole = localStorage.getItem('userRole');
+            const token = getToken();
+            
+            if (!token || userRole !== 'student') {
+                window.location.href = '../login.html';
+                return;
+            }
+            
+            // Load student profile
+            loadStudentProfile();
+            
+            console.log('Student dashboard loaded with profile');
+        });
+
+        // Enterprise-Level Tile Functions
+        function openGrades() {
+            showSecurityMessage('📊 My Grades', 'View your academic performance, subject-wise marks, and grade calculations.');
+            // In production: fetch('/api/student/grades')
+        }
+
+        function openTimetable() {
+            showSecurityMessage('📅 My Timetable', 'View your class schedule with current day highlighted.');
+            // In production: fetch('/api/student/timetable')
+        }
+
+        function openSubjects() {
+            showSecurityMessage('📚 My Subjects', 'Access course materials and subject information.');
+            // In production: fetch('/api/student/subjects')
+        }
+
+        function openAssignments() {
+            showSecurityMessage('📝 Assignments', 'View pending and submitted assignments with due dates.');
+            // In production: fetch('/api/student/assignments')
+        }
+
+        function openNotifications() {
+            showSecurityMessage('🔔 Notifications', 'View exam alerts, assignment deadlines, and security updates.');
+            // In production: fetch('/api/student/notifications')
+        }
+
+        function openProfile() {
+            showSecurityMessage('👤 Profile Settings', 'Manage your profile, change password, and view login history.');
+            // In production: fetch('/api/student/profile')
+        }
+
+        function showSecurityMessage(title, message) {
+            // Create a modern notification instead of alert
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: linear-gradient(135deg, #667eea, #764ba2);
+                color: white;
+                padding: 1.5rem;
+                border-radius: 12px;
+                box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+                z-index: 10000;
+                max-width: 400px;
+                animation: slideIn 0.3s ease;
+            `;
+            
+            notification.innerHTML = `
+                <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 0.5rem;">
+                    <span style="font-size: 1.5rem;">${title.split(' ')[0]}</span>
+                    <h3 style="margin: 0; font-size: 1.1rem;">${title.substring(title.indexOf(' ') + 1)}</h3>
+                </div>
+                <p style="margin: 0; opacity: 0.9; font-size: 0.9rem;">${message}</p>
+                <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid rgba(255,255,255,0.2);">
+                    <small style="opacity: 0.8;">🔒 Secure access - Student data only</small>
+                </div>
+            `;
+            
+            document.body.appendChild(notification);
+            
+            // Auto remove after 4 seconds
+            setTimeout(() => {
+                notification.style.animation = 'slideOut 0.3s ease';
+                setTimeout(() => document.body.removeChild(notification), 300);
+            }, 4000);
+        }
+
+        // Add animations
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes slideIn {
+                from { transform: translateX(100%); opacity: 0; }
+                to { transform: translateX(0); opacity: 1; }
+            }
+            @keyframes slideOut {
+                from { transform: translateX(0); opacity: 1; }
+                to { transform: translateX(100%); opacity: 0; }
+            }
+        `;
+        document.head.appendChild(style);
+
+        // Exam Results Functionality
+        function showResultDetails(subject, examType) {
+            const results = {
+                'Mathematics': {
+                    'Midterm': {
+                        marks: '85/100',
+                        grade: 'A',
+                        percentage: '85%',
+                        rank: '3rd in class',
+                        comments: 'Excellent performance in calculus and algebra sections.',
+                        breakdown: {
+                            'Calculus': '92/100',
+                            'Algebra': '88/100',
+                            'Geometry': '75/100'
+                        }
+                    }
+                },
+                'Physics': {
+                    'Quiz': {
+                        marks: '78/100',
+                        grade: 'B+',
+                        percentage: '78%',
+                        rank: '8th in class',
+                        comments: 'Good understanding of mechanics concepts.',
+                        breakdown: {
+                            'Mechanics': '82/100',
+                            'Thermodynamics': '74/100'
+                        }
+                    }
+                },
+                'Chemistry': {
+                    'Lab Assessment': {
+                        marks: '92/100',
+                        grade: 'A+',
+                        percentage: '92%',
+                        rank: '1st in class',
+                        comments: 'Outstanding laboratory skills and accuracy.',
+                        breakdown: {
+                            'Practical Work': '95/100',
+                            'Report Writing': '89/100'
+                        }
+                    }
+                },
+                'Computer Science': {
+                    'Final Exam': {
+                        marks: '88/100',
+                        grade: 'A',
+                        percentage: '88%',
+                        rank: '2nd in class',
+                        comments: 'Strong programming fundamentals and problem-solving.',
+                        breakdown: {
+                            'Programming': '90/100',
+                            'Theory': '86/100',
+                            'Project': '88/100'
+                        }
+                    }
+                }
+            };
+
+            const result = results[subject][examType];
+            if (!result) return;
+
+            const modal = document.createElement('div');
+            modal.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0, 0, 0, 0.5);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                z-index: 10000;
+                animation: fadeIn 0.3s ease;
+            `;
+
+            modal.innerHTML = `
+                <div style="background: white; border-radius: 12px; padding: 2rem; max-width: 500px; width: 90%; max-height: 80vh; overflow-y: auto; box-shadow: 0 20px 40px rgba(0,0,0,0.2);">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; border-bottom: 2px solid #e5e7eb; padding-bottom: 1rem;">
+                        <h2 style="margin: 0; color: #1f2937; font-size: 1.5rem;">${subject} - ${examType} Results</h2>
+                        <button onclick="this.closest('.modal-overlay').remove()" style="background: none; border: none; font-size: 1.5rem; cursor: pointer; color: #6b7280;">×</button>
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.5rem;">
+                        <div style="text-align: center; padding: 1rem; background: #f9fafb; border-radius: 8px;">
+                            <div style="font-size: 2rem; font-weight: 700; color: #1f2937;">${result.marks}</div>
+                            <div style="color: #6b7280; font-size: 0.9rem;">Marks Obtained</div>
+                        </div>
+                        <div style="text-align: center; padding: 1rem; background: #f9fafb; border-radius: 8px;">
+                            <div style="font-size: 2rem; font-weight: 700; color: #059669;">${result.grade}</div>
+                            <div style="color: #6b7280; font-size: 0.9rem;">Grade</div>
+                        </div>
+                    </div>
+
+                    <div style="margin-bottom: 1.5rem;">
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                            <span style="color: #374151; font-weight: 500;">Percentage:</span>
+                            <span style="color: #1f2937; font-weight: 600;">${result.percentage}</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                            <span style="color: #374151; font-weight: 500;">Class Rank:</span>
+                            <span style="color: #1f2937; font-weight: 600;">${result.rank}</span>
+                        </div>
+                    </div>
+
+                    <div style="margin-bottom: 1.5rem;">
+                        <h3 style="color: #1f2937; font-size: 1.1rem; margin-bottom: 0.5rem;">Teacher Comments</h3>
+                        <p style="color: #6b7280; line-height: 1.5; margin: 0;">${result.comments}</p>
+                    </div>
+
+                    <div style="margin-bottom: 1.5rem;">
+                        <h3 style="color: #1f2937; font-size: 1.1rem; margin-bottom: 0.5rem;">Score Breakdown</h3>
+                        <div style="space-y: 0.5rem;">
+                            ${Object.entries(result.breakdown).map(([section, score]) =>
+                                `<div style="display: flex; justify-content: space-between; padding: 0.5rem; background: #f9fafb; border-radius: 6px;">
+                                    <span style="color: #374151;">${section}</span>
+                                    <span style="color: #1f2937; font-weight: 600;">${score}</span>
+                                </div>`
+                            ).join('')}
+                        </div>
+                    </div>
+
+                    <div style="display: flex; gap: 1rem; justify-content: flex-end;">
+                        <button onclick="this.closest('.modal-overlay').remove()" style="padding: 0.5rem 1rem; background: #6b7280; color: white; border: none; border-radius: 6px; cursor: pointer;">Close</button>
+                        <button onclick="downloadResult('${subject}', '${examType}')" style="padding: 0.5rem 1rem; background: #3b82f6; color: white; border: none; border-radius: 6px; cursor: pointer;">Download PDF</button>
+                    </div>
+                </div>
+            `;
+
+            modal.className = 'modal-overlay';
+            document.body.appendChild(modal);
+
+            // Close modal when clicking outside
+            modal.addEventListener('click', function(e) {
+                if (e.target === modal) {
+                    modal.remove();
+                }
+            });
+        }
+
+        function downloadResult(subject, examType) {
+            // In a real application, this would trigger a PDF download
+            showSecurityMessage('📄 Download Started', `Downloading ${subject} ${examType} result as PDF...`);
+            setTimeout(() => {
+                showSecurityMessage('✅ Download Complete', 'Result PDF has been downloaded successfully.');
+            }, 2000);
+        }
+
+        // Handle View Details button for exams summary
+        document.addEventListener('DOMContentLoaded', function() {
+            const viewDetailsBtn = document.querySelector('.view-details-btn');
+            if (viewDetailsBtn) {
+                viewDetailsBtn.addEventListener('click', function() {
+                    showSecurityMessage('📊 Exam Details', 'Redirecting to detailed exam results page...');
+                    // In production: window.location.href = 'exam_results.html';
+                });
+            }
+
+            // Handle exam preparation buttons
+            document.querySelectorAll('.prepare-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const subject = this.closest('.exam-card').querySelector('h3').textContent;
+                    showSecurityMessage('📚 Preparation Started', `Opening preparation materials for ${subject}...`);
+                });
+            });
+
+            document.querySelectorAll('.syllabus-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const subject = this.closest('.exam-card').querySelector('h3').textContent;
+                    showSecurityMessage('📋 Syllabus View', `Opening syllabus for ${subject}...`);
+                });
+            });
+        });
+
+        // Add modal animations
+        const modalStyle = document.createElement('style');
+        modalStyle.textContent = `
+            @keyframes fadeIn {
+                from { opacity: 0; }
+                to { opacity: 1; }
+            }
+            .modal-overlay {
+                animation: fadeIn 0.3s ease;
+            }
+        `;
+        document.head.appendChild(modalStyle);
+    </script>
+
+    <!-- Modern Footer -->
+    <footer class="dashboard-footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <div class="footer-brand">
+                    <h3>School Management System</h3>
+                    <p class="footer-version">v1.0</p>
+                    <p class="footer-copyright">© 2026 School Management System | v1.0</p>
+                </div>
+            </div>
+            
+            <div class="footer-section">
+                <div class="security-badges">
+                    <div class="security-badge">
+                        <i class="material-icons">lock</i>
+                        <span>Secure Session</span>
+                    </div>
+                    <div class="security-badge">
+                        <i class="material-icons">security</i>
+                        <span>WAF</span>
+                    </div>
+                    <div class="security-badge">
+                        <i class="material-icons">vpn_key</i>
+                        <span>JWT Auth</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="footer-section">
+                <div class="footer-links">
+                    <a href="#" class="footer-link" onclick="showFooterMessage(event, 'Privacy Policy')">
+                        <i class="material-icons">privacy_tip</i>
+                        Privacy
+                    </a>
+                    <a href="#" class="footer-link" onclick="showFooterMessage(event, 'Terms of Service')">
+                        <i class="material-icons">description</i>
+                        Terms
+                    </a>
+                    <a href="#" class="footer-link" onclick="showFooterMessage(event, 'Help & Support')">
+                        <i class="material-icons">help</i>
+                        Help
+                    </a>
+                    <a href="#" class="footer-link" onclick="showFooterMessage(event, 'Contact Us')">
+                        <i class="material-icons">contact_support</i>
+                        Contact
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="footer-bottom">
+            <div class="footer-divider"></div>
+            <p class="footer-text">
+                <i class="material-icons" style="font-size: 16px; vertical-align: middle; margin-right: 5px;">verified_user</i>
+                Protected by Enterprise Security Suite
+            </p>
+        </div>
+    </footer>
+
+    <!-- Footer Styles -->
+    <style>
+        .dashboard-footer {
+            background: linear-gradient(135deg, #1a1a2e 0%, #2d3748 100%);
+            color: white;
+            padding: 40px 0 20px;
+            margin-top: 20px;
+            border-top: 3px solid #667eea;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .dashboard-footer::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #667eea, #764ba2, #f093fb, #667eea);
+            background-size: 300% 100%;
+        }
+
+        .dashboard-footer::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(102, 126, 234, 0.05), transparent);
+            transform: rotate(45deg);
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 40px;
+            padding: 0 20px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .footer-section {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .footer-brand h3 {
+            color: #667eea;
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin: 0 0 10px 0;
+            text-shadow: 0 2px 10px rgba(102, 126, 234, 0.3);
+        }
+
+        .footer-version {
+            color: #cbd5e1;
+            font-size: 0.9rem;
+            font-weight: 600;
+            background: rgba(102, 126, 234, 0.1);
+            padding: 4px 12px;
+            border-radius: 15px;
+            display: inline-block;
+            margin-bottom: 15px;
+        }
+
+        .footer-copyright {
+            color: #94a3b8;
+            font-size: 0.85rem;
+            line-height: 1.5;
+            margin: 0;
+        }
+
+        .security-badges {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .security-badge {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(102, 126, 234, 0.3);
+            border-radius: 25px;
+            backdrop-filter: blur(10px);
+        }
+
+        .security-badge i {
+            color: #667eea;
+            font-size: 1.2rem;
+        }
+
+        .security-badge span {
+            color: white;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .footer-links {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .footer-link {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 16px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+
+        .footer-link i {
+            color: #667eea;
+            font-size: 1.1rem;
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding: 20px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .footer-divider {
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(102, 126, 234, 0.3), transparent);
+            margin-bottom: 20px;
+        }
+
+        .footer-text {
+            color: #94a3b8;
+            font-size: 0.85rem;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        /* Exam Results Summary Cards */
+        .exam-results-summary {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+        }
+
+        .exam-results-summary .summary-card {
+            background: #ffffff;
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            border: 1px solid #e5e7eb;
+            text-align: center;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .exam-results-summary .summary-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+        }
+
+        .exam-results-summary .summary-card h3 {
+            color: #374151;
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .gpa-value {
+            font-size: 3rem;
+            font-weight: 700;
+            color: #1f2937;
+            margin-bottom: 0.5rem;
+        }
+
+        .gpa-trend.positive {
+            color: #059669;
+            font-size: 0.9rem;
+            font-weight: 500;
+            margin-bottom: 1rem;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #e5e7eb;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-top: 1rem;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #3b82f6, #1d4ed8);
+            border-radius: 4px;
+            transition: width 0.3s ease;
+        }
+
+        .exam-count {
+            font-size: 3rem;
+            font-weight: 700;
+            color: #1f2937;
+            margin-bottom: 0.5rem;
+        }
+
+        .exam-status {
+            color: #6b7280;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+
+        .view-details-btn {
+            background: #3b82f6;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background 0.2s ease;
+        }
+
+        .view-details-btn:hover {
+            background: #2563eb;
+        }
+
+        .next-exam {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #1f2937;
+            margin-bottom: 0.5rem;
+        }
+
+        .exam-date {
+            color: #374151;
+            font-weight: 500;
+            margin-bottom: 0.25rem;
+        }
+
+        .days-remaining {
+            color: #dc2626;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        /* Recent Exam Results Section */
+        .recent-exam-results {
+            background: #ffffff;
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 3rem;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            border: 1px solid #e5e7eb;
+        }
+
+        .recent-exam-results h2 {
+            color: #1f2937;
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid #e5e7eb;
+        }
+
+        .results-table-container {
+            overflow-x: auto;
+        }
+
+        .results-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.9rem;
+        }
+
+        .results-table th {
+            background: #f9fafb;
+            color: #374151;
+            font-weight: 600;
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 2px solid #e5e7eb;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-size: 0.8rem;
+        }
+
+        .results-table td {
+            padding: 1rem;
+            border-bottom: 1px solid #f3f4f6;
+            color: #374151;
+        }
+
+        .results-table tr:hover {
+            background: #f9fafb;
+        }
+
+        .grade-badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+        }
+
+        .grade-badge.excellent {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .grade-badge.good {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+
+        .status-badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-weight: 500;
+            font-size: 0.8rem;
+        }
+
+        .status-badge.published {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .status-badge.upcoming {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .details-btn {
+            background: #3b82f6;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            font-weight: 500;
+            cursor: pointer;
+            font-size: 0.8rem;
+            transition: background 0.2s ease;
+        }
+
+        .details-btn:hover {
+            background: #2563eb;
+        }
+
+        /* Upcoming Exams Section */
+        .upcoming-exams {
+            background: #ffffff;
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 3rem;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            border: 1px solid #e5e7eb;
+        }
+
+        .upcoming-exams h2 {
+            color: #1f2937;
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid #e5e7eb;
+        }
+
+        .exams-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .exam-card {
+            background: #f9fafb;
+            border-radius: 12px;
+            padding: 1.5rem;
+            border: 1px solid #e5e7eb;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .exam-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+        }
+
+        .exam-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .exam-header h3 {
+            color: #1f2937;
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin: 0;
+        }
+
+        .exam-type {
+            background: #e5e7eb;
+            color: #374151;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        .exam-details {
+            margin-bottom: 1rem;
+        }
+
+        .exam-info {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 0.5rem;
+            color: #6b7280;
+            font-size: 0.9rem;
+        }
+
+        .exam-info i {
+            color: #9ca3af;
+            font-size: 1rem;
+        }
+
+        .exam-status {
+            margin-bottom: 1rem;
+        }
+
+        .exam-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .prepare-btn {
+            background: #059669;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            font-weight: 500;
+            cursor: pointer;
+            font-size: 0.8rem;
+            flex: 1;
+            transition: background 0.2s ease;
+        }
+
+        .prepare-btn:hover {
+            background: #047857;
+        }
+
+        .syllabus-btn {
+            background: #6b7280;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            font-weight: 500;
+            cursor: pointer;
+            font-size: 0.8rem;
+            flex: 1;
+            transition: background 0.2s ease;
+        }
+
+        .syllabus-btn:hover {
+            background: #4b5563;
+        }
+
+        /* Updated Upcoming Events Section */
+        .upcoming-events h2 {
+            color: #1f2937;
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid #e5e7eb;
+        }
+
+        /* Responsive Design for New Sections */
+        @media (max-width: 768px) {
+            .exam-results-summary {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+
+            .exam-results-summary .summary-card {
+                padding: 1.5rem;
+            }
+
+            .gpa-value, .exam-count {
+                font-size: 2.5rem;
+            }
+
+            .exams-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .exam-actions {
+                flex-direction: column;
+            }
+
+            .results-table-container {
+                overflow-x: scroll;
+            }
+
+            .results-table {
+                min-width: 600px;
+            }
+        }
+
+        /* Responsive Footer */
+        @media (max-width: 768px) {
+            .footer-content {
+                grid-template-columns: 1fr;
+                gap: 30px;
+                padding: 0 15px;
+            }
+
+            .footer-links {
+                grid-template-columns: 1fr;
+            }
+
+            .security-badges {
+                flex-direction: row;
+                flex-wrap: wrap;
+                gap: 10px;
+            }
+
+            .security-badge {
+                flex: 1;
+                min-width: 120px;
+                justify-content: center;
+            }
+        }
+    </style>
+
+    <!-- Footer JavaScript -->
+    <script>
+        let currentDropdown = null;
+
+        function showFooterMessage(event, section) {
+            event.preventDefault();
+
+            // Remove existing dropdown if any
+            if (currentDropdown) {
+                currentDropdown.remove();
+                currentDropdown = null;
+            }
+
+            const messages = {
+                'Privacy Policy': 'Your privacy is important to us. We collect minimal data and protect it with enterprise-grade encryption.',
+                'Terms of Service': 'By using this system, you agree to our terms of service and acceptable use policy.',
+                'Help & Support': 'Need assistance? Contact our support team at support@school.edu or call 1-800-HELP.',
+                'Contact Us': 'Get in touch with us at contact@school.edu or visit our administration office.'
+            };
+
+            // Get the clicked link position
+            const link = event.target.closest('.footer-link');
+            const rect = link.getBoundingClientRect();
+
+            // Create dropdown
+            const dropdown = document.createElement('div');
+            dropdown.className = 'footer-dropdown';
+            dropdown.style.cssText = `
+                position: fixed;
+                top: ${rect.bottom + 10}px;
+                left: ${rect.left}px;
+                background: linear-gradient(135deg, #667eea, #764ba2);
+                color: white;
+                padding: 20px 25px;
+                border-radius: 15px;
+                box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+                z-index: 10000;
+                max-width: 350px;
+                min-width: 300px;
+                opacity: 0;
+                transform: translateY(-10px);
+                transition: all 0.3s ease;
+            `;
+
+            dropdown.innerHTML = `
+                <div style="display: flex; align-items: flex-start; gap: 15px;">
+                    <i class="material-icons" style="color: white; font-size: 1.5rem;">info</i>
+                    <div style="flex: 1;">
+                        <h4 style="margin: 0 0 8px 0; font-size: 1.1rem; font-weight: 600;">${section}</h4>
+                        <p style="margin: 0; line-height: 1.5; font-size: 0.9rem;">${messages[section]}</p>
+                    </div>
+                    <button onclick="closeFooterDropdown()" style="background: none; border: none; color: white; cursor: pointer; font-size: 1.2rem; padding: 0; margin-left: 10px;">×</button>
+                </div>
+            `;
+
+            document.body.appendChild(dropdown);
+            currentDropdown = dropdown;
+
+            // Animate in
+            setTimeout(() => {
+                dropdown.style.opacity = '1';
+                dropdown.style.transform = 'translateY(0)';
+            }, 10);
+
+            // Close when clicking outside
+            document.addEventListener('click', function closeDropdown(e) {
+                if (!dropdown.contains(e.target) && e.target !== link) {
+                    closeFooterDropdown();
+                    document.removeEventListener('click', closeDropdown);
+                }
+            });
+        }
+
+        function closeFooterDropdown() {
+            if (currentDropdown) {
+                currentDropdown.style.opacity = '0';
+                currentDropdown.style.transform = 'translateY(-10px)';
+                setTimeout(() => {
+                    if (currentDropdown) {
+                        currentDropdown.remove();
+                        currentDropdown = null;
+                    }
+                }, 300);
+            }
+        }
+    </script>
+    <!-- Student Help Guide (Directions only, no navigation) -->
+    <script src="../js/student-help-guide.js"></script>
+</body>
+</html>

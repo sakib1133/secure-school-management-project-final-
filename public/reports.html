@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reports - School Management System</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #3b82f6;
+            --secondary: #1e40af;
+            --dark: #0f172a;
+            --card: #111827;
+            --text: #f1f5f9;
+            --text-secondary: #94a3b8;
+            --border: #334155;
+            --success: #22c55e;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, var(--dark), #1a1f3a);
+            color: var(--text);
+            min-height: 100vh;
+        }
+
+        .header {
+            background: var(--card);
+            border-bottom: 2px solid var(--border);
+            padding: 20px 0;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+        }
+
+        .header-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .back-btn {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 12px 24px;
+            text-decoration: none;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .back-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(59, 130, 246, 0.4);
+        }
+
+        .main-content {
+            max-width: 1400px;
+            margin: 40px auto;
+            padding: 0 30px;
+        }
+
+        .page-header {
+            background: var(--card);
+            border-radius: 16px;
+            padding: 30px;
+            margin-bottom: 30px;
+            border: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .page-title {
+            font-size: 2rem;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .reports-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 25px;
+        }
+
+        .report-card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 30px;
+            transition: all 0.3s ease;
+            text-align: center;
+            cursor: pointer;
+        }
+
+        .report-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            border-color: var(--primary);
+        }
+
+        .report-icon {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            margin: 0 auto 20px;
+            color: white;
+        }
+
+        .report-icon.academic { background: linear-gradient(135deg, var(--primary), var(--secondary)); }
+        .report-icon.attendance { background: linear-gradient(135deg, var(--success), #16a34a); }
+        .report-icon.financial { background: linear-gradient(135deg, var(--warning), #d97706); }
+        .report-icon.performance { background: linear-gradient(135deg, var(--danger), #dc2626); }
+        .report-icon.staff { background: linear-gradient(135deg, #8b5cf6, #7c3aed); }
+        .report-icon.facility { background: linear-gradient(135deg, #06b6d4, #0891b2); }
+
+        .report-title {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: var(--text);
+            margin-bottom: 15px;
+        }
+
+        .report-description {
+            color: var(--text-secondary);
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .report-features {
+            text-align: left;
+            margin-bottom: 20px;
+        }
+
+        .feature-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 8px;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .feature-item i {
+            color: var(--primary);
+            font-size: 0.8rem;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            width: 100%;
+            justify-content: center;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(59, 130, 246, 0.4);
+        }
+
+        .content-card {
+            background: var(--card);
+            border-radius: 16px;
+            padding: 30px;
+            border: 1px solid var(--border);
+            margin-bottom: 30px;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        .card-title {
+            font-size: 1.4rem;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .recent-reports {
+            display: grid;
+            gap: 15px;
+        }
+
+        .recent-report {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 20px;
+            background: var(--dark);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            transition: all 0.3s ease;
+        }
+
+        .recent-report:hover {
+            background: rgba(59, 130, 246, 0.05);
+            border-color: var(--primary);
+        }
+
+        .report-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .report-type-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+        }
+
+        .report-details h4 {
+            color: var(--text);
+            margin-bottom: 5px;
+        }
+
+        .report-meta {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .report-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .action-btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+
+        .action-btn.view {
+            background: rgba(59, 130, 246, 0.2);
+            color: var(--primary);
+        }
+
+        .action-btn.download {
+            background: rgba(34, 197, 94, 0.2);
+            color: var(--success);
+        }
+
+        .action-btn:hover {
+            transform: scale(1.05);
+        }
+
+        @media (max-width: 768px) {
+            .page-header { flex-direction: column; gap: 20px; }
+            .reports-grid { grid-template-columns: 1fr; }
+            .recent-report { flex-direction: column; gap: 15px; text-align: center; }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="header-content">
+            <div class="logo">
+                <i class="fas fa-graduation-cap"></i>
+                School Management System
+            </div>
+            <a href="dashboard.html" class="back-btn">
+                <i class="fas fa-arrow-left"></i> Back to Dashboard
+            </a>
+        </div>
+    </div>
+
+    <div class="main-content">
+        <div class="page-header">
+            <h1 class="page-title">
+                <i class="fas fa-chart-bar"></i>
+                Reports & Analytics
+            </h1>
+            <button class="btn btn-primary">
+                <i class="fas fa-cog"></i> Report Settings
+            </button>
+        </div>
+
+        <div class="reports-grid">
+            <div class="report-card">
+                <div class="report-icon academic">
+                    <i class="fas fa-graduation-cap"></i>
+                </div>
+                <h3 class="report-title">Academic Reports</h3>
+                <p class="report-description">Comprehensive academic performance analysis and student progress reports.</p>
+                <div class="report-features">
+                    <div class="feature-item">
+                        <i class="fas fa-check"></i>
+                        <span>Student performance trends</span>
+                    </div>
+                    <div class="feature-item">
+                        <i class="fas fa-check"></i>
+                        <span>Subject-wise analysis</span>
+                    </div>
+                    <div class="feature-item">
+                        <i class="fas fa-check"></i>
+                        <span>Grade distribution reports</span>
+                    </div>
+                </div>
+                <button class="btn btn-primary">
+                    <i class="fas fa-chart-line"></i> Generate Report
+                </button>
+            </div>
+
+            <div class="report-card">
+                <div class="report-icon attendance">
+                    <i class="fas fa-calendar-check"></i>
+                </div>
+                <h3 class="report-title">Attendance Reports</h3>
+                <p class="report-description">Detailed attendance tracking and analysis for students and staff.</p>
+                <div class="report-features">
+                    <div class="feature-item">
+                        <i class="fas fa-check"></i>
+                        <span>Daily/monthly attendance</span>
+                    </div>
+                    <div class="feature-item">
+                        <i class="fas fa-check"></i>
+                        <span>Attendance percentage trends</span>
+                    </div>
+                    <div class="feature-item">
+                        <i class="fas fa-check"></i>
+                        <span>Absenteeism patterns</span>
+                    </div>
+                </div>
+                <button class="btn btn-primary">
+                    <i class="fas fa-users"></i> Generate Report
+                </button>
+            </div>
+
+            <div class="report-card">
+                <div class="report-icon financial">
+                    <i class="fas fa-dollar-sign"></i>
+                </div>
+                <h3 class="report-title">Financial Reports</h3>
+                <p class="report-description">Complete financial overview including fees, expenses, and budget analysis.</p>
+                <div class="report-features">
+                    <div class="feature-item">
+                        <i class="fas fa-check"></i>
+                        <span>Fee collection reports</span>
+                    </div>
+                    <div class="feature-item">
+                        <i class="fas fa-check"></i>
+                        <span>Expense tracking</span>
+                    </div>
+                    <div class="feature-item">
+                        <i class="fas fa-check"></i>
+                        <span>Budget vs actual analysis</span>
+                    </div>
+                </div>
+                <button class="btn btn-primary">
+                    <i class="fas fa-chart-pie"></i> Generate Report
+                </button>
+            </div>
+
+            <div class="report-card">
+                <div class="report-icon performance">
+                    <i class="fas fa-trophy"></i>
+                </div>
+                <h3 class="report-title">Performance Reports</h3>
+                <p class="report-description">Student and teacher performance metrics with comparative analysis.</p>
+                <div class="report-features">
+                    <div class="feature-item">
+                        <i class="fas fa-check"></i>
+                        <span>Class performance rankings</span>
+                    </div>
+                    <div class="feature-item">
+                        <i class="fas fa-check"></i>
+                        <span>Teacher effectiveness</span>
+                    </div>
+                    <div class="feature-item">
+                        <i class="fas fa-check"></i>
+                        <span>Improvement tracking</span>
+                    </div>
+                </div>
+                <button class="btn btn-primary">
+                    <i class="fas fa-analytics"></i> Generate Report
+                </button>
+            </div>
+
+            <div class="report-card">
+                <div class="report-icon staff">
+                    <i class="fas fa-chalkboard-teacher"></i>
+                </div>
+                <h3 class="report-title">Staff Reports</h3>
+                <p class="report-description">Teacher workload, schedules, and professional development reports.</p>
+                <div class="report-features">
+                    <div class="feature-item">
+                        <i class="fas fa-check"></i>
+                        <span>Teacher workload analysis</span>
+                    </div>
+                    <div class="feature-item">
+                        <i class="fas fa-check"></i>
+                        <span>Class assignment reports</span>
+                    </div>
+                    <div class="feature-item">
+                        <i class="fas fa-check"></i>
+                        <span>Professional development tracking</span>
+                    </div>
+                </div>
+                <button class="btn btn-primary">
+                    <i class="fas fa-users-cog"></i> Generate Report
+                </button>
+            </div>
+
+            <div class="report-card">
+                <div class="report-icon facility">
+                    <i class="fas fa-building"></i>
+                </div>
+                <h3 class="report-title">Facility Reports</h3>
+                <p class="report-description">Infrastructure utilization and maintenance reports for school facilities.</p>
+                <div class="report-features">
+                    <div class="feature-item">
+                        <i class="fas fa-check"></i>
+                        <span>Classroom utilization</span>
+                    </div>
+                    <div class="feature-item">
+                        <i class="fas fa-check"></i>
+                        <span>Lab and facility usage</span>
+                    </div>
+                    <div class="feature-item">
+                        <i class="fas fa-check"></i>
+                        <span>Maintenance schedules</span>
+                    </div>
+                </div>
+                <button class="btn btn-primary">
+                    <i class="fas fa-home"></i> Generate Report
+                </button>
+            </div>
+        </div>
+
+        <div class="content-card">
+            <div class="card-header">
+                <h3 class="card-title">
+                    <i class="fas fa-history"></i>
+                    Recently Generated Reports
+                </h3>
+            </div>
+
+            <div class="recent-reports">
+                <div class="recent-report">
+                    <div class="report-info">
+                        <div class="report-type-icon" style="background: linear-gradient(135deg, var(--primary), var(--secondary));">
+                            <i class="fas fa-graduation-cap"></i>
+                        </div>
+                        <div class="report-details">
+                            <h4>Q1 Academic Performance Report</h4>
+                            <div class="report-meta">
+                                <span><i class="fas fa-calendar"></i> Jan 15, 2024</span>
+                                <span style="margin-left: 15px;"><i class="fas fa-file"></i> PDF</span>
+                                <span style="margin-left: 15px;"><i class="fas fa-database"></i> 2.4 MB</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="report-actions">
+                        <button class="action-btn view">
+                            <i class="fas fa-eye"></i> View
+                        </button>
+                        <button class="action-btn download">
+                            <i class="fas fa-download"></i> Download
+                        </button>
+                    </div>
+                </div>
+
+                <div class="recent-report">
+                    <div class="report-info">
+                        <div class="report-type-icon" style="background: linear-gradient(135deg, var(--success), #16a34a);">
+                            <i class="fas fa-calendar-check"></i>
+                        </div>
+                        <div class="report-details">
+                            <h4>December Attendance Summary</h4>
+                            <div class="report-meta">
+                                <span><i class="fas fa-calendar"></i> Jan 10, 2024</span>
+                                <span style="margin-left: 15px;"><i class="fas fa-file"></i> Excel</span>
+                                <span style="margin-left: 15px;"><i class="fas fa-database"></i> 1.8 MB</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="report-actions">
+                        <button class="action-btn view">
+                            <i class="fas fa-eye"></i> View
+                        </button>
+                        <button class="action-btn download">
+                            <i class="fas fa-download"></i> Download
+                        </button>
+                    </div>
+                </div>
+
+                <div class="recent-report">
+                    <div class="report-info">
+                        <div class="report-type-icon" style="background: linear-gradient(135deg, var(--warning), #d97706);">
+                            <i class="fas fa-dollar-sign"></i>
+                        </div>
+                        <div class="report-details">
+                            <h4>Annual Financial Report 2023</h4>
+                            <div class="report-meta">
+                                <span><i class="fas fa-calendar"></i> Jan 5, 2024</span>
+                                <span style="margin-left: 15px;"><i class="fas fa-file"></i> PDF</span>
+                                <span style="margin-left: 15px;"><i class="fas fa-database"></i> 3.2 MB</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="report-actions">
+                        <button class="action-btn view">
+                            <i class="fas fa-eye"></i> View
+                        </button>
+                        <button class="action-btn download">
+                            <i class="fas fa-download"></i> Download
+                        </button>
+                    </div>
+                </div>
+
+                <div class="recent-report">
+                    <div class="report-info">
+                        <div class="report-type-icon" style="background: linear-gradient(135deg, var(--danger), #dc2626);">
+                            <i class="fas fa-trophy"></i>
+                        </div>
+                        <div class="report-details">
+                            <h4>Class 10 Performance Analysis</h4>
+                            <div class="report-meta">
+                                <span><i class="fas fa-calendar"></i> Dec 28, 2023</span>
+                                <span style="margin-left: 15px;"><i class="fas fa-file"></i> PDF</span>
+                                <span style="margin-left: 15px;"><i class="fas fa-database"></i> 1.5 MB</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="report-actions">
+                        <button class="action-btn view">
+                            <i class="fas fa-eye"></i> View
+                        </button>
+                        <button class="action-btn download">
+                            <i class="fas fa-download"></i> Download
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

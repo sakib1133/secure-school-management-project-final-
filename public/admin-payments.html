@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment Management - Admin Portal</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { font-family: 'Inter', sans-serif; }
+        .gradient-bg { background: linear-gradient(135deg, #1e3a5f 0%, #2d5a87 100%); }
+        .card-hover { transition: all 0.3s ease; }
+        .card-hover:hover { transform: translateY(-4px); box-shadow: 0 20px 40px rgba(0,0,0,0.1); }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <!-- Navigation -->
+    <nav class="gradient-bg text-white shadow-lg">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center space-x-4">
+                    <a href="admin_dashboard.html" class="flex items-center space-x-2 text-white hover:text-blue-200 transition">
+                        <span class="material-icons">arrow_back</span>
+                        <span class="font-medium">Back to Dashboard</span>
+                    </a>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <span class="material-icons">admin_panel_settings</span>
+                    <span class="font-semibold text-lg">Payment Management</span>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <div class="text-sm text-blue-200" id="adminName">Admin</div>
+                    <button onclick="logout()" class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg text-sm font-medium transition">
+                        Logout
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <!-- Header -->
+        <div class="mb-8">
+            <h1 class="text-3xl font-bold text-gray-900">Payment Management</h1>
+            <p class="text-gray-600 mt-2">View and manage all student fee payments</p>
+        </div>
+
+        <!-- Summary Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+            <div class="bg-white rounded-xl shadow-sm p-6 card-hover border border-gray-100">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm text-gray-500 mb-1">Total Revenue</p>
+                        <p class="text-2xl font-bold text-green-600" id="totalRevenue">₹0</p>
+                    </div>
+                    <div class="bg-green-100 p-3 rounded-full">
+                        <span class="material-icons text-green-600">account_balance</span>
+                    </div>
+                </div>
+            </div>
+            <div class="bg-white rounded-xl shadow-sm p-6 card-hover border border-gray-100">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm text-gray-500 mb-1">Total Payments</p>
+                        <p class="text-2xl font-bold text-blue-600" id="totalPayments">0</p>
+                    </div>
+                    <div class="bg-blue-100 p-3 rounded-full">
+                        <span class="material-icons text-blue-600">receipt_long</span>
+                    </div>
+                </div>
+            </div>
+            <div class="bg-white rounded-xl shadow-sm p-6 card-hover border border-gray-100">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm text-gray-500 mb-1">Completed</p>
+                        <p class="text-2xl font-bold text-green-600" id="completedCount">0</p>
+                    </div>
+                    <div class="bg-green-100 p-3 rounded-full">
+                        <span class="material-icons text-green-600">check_circle</span>
+                    </div>
+                </div>
+            </div>
+            <div class="bg-white rounded-xl shadow-sm p-6 card-hover border border-gray-100">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm text-gray-500 mb-1">Pending</p>
+                        <p class="text-2xl font-bold text-yellow-600" id="pendingCount">0</p>
+                    </div>
+                    <div class="bg-yellow-100 p-3 rounded-full">
+                        <span class="material-icons text-yellow-600">pending</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Filters -->
+        <div class="bg-white rounded-xl shadow-lg p-6 mb-8 border border-gray-100">
+            <div class="flex flex-col md:flex-row gap-4 items-end md:items-center justify-between">
+                <div class="flex flex-col md:flex-row gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Status Filter</label>
+                        <select id="statusFilter" onchange="loadPayments()" class="border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                            <option value="">All Status</option>
+                            <option value="completed">Completed</option>
+                            <option value="pending">Pending</option>
+                            <option value="failed">Failed</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Student ID</label>
+                        <input type="text" id="studentFilter" placeholder="Enter Student ID" class="border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                    </div>
+                </div>
+                <div class="flex gap-3">
+                    <button onclick="applyFilters()" class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition flex items-center gap-2">
+                        <span class="material-icons">filter_list</span>
+                        Apply Filters
+                    </button>
+                    <button onclick="resetFilters()" class="bg-gray-200 text-gray-700 px-6 py-2 rounded-lg hover:bg-gray-300 transition flex items-center gap-2">
+                        <span class="material-icons">refresh</span>
+                        Reset
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Payments Table -->
+        <div class="bg-white rounded-xl shadow-lg overflow-hidden border border-gray-100">
+            <div class="p-6 border-b border-gray-100 flex justify-between items-center">
+                <h2 class="text-xl font-semibold text-gray-900">All Payments</h2>
+                <button onclick="exportToCSV()" class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition flex items-center gap-2 text-sm">
+                    <span class="material-icons">download</span>
+                    Export CSV
+                </button>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="w-full">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th class="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">ID</th>
+                            <th class="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Student</th>
+                            <th class="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Amount</th>
+                            <th class="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Status</th>
+                            <th class="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Payment ID</th>
+                            <th class="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Method</th>
+                            <th class="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Date</th>
+                        </tr>
+                    </thead>
+                    <tbody id="paymentsTable" class="divide-y divide-gray-100">
+                        <tr>
+                            <td colspan="7" class="px-6 py-8 text-center text-gray-500">
+                                <span class="material-icons text-4xl mb-2 text-gray-300">receipt</span>
+                                <p>Loading payments...</p>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <!-- Pagination -->
+            <div class="p-4 border-t border-gray-100 flex justify-between items-center">
+                <p class="text-sm text-gray-600" id="paginationInfo">Showing 0 of 0 payments</p>
+                <div class="flex gap-2">
+                    <button onclick="prevPage()" id="prevBtn" disabled class="px-4 py-2 border border-gray-300 rounded-lg text-sm disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50">
+                        Previous
+                    </button>
+                    <button onclick="nextPage()" id="nextBtn" disabled class="px-4 py-2 border border-gray-300 rounded-lg text-sm disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50">
+                        Next
+                    </button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // Global variables
+        let currentPage = 0;
+        const limit = 50;
+        let totalPayments = 0;
+        const API_BASE = window.location.origin;
+
+        // Get JWT token from localStorage
+        function getToken() {
+            return localStorage.getItem('token') || localStorage.getItem('jwt_token');
+        }
+
+        // Check authentication
+        function checkAuth() {
+            const token = getToken();
+            if (!token) {
+                window.location.href = '/login.html';
+                return false;
+            }
+            return token;
+        }
+
+        // Logout function
+        function logout() {
+            localStorage.removeItem('token');
+            localStorage.removeItem('jwt_token');
+            localStorage.removeItem('user');
+            window.location.href = '/login.html';
+        }
+
+        // Format currency
+        function formatCurrency(amount) {
+            return '₹' + parseInt(amount || 0).toLocaleString('en-IN');
+        }
+
+        // Format date
+        function formatDate(dateString) {
+            if (!dateString) return '-';
+            const date = new Date(dateString);
+            return date.toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+        }
+
+        // Get status badge HTML
+        function getStatusBadge(status) {
+            const classes = {
+                'completed': 'bg-green-100 text-green-700',
+                'captured': 'bg-green-100 text-green-700',
+                'pending': 'bg-yellow-100 text-yellow-700',
+                'failed': 'bg-red-100 text-red-700',
+                'refunded': 'bg-gray-100 text-gray-700'
+            };
+            const className = classes[status] || 'bg-gray-100 text-gray-700';
+            const label = status === 'captured' ? 'Completed' : status.charAt(0).toUpperCase() + status.slice(1);
+            return `<span class="px-3 py-1 rounded-full text-xs font-medium ${className}">${label}</span>`;
+        }
+
+        // Load admin info
+        async function loadAdminInfo() {
+            const token = checkAuth();
+            if (!token) return;
+
+            try {
+                const response = await fetch(`${API_BASE}/api/me`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const data = await response.json();
+                
+                if (data.status === 'success') {
+                    document.getElementById('adminName').textContent = data.user.full_name || data.user.username;
+                }
+            } catch (error) {
+                console.error('Error loading admin info:', error);
+            }
+        }
+
+        // Load payment summary
+        async function loadSummary() {
+            const token = checkAuth();
+            if (!token) return;
+
+            try {
+                const response = await fetch(`${API_BASE}/api/admin/payments/summary`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const data = await response.json();
+
+                if (data.status === 'success') {
+                    document.getElementById('totalRevenue').textContent = formatCurrency(data.summary.total_revenue);
+                    document.getElementById('totalPayments').textContent = data.summary.total_payments || 0;
+                    document.getElementById('completedCount').textContent = data.summary.completed_count || 0;
+                    document.getElementById('pendingCount').textContent = data.summary.pending_count || 0;
+                }
+            } catch (error) {
+                console.error('Error loading summary:', error);
+            }
+        }
+
+        // Load payments
+        async function loadPayments() {
+            const token = checkAuth();
+            if (!token) return;
+
+            const status = document.getElementById('statusFilter').value;
+            const studentId = document.getElementById('studentFilter').value;
+
+            try {
+                let url = `${API_BASE}/api/admin/payments?limit=${limit}&offset=${currentPage * limit}`;
+                if (status) url += `&status=${status}`;
+                if (studentId) url += `&studentId=${studentId}`;
+
+                const response = await fetch(url, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const data = await response.json();
+
+                const tbody = document.getElementById('paymentsTable');
+                
+                if (data.status !== 'success' || !data.payments || data.payments.length === 0) {
+                    tbody.innerHTML = `
+                        <tr>
+                            <td colspan="7" class="px-6 py-12 text-center text-gray-500">
+                                <span class="material-icons text-5xl mb-3 text-gray-300">receipt_long</span>
+                                <p class="text-lg">No payments found</p>
+                            </td>
+                        </tr>
+                    `;
+                    updatePagination(0, 0);
+                    return;
+                }
+
+                totalPayments = data.total || 0;
+                updatePagination(data.payments.length, data.total);
+
+                tbody.innerHTML = data.payments.map(payment => `
+                    <tr class="hover:bg-gray-50 transition">
+                        <td class="px-6 py-4 text-sm font-mono text-gray-600">${payment.id}</td>
+                        <td class="px-6 py-4">
+                            <div class="text-sm font-semibold text-gray-900">${payment.student_name || 'Unknown'}</div>
+                            <div class="text-xs text-gray-500">${payment.student_email || ''}</div>
+                            <div class="text-xs text-gray-400">Roll: ${payment.roll_number || 'N/A'}</div>
+                        </td>
+                        <td class="px-6 py-4 text-sm font-semibold text-gray-900">${formatCurrency(payment.amount)}</td>
+                        <td class="px-6 py-4">${getStatusBadge(payment.status)}</td>
+                        <td class="px-6 py-4 text-sm font-mono text-gray-600">${payment.payment_id ? payment.payment_id.substring(0, 20) + '...' : '-'}</td>
+                        <td class="px-6 py-4 text-sm text-gray-600 capitalize">${payment.payment_method || '-'}</td>
+                        <td class="px-6 py-4 text-sm text-gray-600">${formatDate(payment.created_at)}</td>
+                    </tr>
+                `).join('');
+
+            } catch (error) {
+                console.error('Error loading payments:', error);
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="7" class="px-6 py-8 text-center text-red-500">
+                            <span class="material-icons text-4xl mb-2">error</span>
+                            <p>Failed to load payments. Please refresh.</p>
+                        </td>
+                    </tr>
+                `;
+            }
+        }
+
+        // Update pagination
+        function updatePagination(showing, total) {
+            const start = currentPage * limit + 1;
+            const end = Math.min(start + showing - 1, total);
+            document.getElementById('paginationInfo').textContent = `Showing ${showing > 0 ? start : 0}-${end} of ${total} payments`;
+            
+            document.getElementById('prevBtn').disabled = currentPage === 0;
+            document.getElementById('nextBtn').disabled = end >= total;
+        }
+
+        // Pagination controls
+        function prevPage() {
+            if (currentPage > 0) {
+                currentPage--;
+                loadPayments();
+            }
+        }
+
+        function nextPage() {
+            currentPage++;
+            loadPayments();
+        }
+
+        // Apply filters
+        function applyFilters() {
+            currentPage = 0;
+            loadPayments();
+        }
+
+        // Reset filters
+        function resetFilters() {
+            document.getElementById('statusFilter').value = '';
+            document.getElementById('studentFilter').value = '';
+            currentPage = 0;
+            loadPayments();
+        }
+
+        // Export to CSV
+        async function exportToCSV() {
+            const token = checkAuth();
+            if (!token) return;
+
+            try {
+                const status = document.getElementById('statusFilter').value;
+                const studentId = document.getElementById('studentFilter').value;
+                
+                let url = `${API_BASE}/api/admin/payments?limit=1000&offset=0`;
+                if (status) url += `&status=${status}`;
+                if (studentId) url += `&studentId=${studentId}`;
+
+                const response = await fetch(url, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const data = await response.json();
+
+                if (data.status !== 'success' || !data.payments || data.payments.length === 0) {
+                    alert('No payments to export');
+                    return;
+                }
+
+                // CSV Header
+                let csv = 'ID,Student Name,Student Email,Roll Number,Amount,Currency,Status,Order ID,Payment ID,Payment Method,Description,Created At,Updated At\n';
+
+                // CSV Rows
+                data.payments.forEach(p => {
+                    csv += `${p.id},"${p.student_name || ''}","${p.student_email || ''}","${p.roll_number || ''}",${p.amount},${p.currency},${p.status},"${p.order_id || ''}","${p.payment_id || ''}","${p.payment_method || ''}","${p.description || ''}","${p.created_at || ''}","${p.updated_at || ''}"\n`;
+                });
+
+                // Download CSV
+                const blob = new Blob([csv], { type: 'text/csv' });
+                const urlObj = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = urlObj;
+                a.download = `payments_export_${new Date().toISOString().split('T')[0]}.csv`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                window.URL.revokeObjectURL(urlObj);
+
+            } catch (error) {
+                console.error('Error exporting CSV:', error);
+                alert('Failed to export payments');
+            }
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            checkAuth();
+            loadAdminInfo();
+            loadSummary();
+            loadPayments();
+        });
+
+        // Handle Enter key in student filter
+        document.getElementById('studentFilter')?.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                applyFilters();
+            }
+        });
+    </script>
+</body>
+</html>
