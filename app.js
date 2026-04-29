@@ -301,7 +301,7 @@ const ANTI_PHISHING_CONFIG = {
         ['localhost', '127.0.0.1', 'render.com'],
     ALLOWED_ORIGINS: process.env.CORS_ORIGINS ? 
         process.env.CORS_ORIGINS.split(',') : 
-        ['http://localhost:3000', 'http://127.0.0.1:5500', 'https://secure-school-management-project.onrender.com'],
+        ['http://localhost:3000', 'http://127.0.0.1:5500', 'https://secure-school-management-project-final.onrender.com'],
     CHECK_REFERER: true,
     CHECK_ORIGIN: true,
     CHECK_HOST: true,
@@ -2180,7 +2180,7 @@ const corsOptions = {
         
         const allowedOrigins = process.env.CORS_ORIGINS ? 
             process.env.CORS_ORIGINS.split(',').map(o => o.trim()) : 
-            ['http://localhost:3000', 'http://127.0.0.1:5500', 'https://secure-school-management-project.onrender.com'];
+            ['http://localhost:3000', 'http://127.0.0.1:5500', 'https://secure-school-management-project-final.onrender.com'];
         
         if (allowedOrigins.indexOf(origin) !== -1) {
             callback(null, true);
@@ -3292,16 +3292,17 @@ app.post('/api/login', async (req, res) => {
             logLoginAttempt(username, role, false, 'Database error', clientIP);
             return res.status(500).json({ 
                 status: 'failed', 
-                message: 'Database error' 
+                message: 'Database error. Please contact support.' 
             });
         }
         
         if (!user) {
+            console.log('User not found in database for:', { username, role });
             logLoginAttempt(username, role, false, 'User not found', clientIP);
             trackFailedLogin(clientIP, username, 'User not found', req.get('User-Agent'));
             return res.status(401).json({ 
                 status: 'failed', 
-                message: 'Invalid username or password' 
+                message: 'User not found. Please check your username and role.' 
             });
         }
         
@@ -3311,11 +3312,12 @@ app.post('/api/login', async (req, res) => {
             const isPasswordValid = await bcrypt.compare(password, user.password);
             
             if (!isPasswordValid) {
+                console.log('Invalid password for user:', username);
                 logLoginAttempt(username, role, false, 'Invalid password', clientIP);
                 trackFailedLogin(clientIP, username, 'Invalid password', req.get('User-Agent'));
                 return res.status(401).json({ 
                     status: 'failed', 
-                    message: 'Invalid password' 
+                    message: 'Invalid password. Please try again.' 
                 });
             }
             
