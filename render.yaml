@@ -1,0 +1,28 @@
+services:
+  - type: web
+    name: school-portal
+    env: node
+    plan: free
+    buildCommand: npm install
+    startCommand: node app.js
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 10000
+      - key: SSL_ENABLED
+        value: false
+      - key: JWT_SECRET
+        generateValue: true
+      - key: SESSION_SECRET
+        generateValue: true
+      - key: ENCRYPTION_KEY
+        generateValue: true
+      - key: DB_PATH
+        value: /opt/render/project/data/school.db
+      - key: DEFAULT_ADMIN_PASSWORD
+        generateValue: true
+    disk:
+      name: data
+      mountPath: /opt/render/project/data
+      sizeGB: 1

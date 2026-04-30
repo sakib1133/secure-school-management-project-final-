@@ -81,8 +81,9 @@ let chatbotService;
 let navigationChatbotService;
 
 // SSL Configuration for HTTPS
+// Disable self-signed SSL on production platforms like Render that provide their own HTTPS
 const SSL_CONFIG = {
-    ENABLED: process.env.SSL_ENABLED === 'true',
+    ENABLED: process.env.SSL_ENABLED === 'true' && process.env.NODE_ENV !== 'production',
     KEY_PATH: process.env.SSL_KEY_PATH || './key.pem',
     CERT_PATH: process.env.SSL_CERT_PATH || './cert.pem',
     REDIRECT_HTTP: process.env.SSL_REDIRECT_HTTP === 'true'
@@ -1597,7 +1598,15 @@ function logLoginAttempt(username, role, success, reason = '', clientIP = 'unkno
 }
 
 // Initialize SQLite database
-const db = new sqlite3.Database(process.env.DB_PATH || './school.db', (err) => {
+// Ensure data directory exists for persistent storage on Render
+const dbPath = process.env.DB_PATH || './school.db';
+const dbDir = require('path').dirname(dbPath);
+
+if (!require('fs').existsSync(dbDir)) {
+    require('fs').mkdirSync(dbDir, { recursive: true });
+}
+
+const db = new sqlite3.Database(dbPath, (err) => {
     if (err) {
         console.error('Error connecting to database:', err.message);
     } else {
@@ -1605,7 +1614,7 @@ const db = new sqlite3.Database(process.env.DB_PATH || './school.db', (err) => {
         chatbotService = new ChatbotService(db);
         // Initialize Navigation Chatbot Service (for internal chatbot)
         navigationChatbotService = new NavigationChatbotService(db);
-        console.log('Database connected');
+        console.log('Database connected at:', dbPath);
         
         // Create tables if not exists
         db.serialize(() => {
@@ -1635,7 +1644,7 @@ const db = new sqlite3.Database(process.env.DB_PATH || './school.db', (err) => {
                     // Insert default admin user if not exists
                     const adminUser = {
                         username: 'admin',
-                        password: '1234', // In a real app, this should be hashed
+                        password: process.env.DEFAULT_ADMIN_PASSWORD || 'admin@321', // Use env var or default
                         role: 'admin'
                     };
                     
