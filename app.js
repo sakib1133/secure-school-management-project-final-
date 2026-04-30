@@ -1082,16 +1082,18 @@ function cleanupWAF() {
 // Anti-Phishing Functions
 function isValidDomain(domain) {
     if (!domain) return false;
-    const domainLower = domain.toLowerCase();
+    // Strip port number if present (e.g., "domain.com:10000" -> "domain.com")
+    const domainWithoutPort = domain.split(':')[0].toLowerCase();
     const allowedDomains = ANTI_PHISHING_CONFIG.ALLOWED_DOMAINS;
     
     for (const allowed of allowedDomains) {
-        if (allowed.startsWith('.')) {
+        const allowedLower = allowed.toLowerCase();
+        if (allowedLower.startsWith('.')) {
             // Wildcard subdomain matching (e.g., .onrender.com matches any.onrender.com)
-            if (domainLower === allowed.slice(1) || domainLower.endsWith(allowed)) {
+            if (domainWithoutPort === allowedLower.slice(1) || domainWithoutPort.endsWith(allowedLower)) {
                 return true;
             }
-        } else if (allowed === domainLower) {
+        } else if (allowedLower === domainWithoutPort) {
             return true;
         }
     }
@@ -1178,6 +1180,12 @@ function antiPhishingMiddleware(req, res, next) {
         return next();
     }
     
+    // Allow health check and debug endpoints to bypass domain validation
+    // This is needed for troubleshooting domain issues
+    if (req.path === '/health' || req.path === '/debug-db') {
+        return next();
+    }
+    
     const clientIP = req.ip || req.connection.remoteAddress || 'unknown';
     const host = req.get('host');
     const origin = req.get('origin');
@@ -1187,8 +1195,14 @@ function antiPhishingMiddleware(req, res, next) {
     // Check Host header
     if (ANTI_PHISHING_CONFIG.CHECK_HOST && host) {
         if (!isValidDomain(host)) {
+            const hostWithoutPort = host.split(':')[0];
+            console.log(`🚫 Anti-Phishing: Blocked invalid host "${host}" (domain: "${hostWithoutPort}")`);
+            console.log(`   Allowed domains: ${ANTI_PHISHING_CONFIG.ALLOWED_DOMAINS.join(', ')}`);
+            
             logPhishingAlert('INVALID_HOST', clientIP, { 
                 host, 
+                hostDomain: hostWithoutPort,
+                allowedDomains: ANTI_PHISHING_CONFIG.ALLOWED_DOMAINS,
                 endpoint: req.originalUrl,
                 userAgent: userAgent.substring(0, 100)
             }, ANTI_PHISHING_CONFIG.BLOCK_MODE);
@@ -1196,8 +1210,13 @@ function antiPhishingMiddleware(req, res, next) {
             if (ANTI_PHISHING_CONFIG.BLOCK_MODE) {
                 return res.status(403).json({
                     status: 'blocked',
-                    message: 'Request blocked: Invalid host domain detected',
-                    code: 'PHISHING_INVALID_HOST'
+                    message: `Request blocked: Invalid host domain "${hostWithoutPort}" detected. Add your domain to ALLOWED_DOMAINS env var.`,
+                    code: 'PHISHING_INVALID_HOST',
+                    debug: {
+                        hostReceived: host,
+                        hostDomain: hostWithoutPort,
+                        allowedDomains: ANTI_PHISHING_CONFIG.ALLOWED_DOMAINS
+                    }
                 });
             }
         }
@@ -8113,6 +8132,15 @@ app.get('/health', (req, res) => {
 
 // Start servers
 function startServers() {
+    // Log security configuration
+    console.log('\n🛡️  Security Configuration:');
+    console.log(`   Anti-Phishing: ${ANTI_PHISHING_CONFIG.ENABLED ? 'ENABLED' : 'DISABLED'}`);
+    if (ANTI_PHISHING_CONFIG.ENABLED) {
+        console.log(`   Allowed Domains: ${ANTI_PHISHING_CONFIG.ALLOWED_DOMAINS.join(', ')}`);
+        console.log(`   Block Mode: ${ANTI_PHISHING_CONFIG.BLOCK_MODE ? 'BLOCK' : 'LOG ONLY'}`);
+    }
+    console.log('');
+    
     // Start HTTPS server if SSL is enabled; otherwise start HTTP server
     if (SSL_CONFIG.ENABLED) {
         const credentials = loadSSLCertificates();

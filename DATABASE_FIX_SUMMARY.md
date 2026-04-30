@@ -52,12 +52,31 @@ const required = {
 }
 ```
 
+### 5. Anti-Phishing Domain Validation Fix (NEW)
+**Problem:** "Request blocked: Invalid host domain detected" error because the `Host` header includes port number (e.g., `yourapp.onrender.com:10000`) which failed exact string matching.
+
+**Fix:** 
+- Updated `isValidDomain()` function to strip port number before validation
+- Added debug logging to show blocked domains and allowed list
+- Added bypass for `/debug-db` and `/health` endpoints for troubleshooting
+- Enhanced error response to show which domain was rejected
+
+**Example of fixed validation:**
+```javascript
+// Before: "yourapp.onrender.com:10000" would NOT match ".onrender.com"
+// After: "yourapp.onrender.com:10000" → "yourapp.onrender.com" matches ".onrender.com" ✓
+```
+
+**To temporarily disable anti-phishing** (for testing only):
+Set env var `ANTI_PHISHING_ENABLED=false` in Render dashboard.
+
 ## Files Modified
 
 | File | Changes |
 |------|---------|
-| `app.js` | Fixed env validation, enhanced logging, added /debug-db and /health endpoints |
+| `app.js` | Fixed env validation, enhanced logging, added /debug-db and /health endpoints, fixed domain validation to strip port |
 | `.env.example` | Updated DB_PATH documentation |
+| `render.yaml` | Added comments for ALLOWED_DOMAINS troubleshooting |
 
 ## Render Configuration
 

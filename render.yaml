@@ -22,10 +22,16 @@ services:
         value: /opt/render/project/data/school.db
       - key: DEFAULT_ADMIN_PASSWORD
         generateValue: true
+      # Anti-Phishing Domain Protection
+      # .onrender.com wildcard matches all Render subdomains (yourapp.onrender.com)
+      # Add your custom domain here if you have one (e.g., myschool.com)
       - key: ALLOWED_DOMAINS
         value: localhost,127.0.0.1,.onrender.com,render.com
       - key: CORS_ORIGINS
         value: http://localhost:3000,http://127.0.0.1:5500,https://*.onrender.com
+      # To disable anti-phishing checks during troubleshooting, set to false
+      # - key: ANTI_PHISHING_ENABLED
+      #   value: false
       - key: EMAIL_ALERTS_ENABLED
         value: false
     disk:
