@@ -1629,18 +1629,40 @@ function logLoginAttempt(username, role, success, reason = '', clientIP = 'unkno
 }
 
 // Initialize SQLite database
-// Ensure data directory exists for persistent storage on Render
-const dbPath = process.env.DB_PATH || './school.db';
-const dbDir = require('path').dirname(dbPath);
+// CRITICAL: Force use of Render persistent disk path in production
+// No fallback to local database to prevent data loss
+const dbPath = process.env.DB_PATH;
 
-// Create directory if it doesn't exist (for local development)
-if (!require('fs').existsSync(dbDir)) {
-    require('fs').mkdirSync(dbDir, { recursive: true });
-    console.log(`Created database directory: ${dbDir}`);
+if (!dbPath) {
+    console.error('❌ CRITICAL ERROR: DB_PATH environment variable is not set!');
+    console.error('   Database cannot be initialized without DB_PATH.');
+    console.error('   Set DB_PATH to /opt/render/project/data/school.db for Render deployment.');
+    process.exit(1);
 }
 
-console.log(`Database path: ${dbPath}`);
-console.log(`Database directory: ${dbDir}`);
+const dbDir = require('path').dirname(dbPath);
+
+console.log('📁 Database Configuration:');
+console.log(`   DB_PATH: ${dbPath}`);
+console.log(`   DB_DIR: ${dbDir}`);
+
+// Create directory if it doesn't exist
+if (!require('fs').existsSync(dbDir)) {
+    console.log(`📂 Creating database directory: ${dbDir}`);
+    require('fs').mkdirSync(dbDir, { recursive: true });
+    console.log(`✅ Database directory created: ${dbDir}`);
+} else {
+    console.log(`✅ Database directory exists: ${dbDir}`);
+}
+
+// Check if database file exists
+const dbExists = require('fs').existsSync(dbPath);
+console.log(`📊 Database file exists: ${dbExists ? 'YES' : 'NO'}`);
+if (dbExists) {
+    const stats = require('fs').statSync(dbPath);
+    console.log(`   Database file size: ${stats.size} bytes`);
+    console.log(`   Last modified: ${stats.mtime.toISOString()}`);
+}
 
 const db = new sqlite3.Database(dbPath, (err) => {
     if (err) {
@@ -1650,7 +1672,17 @@ const db = new sqlite3.Database(dbPath, (err) => {
         chatbotService = new ChatbotService(db);
         // Initialize Navigation Chatbot Service (for internal chatbot)
         navigationChatbotService = new NavigationChatbotService(db);
-        console.log('Database connected at:', dbPath);
+        console.log('✅ Database connected successfully at:', dbPath);
+        
+        // Check existing tables to verify database state
+        db.all("SELECT name FROM sqlite_master WHERE type='table'", [], (err, tables) => {
+            if (err) {
+                console.error('❌ Error checking tables:', err.message);
+            } else {
+                console.log(`📋 Existing tables in database: ${tables.length}`);
+                tables.forEach(t => console.log(`   - ${t.name}`));
+            }
+        });
         
         // Create tables if not exists
         db.serialize(() => {
@@ -2226,6 +2258,22 @@ const db = new sqlite3.Database(dbPath, (err) => {
                 }
             });
         });
+        
+        // After all tables are created, verify data counts for debugging
+        setTimeout(() => {
+            console.log('📊 Verifying database data counts...');
+            const tablesToCheck = ['users', 'students', 'teachers', 'classes', 'subjects', 'notices', 'payments', 'fees', 'fee_payments'];
+            
+            tablesToCheck.forEach(tableName => {
+                db.get(`SELECT COUNT(*) as count FROM ${tableName}`, [], (err, row) => {
+                    if (err) {
+                        console.log(`   ❌ ${tableName}: Error - ${err.message}`);
+                    } else {
+                        console.log(`   ✅ ${tableName}: ${row.count} records`);
+                    }
+                });
+            });
+        }, 1000); // Delay to ensure all tables are ready
     }
 });
 
