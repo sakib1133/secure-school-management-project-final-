@@ -25,10 +25,11 @@ function validateEnv() {
         'JWT_SECRET': 'JWT signing key',
         'SESSION_SECRET': 'Session encryption key',
         'ENCRYPTION_KEY': 'Data encryption key',
-        'DB_URL': 'Database path'
+        'DB_PATH': 'Database path (e.g., /opt/render/project/data/school.db)'
     };
 
     const optional = {
+        'DB_URL': 'Legacy database URL (use DB_PATH instead)',
         'SMTP_USER': 'SMTP username',
         'SMTP_PASS': 'SMTP password',
         'RAZORPAY_KEY_ID': 'Razorpay key ID',
@@ -1660,19 +1661,35 @@ const dbExists = require('fs').existsSync(dbPath);
 console.log(`📊 Database file exists: ${dbExists ? 'YES' : 'NO'}`);
 if (dbExists) {
     const stats = require('fs').statSync(dbPath);
-    console.log(`   Database file size: ${stats.size} bytes`);
+    console.log(`   Database file size: ${stats.size} bytes (${(stats.size / 1024).toFixed(2)} KB)`);
     console.log(`   Last modified: ${stats.mtime.toISOString()}`);
+    
+    // Warn if database is suspiciously small (likely empty)
+    if (stats.size < 4096) {
+        console.warn('⚠️  WARNING: Database file is very small - may be empty or corrupted');
+    }
+} else {
+    console.log('ℹ️  New database will be created at:', dbPath);
+}
+
+// Log encryption key status (without revealing the key)
+const hasEncryptionKey = !!process.env.ENCRYPTION_KEY;
+console.log(`🔐 Encryption key configured: ${hasEncryptionKey ? 'YES' : 'NO (using default)'}`);
+if (!hasEncryptionKey) {
+    console.warn('⚠️  WARNING: Using default encryption key. Set ENCRYPTION_KEY env var for production.');
 }
 
 const db = new sqlite3.Database(dbPath, (err) => {
     if (err) {
-        console.error('Error connecting to database:', err.message);
+        console.error('❌ CRITICAL ERROR connecting to database:', err.message);
+        console.error('   DB_PATH:', dbPath);
     } else {
         // Initialize Chatbot Service after database connection
         chatbotService = new ChatbotService(db);
         // Initialize Navigation Chatbot Service (for internal chatbot)
         navigationChatbotService = new NavigationChatbotService(db);
-        console.log('✅ Database connected successfully at:', dbPath);
+        console.log('✅ Database connected successfully');
+        console.log(`   Path: ${dbPath}`);
         
         // Check existing tables to verify database state
         db.all("SELECT name FROM sqlite_master WHERE type='table'", [], (err, tables) => {
@@ -1680,7 +1697,20 @@ const db = new sqlite3.Database(dbPath, (err) => {
                 console.error('❌ Error checking tables:', err.message);
             } else {
                 console.log(`📋 Existing tables in database: ${tables.length}`);
-                tables.forEach(t => console.log(`   - ${t.name}`));
+                if (tables.length === 0) {
+                    console.log('   (Database is new - tables will be created)');
+                } else {
+                    tables.forEach(t => console.log(`   - ${t.name}`));
+                }
+                
+                // Log critical table presence
+                const criticalTables = ['users', 'students', 'teachers'];
+                const foundCritical = tables.filter(t => criticalTables.includes(t.name)).map(t => t.name);
+                const missingCritical = criticalTables.filter(t => !foundCritical.includes(t));
+                
+                if (missingCritical.length > 0 && tables.length > 0) {
+                    console.warn(`⚠️  Missing critical tables: ${missingCritical.join(', ')}`);
+                }
             }
         });
         
@@ -7898,6 +7928,188 @@ app.delete('/api/fees/:id', authenticateToken, authorizeRole(['admin']), async (
 });
 
 // ==================== END FEE MANAGEMENT SYSTEM ====================
+
+// ==================== DATABASE DEBUG ENDPOINT ====================
+// CRITICAL: Debug endpoint to verify database connection on Render
+// This helps diagnose data visibility issues
+
+app.get('/debug-db', async (req, res) => {
+    const debugInfo = {
+        timestamp: new Date().toISOString(),
+        environment: {
+            node_env: process.env.NODE_ENV || 'not set',
+            cwd: process.cwd(),
+            platform: process.platform,
+        },
+        database: {
+            db_path_env: process.env.DB_PATH || 'NOT SET',
+            db_path_used: dbPath || 'NOT SET',
+            db_dir: dbDir || 'NOT SET',
+        },
+        file_system: {},
+        tables: [],
+        record_counts: {},
+        errors: []
+    };
+
+    try {
+        // Check if database directory exists
+        if (dbDir) {
+            debugInfo.file_system.db_dir_exists = fs.existsSync(dbDir);
+            try {
+                const dirStats = fs.statSync(dbDir);
+                debugInfo.file_system.db_dir_stats = {
+                    isDirectory: dirStats.isDirectory(),
+                    mode: dirStats.mode,
+                    uid: dirStats.uid,
+                    gid: dirStats.gid,
+                    size: dirStats.size,
+                };
+            } catch (e) {
+                debugInfo.errors.push(`DB dir stat error: ${e.message}`);
+            }
+        }
+
+        // Check if database file exists
+        if (dbPath) {
+            debugInfo.file_system.db_file_exists = fs.existsSync(dbPath);
+            if (debugInfo.file_system.db_file_exists) {
+                try {
+                    const fileStats = fs.statSync(dbPath);
+                    debugInfo.file_system.db_file_stats = {
+                        size_bytes: fileStats.size,
+                        size_mb: (fileStats.size / 1024 / 1024).toFixed(2),
+                        created: fileStats.birthtime?.toISOString(),
+                        modified: fileStats.mtime?.toISOString(),
+                        accessed: fileStats.atime?.toISOString(),
+                    };
+                } catch (e) {
+                    debugInfo.errors.push(`DB file stat error: ${e.message}`);
+                }
+            }
+        }
+
+        // Get list of all tables
+        const tables = await new Promise((resolve, reject) => {
+            db.all("SELECT name, sql FROM sqlite_master WHERE type='table' ORDER BY name", [], (err, rows) => {
+                if (err) reject(err);
+                else resolve(rows || []);
+            });
+        }).catch(e => {
+            debugInfo.errors.push(`Tables query error: ${e.message}`);
+            return [];
+        });
+
+        debugInfo.tables = tables.map(t => t.name);
+        debugInfo.table_details = tables;
+
+        // Get record counts for main tables
+        const tablesToCount = ['users', 'students', 'teachers', 'classes', 'subjects', 
+                              'notices', 'payments', 'fees', 'fee_payments', 
+                              'notifications', 'timetables'];
+        
+        for (const tableName of tablesToCount) {
+            try {
+                const count = await new Promise((resolve, reject) => {
+                    db.get(`SELECT COUNT(*) as count FROM ${tableName}`, [], (err, row) => {
+                        if (err) reject(err);
+                        else resolve(row?.count || 0);
+                    });
+                });
+                debugInfo.record_counts[tableName] = count;
+            } catch (e) {
+                debugInfo.record_counts[tableName] = `Error: ${e.message}`;
+            }
+        }
+
+        // Sample data check - get first few records from users table
+        try {
+            const sampleUsers = await new Promise((resolve, reject) => {
+                db.all("SELECT id, username, role, email, full_name FROM users LIMIT 5", [], (err, rows) => {
+                    if (err) reject(err);
+                    else resolve(rows || []);
+                });
+            });
+            debugInfo.sample_users = sampleUsers.map(u => ({
+                id: u.id,
+                username: u.username,
+                role: u.role,
+                email: u.email ? '***encrypted***' : null,
+                full_name: u.full_name ? '***encrypted***' : null,
+            }));
+        } catch (e) {
+            debugInfo.errors.push(`Sample users error: ${e.message}`);
+        }
+
+        // Check if admin user exists
+        try {
+            const adminCheck = await new Promise((resolve, reject) => {
+                db.get("SELECT id, username, role FROM users WHERE username = ?", ['admin'], (err, row) => {
+                    if (err) reject(err);
+                    else resolve(row);
+                });
+            });
+            debugInfo.admin_user_exists = !!adminCheck;
+            debugInfo.admin_user_id = adminCheck?.id || null;
+        } catch (e) {
+            debugInfo.errors.push(`Admin check error: ${e.message}`);
+        }
+
+        // Database integrity check
+        try {
+            const integrityCheck = await new Promise((resolve, reject) => {
+                db.get("PRAGMA integrity_check", [], (err, row) => {
+                    if (err) reject(err);
+                    else resolve(row?.integrity_check || 'unknown');
+                });
+            });
+            debugInfo.integrity_check = integrityCheck;
+        } catch (e) {
+            debugInfo.errors.push(`Integrity check error: ${e.message}`);
+        }
+
+        // Determine overall status
+        const hasErrors = debugInfo.errors.length > 0;
+        const hasTables = debugInfo.tables.length > 0;
+        const hasUsers = (debugInfo.record_counts.users || 0) > 0;
+
+        debugInfo.status = hasErrors ? 'error' : (hasTables && hasUsers ? 'healthy' : 'warning');
+        debugInfo.summary = {
+            db_connected: !!db,
+            tables_found: debugInfo.tables.length,
+            has_users: hasUsers,
+            has_admin: debugInfo.admin_user_exists,
+            total_errors: debugInfo.errors.length,
+            message: hasErrors ? 'Errors detected - check errors array' : 
+                     !hasTables ? 'No tables found - database may need initialization' :
+                     !hasUsers ? 'No users found - admin may need to be created' :
+                     'Database appears healthy'
+        };
+
+        // Return appropriate HTTP status
+        const statusCode = debugInfo.status === 'error' ? 500 : 
+                          debugInfo.status === 'warning' ? 200 : 200;
+
+        res.status(statusCode).json(debugInfo);
+
+    } catch (error) {
+        debugInfo.errors.push(`Critical error: ${error.message}`);
+        debugInfo.status = 'critical_error';
+        res.status(500).json(debugInfo);
+    }
+});
+
+// Health check endpoint for Render
+app.get('/health', (req, res) => {
+    res.json({
+        status: 'ok',
+        timestamp: new Date().toISOString(),
+        db_path: dbPath || 'not set',
+        uptime: process.uptime()
+    });
+});
+
+// ==================== END DATABASE DEBUG ENDPOINT ====================
 
 // Start servers
 function startServers() {
