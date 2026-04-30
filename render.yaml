@@ -22,6 +22,12 @@ services:
         value: /opt/render/project/data/school.db
       - key: DEFAULT_ADMIN_PASSWORD
         generateValue: true
+      - key: ALLOWED_DOMAINS
+        value: localhost,127.0.0.1,.onrender.com,render.com
+      - key: CORS_ORIGINS
+        value: http://localhost:3000,http://127.0.0.1:5500,https://*.onrender.com
+      - key: EMAIL_ALERTS_ENABLED
+        value: false
     disk:
       name: data
       mountPath: /opt/render/project/data

@@ -73,6 +73,9 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 const HTTPS_PORT = process.env.HTTPS_PORT || 3443;
 
+// Trust proxy for Render reverse proxy
+app.set('trust proxy', 1);
+
 // Initialize Notification Service
 const notificationService = new NotificationService();
 
@@ -81,12 +84,12 @@ let chatbotService;
 let navigationChatbotService;
 
 // SSL Configuration for HTTPS
-// Disable self-signed SSL on production platforms like Render that provide their own HTTPS
+// Completely disable self-signed SSL on production platforms like Render that provide their own HTTPS
 const SSL_CONFIG = {
-    ENABLED: process.env.SSL_ENABLED === 'true' && process.env.NODE_ENV !== 'production',
+    ENABLED: false, // Always disabled - use Render's built-in HTTPS
     KEY_PATH: process.env.SSL_KEY_PATH || './key.pem',
     CERT_PATH: process.env.SSL_CERT_PATH || './cert.pem',
-    REDIRECT_HTTP: process.env.SSL_REDIRECT_HTTP === 'true'
+    REDIRECT_HTTP: false
 };
 
 const otpEmailTransporter = (process.env.SMTP_USER && process.env.SMTP_PASS) ? nodemailer.createTransport({
@@ -298,11 +301,11 @@ const ANTI_PHISHING_CONFIG = {
     ENABLED: true,
     BLOCK_MODE: true, // true = block, false = log only
     ALLOWED_DOMAINS: process.env.ALLOWED_DOMAINS ? 
-        process.env.ALLOWED_DOMAINS.split(',') : 
-        ['localhost', '127.0.0.1', 'render.com', 'secure-school-management-project-final.onrender.com'],
+        process.env.ALLOWED_DOMAINS.split(',').map(d => d.trim()) : 
+        ['localhost', '127.0.0.1', '.onrender.com', 'render.com'],
     ALLOWED_ORIGINS: process.env.CORS_ORIGINS ? 
-        process.env.CORS_ORIGINS.split(',') : 
-        ['http://localhost:3000', 'http://127.0.0.1:5500', 'https://secure-school-management-project-final.onrender.com'],
+        process.env.CORS_ORIGINS.split(',').map(o => o.trim()) : 
+        ['http://localhost:3000', 'http://127.0.0.1:5500', 'https://*.onrender.com'],
     CHECK_REFERER: true,
     CHECK_ORIGIN: true,
     CHECK_HOST: true,
@@ -1078,12 +1081,40 @@ function cleanupWAF() {
 // Anti-Phishing Functions
 function isValidDomain(domain) {
     if (!domain) return false;
-    return ANTI_PHISHING_CONFIG.ALLOWED_DOMAINS.includes(domain.toLowerCase());
+    const domainLower = domain.toLowerCase();
+    const allowedDomains = ANTI_PHISHING_CONFIG.ALLOWED_DOMAINS;
+    
+    for (const allowed of allowedDomains) {
+        if (allowed.startsWith('.')) {
+            // Wildcard subdomain matching (e.g., .onrender.com matches any.onrender.com)
+            if (domainLower === allowed.slice(1) || domainLower.endsWith(allowed)) {
+                return true;
+            }
+        } else if (allowed === domainLower) {
+            return true;
+        }
+    }
+    return false;
 }
 
 function isValidOrigin(origin) {
     if (!origin) return false;
-    return ANTI_PHISHING_CONFIG.ALLOWED_ORIGINS.includes(origin.toLowerCase());
+    const originLower = origin.toLowerCase();
+    const allowedOrigins = ANTI_PHISHING_CONFIG.ALLOWED_ORIGINS;
+    
+    for (const allowed of allowedOrigins) {
+        if (allowed.includes('*')) {
+            // Wildcard matching (e.g., https://*.onrender.com)
+            const pattern = allowed.replace('*', '.*');
+            const regex = new RegExp('^' + pattern + '$');
+            if (regex.test(originLower)) {
+                return true;
+            }
+        } else if (allowed === originLower) {
+            return true;
+        }
+    }
+    return false;
 }
 
 function detectSuspiciousDomain(domain) {
@@ -1602,9 +1633,14 @@ function logLoginAttempt(username, role, success, reason = '', clientIP = 'unkno
 const dbPath = process.env.DB_PATH || './school.db';
 const dbDir = require('path').dirname(dbPath);
 
+// Create directory if it doesn't exist (for local development)
 if (!require('fs').existsSync(dbDir)) {
     require('fs').mkdirSync(dbDir, { recursive: true });
+    console.log(`Created database directory: ${dbDir}`);
 }
+
+console.log(`Database path: ${dbPath}`);
+console.log(`Database directory: ${dbDir}`);
 
 const db = new sqlite3.Database(dbPath, (err) => {
     if (err) {
@@ -1642,29 +1678,41 @@ const db = new sqlite3.Database(dbPath, (err) => {
                     });
                     
                     // Insert default admin user if not exists
-                    const adminUser = {
-                        username: 'admin',
-                        password: process.env.DEFAULT_ADMIN_PASSWORD || 'admin@321', // Use env var or default
-                        role: 'admin'
-                    };
-                    
-                    // Hash the password before storing
-                    bcrypt.hash(adminUser.password, 10, (err, hashedPassword) => {
-                        if (err) {
-                            console.error('Error hashing admin password:', err.message);
+                    // Check if admin already exists before attempting to create
+                    db.get('SELECT id FROM users WHERE username = ?', ['admin'], (checkErr, adminRow) => {
+                        if (checkErr) {
+                            console.error('Error checking for existing admin:', checkErr.message);
                             return;
                         }
                         
-                        const stmt = db.prepare('INSERT OR IGNORE INTO users (username, password, role) VALUES (?, ?, ?)');
-                        stmt.run(adminUser.username, hashedPassword, adminUser.role, function(err) {
+                        if (adminRow) {
+                            console.log('Default admin user already exists - skipping creation');
+                            return;
+                        }
+                        
+                        // Admin doesn't exist, create it
+                        const adminUser = {
+                            username: 'admin',
+                            password: process.env.DEFAULT_ADMIN_PASSWORD || 'admin@321', // Use env var or default
+                            role: 'admin'
+                        };
+                        
+                        // Hash the password before storing
+                        bcrypt.hash(adminUser.password, 10, (err, hashedPassword) => {
                             if (err) {
-                                console.error('Error creating default admin:', err.message);
-                            } else if (this.changes > 0) {
-                                console.log('Default admin user created with hashed password');
-                            } else {
-                                console.log('Default admin user already exists');
+                                console.error('Error hashing admin password:', err.message);
+                                return;
                             }
-                            stmt.finalize();
+                            
+                            const stmt = db.prepare('INSERT INTO users (username, password, role) VALUES (?, ?, ?)');
+                            stmt.run(adminUser.username, hashedPassword, adminUser.role, function(err) {
+                                if (err) {
+                                    console.error('Error creating default admin:', err.message);
+                                } else {
+                                    console.log('Default admin user created with hashed password');
+                                }
+                                stmt.finalize();
+                            });
                         });
                     });
                 }
@@ -2189,9 +2237,27 @@ const corsOptions = {
         
         const allowedOrigins = process.env.CORS_ORIGINS ? 
             process.env.CORS_ORIGINS.split(',').map(o => o.trim()) : 
-            ['http://localhost:3000', 'http://127.0.0.1:5500', 'https://secure-school-management-project-final.onrender.com'];
+            ['http://localhost:3000', 'http://127.0.0.1:5500', 'https://*.onrender.com'];
         
-        if (allowedOrigins.indexOf(origin) !== -1) {
+        const originLower = origin.toLowerCase();
+        let isAllowed = false;
+        
+        for (const allowed of allowedOrigins) {
+            if (allowed.includes('*')) {
+                // Wildcard matching (e.g., https://*.onrender.com)
+                const pattern = allowed.replace('*', '.*');
+                const regex = new RegExp('^' + pattern + '$');
+                if (regex.test(originLower)) {
+                    isAllowed = true;
+                    break;
+                }
+            } else if (allowed === originLower) {
+                isAllowed = true;
+                break;
+            }
+        }
+        
+        if (isAllowed) {
             callback(null, true);
         } else {
             console.log(`🚫 CORS: Blocked origin ${origin}`);
@@ -7827,5 +7893,4 @@ function startServers() {
     }
 }
 
-startServers();
 startServers();
